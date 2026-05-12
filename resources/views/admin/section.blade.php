@@ -51,9 +51,19 @@
                 </div>
                 <div class="admin-field">
                     <label>URL / path gambar</label>
-                    <input name="image_path" value="{{ old('image_path', $content['image_path']) }}" placeholder="/assets/img/cea/campur.png atau https://...">
-                    @if (! empty($content['image_path']))
-                        <img src="{{ $content['image_path'] }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
+                    @php
+                        $previewImagePath = old('image_path', $content['image_path']);
+                        $previewAsWordmark = $previewImagePath && strpos($previewImagePath, 'assets/img/cea/') !== false;
+                    @endphp
+                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="Kosongkan untuk wordmark Pooling Fund - KSO atau gunakan https://...">
+                    @if (! empty($previewImagePath))
+                        @if ($previewAsWordmark)
+                            <div style="border-radius:8px;margin-top:12px;max-height:180px;overflow:hidden;">
+                                @include('layouts.kso-wordmark', ['variant' => 'card', 'tagline' => $content['title'], 'panel' => true])
+                            </div>
+                        @else
+                            <img src="{{ $previewImagePath }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
+                        @endif
                     @endif
                 </div>
                 <div class="admin-field">

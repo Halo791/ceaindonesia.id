@@ -129,6 +129,11 @@
 </style>
 @endpush
 
+@php
+    $contentImagePath = $content['image_path'] ?? '';
+    $useKsoWordmark = $contentImagePath === '' || strpos($contentImagePath, 'assets/img/cea/') !== false;
+@endphp
+
 @section('content')
 <section class="public-hero">
     <div class="container">
@@ -144,7 +149,11 @@
                 </div>
             </div>
             <div class="public-hero__visual">
-                <img src="{{ $content['image_path'] }}" alt="{{ $content['title'] }}">
+                @if ($useKsoWordmark)
+                    @include('layouts.kso-wordmark', ['variant' => 'content', 'tagline' => $content['title'], 'panel' => true])
+                @else
+                    <img src="{{ $contentImagePath }}" alt="{{ $content['title'] }}">
+                @endif
             </div>
         </div>
     </div>

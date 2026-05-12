@@ -22,7 +22,7 @@
         max-width: 460px;
         padding: 32px;
     }
-    .admin-login__card img {
+    .admin-login__brand {
         display: block;
         margin-bottom: 22px;
         max-width: 160px;
@@ -44,7 +44,9 @@
 <section class="admin-login">
     <div class="container">
         <div class="admin-login__card">
-            <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
+            <div class="admin-login__brand">
+                @include('layouts.kso-wordmark', ['variant' => 'login', 'compact' => true])
+            </div>
             <h1>Login Admin</h1>
             <p>Masuk untuk mengelola konten menu, submenu, tulisan, dan gambar website.</p>
 

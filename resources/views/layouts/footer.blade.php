@@ -2,7 +2,7 @@
     <div class="container">
         <div class="cea-footer-grid">
             <div class="cea-footer-brand">
-                <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
+                @include('layouts.kso-wordmark', ['variant' => 'footer', 'compact' => true])
                 <p>Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan berbasis kebutuhan komunitas dan kepemimpinan lokal.</p>
                 <div class="cea-footer-actions mt-3">
                     <a href="/profil/mandat-visi-nilai">Baca Mandat</a>

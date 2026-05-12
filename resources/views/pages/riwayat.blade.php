@@ -12,7 +12,9 @@
                 <p>{{ $content['subtitle'] ?: 'Pooling Fund - KSO lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
                 <a class="cea-btn" href="{{ route('home') }}">Kembali ke Beranda</a>
             </div>
-            <img src="{{ $content['image_path'] ?: asset('assets/img/cea/campur.png') }}" alt="{{ $content['title'] ?: 'Pooling Fund - KSO' }}">
+            <div class="home-hero__wordmark">
+                @include('layouts.kso-wordmark', ['variant' => 'content', 'tagline' => 'Riwayat Proses Pembentukan', 'panel' => true])
+            </div>
         </div>
     </div>
 </section>

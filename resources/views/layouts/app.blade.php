@@ -61,12 +61,37 @@
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
+        .kso-wordmark { --kso-bg: #fff8f2; --kso-ink: #3a0710; --kso-accent: #f2b66d; --kso-line: rgba(122,22,38,.16); align-items: center; background: radial-gradient(circle at 78% 22%, rgba(242,182,109,.36), transparent 28%), linear-gradient(135deg, var(--kso-bg), #fff); border: 1px solid var(--kso-line); border-radius: 8px; color: var(--kso-ink); display: grid; isolation: isolate; min-height: 76px; min-width: 210px; overflow: hidden; padding: 16px 18px; position: relative; width: max-content; }
+        .kso-wordmark__grid { display: grid; gap: 8px; grid-template-columns: repeat(11, minmax(9px, 1fr)); inset: -18% -8%; opacity: .38; position: absolute; transform: rotate(-7deg) scale(1.1); z-index: -1; }
+        .kso-wordmark__square { aspect-ratio: 1 / 1; background: linear-gradient(135deg, rgba(122,22,38,.86), rgba(242,182,109,.82)); border-radius: 3px; box-shadow: 0 8px 18px rgba(122,22,38,.14); display: block; opacity: .82; }
+        .kso-wordmark__content { display: grid; gap: 1px; position: relative; z-index: 1; }
+        .kso-wordmark__eyebrow, .kso-wordmark__tagline { color: #a64034; display: block; font-size: 11px; font-weight: 900; letter-spacing: 0; line-height: 1; text-transform: uppercase; }
+        .kso-wordmark strong { color: var(--kso-ink); display: block; font-size: 32px; font-weight: 950; letter-spacing: 0; line-height: .92; text-transform: uppercase; }
+        .kso-wordmark__tagline { color: #5d343a; font-size: 12px; line-height: 1.3; margin-top: 8px; max-width: 420px; text-transform: none; }
+        .kso-wordmark--header { min-height: 52px; min-width: 182px; padding: 8px 12px; }
+        .kso-wordmark--header .kso-wordmark__grid, .kso-wordmark--compact .kso-wordmark__grid { gap: 5px; inset: -26% -12%; }
+        .kso-wordmark--header .kso-wordmark__eyebrow, .kso-wordmark--compact .kso-wordmark__eyebrow { font-size: 9px; }
+        .kso-wordmark--header strong { font-size: 25px; }
+        .kso-wordmark--compact { min-height: 46px; min-width: 156px; padding: 7px 10px; }
+        .kso-wordmark--compact strong { font-size: 22px; }
+        .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
+        .kso-wordmark--hero, .kso-wordmark--card, .kso-wordmark--content { height: 100%; min-height: 300px; width: 100%; }
+        .kso-wordmark--panel { min-height: inherit; width: 100%; }
+        .kso-wordmark--hero { --kso-bg: #fffaf7; min-height: 330px; padding: 34px; }
+        .kso-wordmark--hero .kso-wordmark__grid, .kso-wordmark--card .kso-wordmark__grid, .kso-wordmark--content .kso-wordmark__grid { gap: 10px; inset: -12% -6%; }
+        .kso-wordmark--hero .kso-wordmark__eyebrow { font-size: 15px; }
+        .kso-wordmark--hero strong { font-size: clamp(76px, 9vw, 150px); }
+        .kso-wordmark--hero .kso-wordmark__tagline { font-size: 17px; }
+        .kso-wordmark--card { min-height: 100%; padding: 22px; }
+        .kso-wordmark--card strong { font-size: clamp(42px, 5vw, 72px); }
+        .kso-wordmark--content { min-height: 380px; padding: 28px; }
+        .kso-wordmark--content strong { font-size: clamp(62px, 8vw, 120px); }
         .cea-footer-actions { display: flex; flex-wrap: wrap; gap: 12px; }
         .cea-footer-actions a { align-items: center; background: #f2b66d; border: 1px solid #f2b66d; border-radius: 8px; color: #2a0710; display: inline-flex; font-size: 14px; font-weight: 800; min-height: 46px; padding: 12px 18px; }
         .cea-footer-actions a:hover { background: #fff; border-color: #fff; color: #4b0b17; }
         .cea-landing-footer { background: #2a0710; padding: 56px 0 24px; }
         .cea-footer-grid { display: grid; gap: 30px; grid-template-columns: 1.4fr repeat(3, 1fr); }
-        .cea-footer-brand img { display: block; margin-bottom: 16px; max-width: 180px; }
+        .cea-footer-brand .kso-wordmark { display: grid; margin-bottom: 16px; max-width: 210px; }
         .cea-landing-footer h3 { color: #fff; font-size: 18px; margin-bottom: 14px; }
         .cea-landing-footer p { color: #c9b3b7; font-size: 15px; line-height: 1.75; margin: 0 0 10px; }
         .cea-landing-footer ul { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
@@ -83,7 +108,7 @@
         .home-hero__grid { align-items: center; display: grid; gap: 48px; grid-template-columns: minmax(0, .88fr) minmax(340px, 1fr); }
         .home-hero h1 { color: #fff; font-size: clamp(46px, 7vw, 92px); font-weight: 900; line-height: .98; margin-bottom: 24px; }
         .home-hero p { color: rgba(255,255,255,.84); font-size: 18px; line-height: 1.75; margin-bottom: 28px; }
-        .home-hero img { border-radius: 8px; box-shadow: 0 24px 70px rgba(0,0,0,.22); width: 100%; }
+        .home-hero__wordmark { border-radius: 8px; box-shadow: 0 24px 70px rgba(0,0,0,.22); min-height: 320px; width: 100%; }
         @if (request()->is('admin*'))
             .cea-admin-panel { background: #f4f7f4; min-height: 100vh; padding: 34px 0 54px; }
             .admin-shell { display: grid; gap: 24px; grid-template-columns: 280px minmax(0, 1fr); margin: 0 auto; max-width: 1320px; padding: 0 20px; }
@@ -155,7 +180,7 @@
                     <div class="col-lg-4 col-md-3 order-0 order-lg-2 d-none d-md-block">
                         <div class="header__top-logo logo text-lg-center">
                             <a href="{{ route('home') }}" class="cea-logo-image-link">
-                                <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
+                                @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true])
                             </a>
                         </div>
                     </div>
@@ -187,7 +212,7 @@
                             <nav class="tgmenu__nav">
                                 <div class="logo d-block d-lg-none">
                                     <a href="{{ route('home') }}" class="cea-logo-image-link cea-logo-image-link--mobile">
-                                        <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
+                                        @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true])
                                     </a>
                                 </div>
                                 <div class="offcanvas-toggle d-none d-lg-block">
@@ -382,6 +407,83 @@
                     animeGlobal.animate(options.targets, options);
                 }
             }
+
+            function animateKsoWordmarks() {
+                var wordmarks = Array.prototype.slice.call(document.querySelectorAll('.kso-wordmark'));
+                if (!wordmarks.length || typeof animeGlobal.stagger !== 'function') return;
+
+                var started = new WeakSet();
+
+                function startWordmark(wordmark, index) {
+                    if (started.has(wordmark)) return;
+                    started.add(wordmark);
+
+                    var squares = wordmark.querySelectorAll('.kso-wordmark__square');
+                    var textParts = wordmark.querySelectorAll('.kso-wordmark__eyebrow, .kso-wordmark strong, .kso-wordmark__tagline');
+                    var grid = [11, 4];
+
+                    if (textParts.length) {
+                        runAnime({
+                            targets: textParts,
+                            opacity: [0, 1],
+                            translateY: [12, 0],
+                            delay: animeGlobal.stagger(95),
+                            duration: 720,
+                            easing: 'easeOutCubic'
+                        });
+                    }
+
+                    function animateGrid() {
+                        var from = Math.floor(Math.random() * Math.max(squares.length, 1));
+
+                        runAnime({
+                            targets: squares,
+                            translateX: [
+                                { value: animeGlobal.stagger('-.75rem', { grid: grid, from: from, axis: 'x' }), duration: 520, easing: 'easeOutQuad' },
+                                { value: 0, duration: 820, easing: 'easeInOutQuad' }
+                            ],
+                            translateY: [
+                                { value: animeGlobal.stagger('-.75rem', { grid: grid, from: from, axis: 'y' }), duration: 520, easing: 'easeOutQuad' },
+                                { value: 0, duration: 820, easing: 'easeInOutQuad' }
+                            ],
+                            opacity: [
+                                { value: .42, duration: 520 },
+                                { value: .92, duration: 820 }
+                            ],
+                            scale: [
+                                { value: .86, duration: 520 },
+                                { value: 1, duration: 820 }
+                            ],
+                            delay: animeGlobal.stagger(55, { grid: grid, from: from }),
+                            complete: function () {
+                                window.setTimeout(animateGrid, 950 + (index % 4) * 140);
+                            }
+                        });
+                    }
+
+                    animateGrid();
+                }
+
+                if ('IntersectionObserver' in window) {
+                    var observer = new IntersectionObserver(function (entries) {
+                        entries.forEach(function (entry) {
+                            if (entry.isIntersecting) {
+                                startWordmark(entry.target, wordmarks.indexOf(entry.target));
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: .16 });
+
+                    wordmarks.forEach(function (wordmark) {
+                        observer.observe(wordmark);
+                    });
+                    return;
+                }
+
+                wordmarks.forEach(startWordmark);
+            }
+
+            animateKsoWordmarks();
 
             document.querySelectorAll('.cea-scramble-title').forEach(function (element) {
                 var text = element.textContent.trim();
