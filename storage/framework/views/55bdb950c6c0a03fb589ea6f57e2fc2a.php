@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'CEA Indonesia'); ?>
 
-@section('title', 'CEA Indonesia')
-
-@php
+<?php
     $images = [
         'header' => asset('assets/img/cea/campur.png'),
         'collective' => asset('assets/img/cea/campur.png'),
@@ -34,9 +32,9 @@
         'koneksi' => $images['governance'],
     ];
     $dropdownSections = collect($navigation)->filter(fn ($item) => ! empty($item['children']))->values();
-@endphp
+?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .cea-landing-hero { background: radial-gradient(circle at 80% 10%, rgba(232,93,74,.34), transparent 32%), linear-gradient(135deg, #2a0710 0%, #5b0f1a 54%, #7a1626 100%); color: #fff; overflow: hidden; padding: 78px 0 86px; }
     .cea-landing-hero__grid { align-items: center; display: grid; gap: 48px; grid-template-columns: minmax(0, .82fr) minmax(420px, 1fr); }
@@ -73,9 +71,9 @@
         .cea-focus-grid, .cea-menu-grid, .cea-stats__grid { grid-template-columns: 1fr; }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <section class="cea-landing-hero">
     <div class="container">
         <div class="cea-landing-hero__grid">
@@ -84,12 +82,12 @@
                 <h1 class="cea-scramble-title">Merawat ruang sipil, memperkuat gerakan akar rumput.</h1>
                 <p>CEA Indonesia adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam.</p>
                 <div class="cea-landing-hero__actions">
-                    <a class="cea-btn" href="{{ route('admin.index') }}">Buka Panel Admin</a>
+                    <a class="cea-btn" href="<?php echo e(route('admin.index')); ?>">Buka Panel Admin</a>
                     <a class="cea-btn secondary" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Lihat Situs Resmi</a>
                 </div>
             </div>
             <div class="cea-landing-hero__visual" aria-label="Gambar header CEA Indonesia">
-                <img src="{{ $images['header'] }}" alt="CEA Indonesia">
+                <img src="<?php echo e($images['header']); ?>" alt="CEA Indonesia">
             </div>
         </div>
     </div>
@@ -102,15 +100,15 @@
             <h2>Aliansi yang menghubungkan simpul, gagasan, dan aksi.</h2>
         </div>
         <div class="cea-focus-grid">
-            @foreach ($focusAreas as $item)
+            <?php $__currentLoopData = $focusAreas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <article class="cea-focus-card">
-                    <div class="cea-focus-card__image"><img src="{{ $item['image'] }}" alt="{{ $item['title'] }}"></div>
+                    <div class="cea-focus-card__image"><img src="<?php echo e($item['image']); ?>" alt="<?php echo e($item['title']); ?>"></div>
                     <div class="cea-focus-card__body">
-                        <h3>{{ $item['title'] }}</h3>
-                        <p>{{ $item['description'] }}</p>
+                        <h3><?php echo e($item['title']); ?></h3>
+                        <p><?php echo e($item['description']); ?></p>
                     </div>
                 </article>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
@@ -118,9 +116,9 @@
 <section class="cea-stats">
     <div class="container">
         <div class="cea-stats__grid">
-            @foreach ($stats as $item)
-                <div class="cea-stat"><strong>{{ $item['value'] }}</strong><span>{{ $item['label'] }}</span></div>
-            @endforeach
+            <?php $__currentLoopData = $stats; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="cea-stat"><strong><?php echo e($item['value']); ?></strong><span><?php echo e($item['label']); ?></span></div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
@@ -132,17 +130,17 @@
             <h2>Gerak kolektif ditopang oleh struktur dan tata kelola sumber daya.</h2>
         </div>
         <div class="cea-governance-grid">
-            @foreach ($governanceItems as $item)
+            <?php $__currentLoopData = $governanceItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <article class="cea-governance-card">
-                    <div class="cea-governance-card__media"><img src="{{ $item['image'] }}" alt="{{ $item['label'] }}"></div>
+                    <div class="cea-governance-card__media"><img src="<?php echo e($item['image']); ?>" alt="<?php echo e($item['label']); ?>"></div>
                     <div class="cea-governance-card__body">
-                        <span>{{ $item['label'] }}</span>
-                        <h3>{{ $item['title'] }}</h3>
-                        <p>{{ $item['description'] }}</p>
-                        <a href="{{ $item['href'] }}">Kelola di admin</a>
+                        <span><?php echo e($item['label']); ?></span>
+                        <h3><?php echo e($item['title']); ?></h3>
+                        <p><?php echo e($item['description']); ?></p>
+                        <a href="<?php echo e($item['href']); ?>">Kelola di admin</a>
                     </div>
                 </article>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
@@ -154,24 +152,26 @@
             <h2>CEA Repositori</h2>
         </div>
         <div class="cea-menu-grid">
-            @foreach ($dropdownSections as $section)
+            <?php $__currentLoopData = $dropdownSections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $section): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <article class="cea-menu-card">
                     <div class="cea-menu-card__image">
-                        <img src="{{ $sectionImage[$section['key']] ?? $images['collective'] }}" alt="{{ $section['label'] }}">
+                        <img src="<?php echo e($sectionImage[$section['key']] ?? $images['collective']); ?>" alt="<?php echo e($section['label']); ?>">
                     </div>
                     <div class="cea-menu-card__body">
-                        <h3>{{ $section['label'] }}</h3>
-                        <p>{{ $section['description'] }}</p>
+                        <h3><?php echo e($section['label']); ?></h3>
+                        <p><?php echo e($section['description']); ?></p>
                         <ul>
-                            @foreach (array_slice($section['children'], 0, 5) as $item)
-                                <li><a href="{{ $item['publicHref'] ?? $item['href'] }}">{{ $item['label'] }}</a></li>
-                            @endforeach
+                            <?php $__currentLoopData = array_slice($section['children'], 0, 5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li><a href="<?php echo e($item['publicHref'] ?? $item['href']); ?>"><?php echo e($item['label']); ?></a></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
                 </article>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/labfti/Documents/ceaindonesia.id/resources/views/home.blade.php ENDPATH**/ ?>

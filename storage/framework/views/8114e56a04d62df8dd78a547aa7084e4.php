@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'CEA Indonesia')</title>
-    <link rel="icon" href="{{ asset('favicon.png') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/spacing.css') }}">
+    <title><?php echo $__env->yieldContent('title', 'CEA Indonesia'); ?></title>
+    <link rel="icon" href="<?php echo e(asset('favicon.png')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/bootstrap.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/fontawesome-all.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/flaticon.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/animate.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/main.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/spacing.css')); ?>">
     <style>
         :root {
             --cea-red: #7a1626;
@@ -107,7 +107,7 @@
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
     </style>
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
     <header>
@@ -116,22 +116,22 @@
                 <div class="row align-items-center">
                     <div class="col-lg-4 col-md-6 col-sm-6 order-2 order-lg-0">
                         <div class="header__top-search">
-                            <form action="{{ route('blog.index') }}">
+                            <form action="<?php echo e(route('blog.index')); ?>">
                                 <input type="text" name="q" placeholder="Cari kabar, rilis, dan referensi...">
                             </form>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-3 order-0 order-lg-2 d-none d-md-block">
                         <div class="header__top-logo logo text-lg-center">
-                            <a href="{{ route('home') }}" class="cea-logo-image-link">
-                                <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
+                            <a href="<?php echo e(route('home')); ?>" class="cea-logo-image-link">
+                                <img src="<?php echo e(asset('assets/img/cea/1.png')); ?>" alt="CEA Indonesia">
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-3 col-sm-6 order-3 d-none d-sm-block">
                         <div class="header__top-right">
                             <ul class="list-wrap">
-                                <li class="news-btn"><a href="{{ route('admin.index') }}" class="btn"><span class="btn-text">panel admin</span></a></li>
+                                <li class="news-btn"><a href="<?php echo e(route('admin.index')); ?>" class="btn"><span class="btn-text">panel admin</span></a></li>
                                 <li class="lang">
                                     <div class="dropdown">
                                         <button class="dropdown-toggle" type="button">ID</button>
@@ -155,47 +155,47 @@
                         <div class="tgmenu__wrap">
                             <nav class="tgmenu__nav">
                                 <div class="logo d-block d-lg-none">
-                                    <a href="{{ route('home') }}" class="cea-logo-image-link cea-logo-image-link--mobile">
-                                        <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
+                                    <a href="<?php echo e(route('home')); ?>" class="cea-logo-image-link cea-logo-image-link--mobile">
+                                        <img src="<?php echo e(asset('assets/img/cea/1.png')); ?>" alt="CEA Indonesia">
                                     </a>
                                 </div>
                                 <div class="offcanvas-toggle">
-                                    <a href="{{ route('admin.index') }}"><i class="flaticon-menu-bar"></i></a>
+                                    <a href="<?php echo e(route('admin.index')); ?>"><i class="flaticon-menu-bar"></i></a>
                                 </div>
                                 <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-lg-flex">
                                     <ul class="navigation">
-                                        @foreach ($navigation as $nav)
-                                            @php
+                                        <?php $__currentLoopData = $navigation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $nav): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
                                                 $href = $nav['publicHref'] ?? $nav['href'];
                                                 $path = trim($href, '/');
                                                 $active = $href === '/' ? request()->is('/') : request()->is($path) || request()->is($path.'/*');
-                                            @endphp
-                                            <li class="{{ ! empty($nav['children']) ? 'menu-item-has-children' : '' }} {{ $active ? 'active' : '' }}">
-                                                <a href="{{ $href }}">{{ $nav['label'] }}</a>
-                                                @if (! empty($nav['children']))
+                                            ?>
+                                            <li class="<?php echo e(! empty($nav['children']) ? 'menu-item-has-children' : ''); ?> <?php echo e($active ? 'active' : ''); ?>">
+                                                <a href="<?php echo e($href); ?>"><?php echo e($nav['label']); ?></a>
+                                                <?php if(! empty($nav['children'])): ?>
                                                     <ul class="sub-menu">
-                                                        @foreach ($nav['children'] as $child)
-                                                            @php
+                                                        <?php $__currentLoopData = $nav['children']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <?php
                                                                 $childHref = $child['publicHref'] ?? $child['href'];
                                                                 $childPath = trim($childHref, '/');
-                                                            @endphp
-                                                            <li class="{{ request()->is($childPath) || request()->is($childPath.'/*') ? 'active' : '' }}">
-                                                                <a href="{{ $childHref }}">{{ $child['label'] }}</a>
+                                                            ?>
+                                                            <li class="<?php echo e(request()->is($childPath) || request()->is($childPath.'/*') ? 'active' : ''); ?>">
+                                                                <a href="<?php echo e($childHref); ?>"><?php echo e($child['label']); ?></a>
                                                             </li>
-                                                        @endforeach
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </ul>
-                                                @endif
+                                                <?php endif; ?>
                                             </li>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </ul>
                                 </div>
                                 <div class="tgmenu__action">
                                     <ul class="list-wrap">
-                                        <li class="user"><a href="{{ route('admin.index') }}" title="Panel Admin CEA"><i class="far fa-user"></i></a></li>
+                                        <li class="user"><a href="<?php echo e(route('admin.index')); ?>" title="Panel Admin CEA"><i class="far fa-user"></i></a></li>
                                         <li class="header-search">
                                             <a href="#"><i class="far fa-search"></i></a>
                                             <div class="header-search-form">
-                                                <form action="{{ route('blog.index') }}">
+                                                <form action="<?php echo e(route('blog.index')); ?>">
                                                     <input type="text" name="q" placeholder="Cari konten CEA...">
                                                 </form>
                                             </div>
@@ -207,9 +207,9 @@
                         </div>
                         <nav class="cea-mobile-menu d-lg-none" aria-label="Menu mobile">
                             <ul>
-                                @foreach ($navigation as $nav)
-                                    <li><a href="{{ $nav['publicHref'] ?? $nav['href'] }}">{{ $nav['label'] }}</a></li>
-                                @endforeach
+                                <?php $__currentLoopData = $navigation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $nav): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li><a href="<?php echo e($nav['publicHref'] ?? $nav['href']); ?>"><?php echo e($nav['label']); ?></a></li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </ul>
                         </nav>
                     </div>
@@ -219,10 +219,10 @@
     </header>
 
     <main>
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
-    @include('layouts.footer')
+    <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -269,6 +269,7 @@
             });
         });
     </script>
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
+<?php /**PATH /home/labfti/Documents/ceaindonesia.id/resources/views/layouts/app.blade.php ENDPATH**/ ?>
