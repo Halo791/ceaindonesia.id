@@ -17,6 +17,8 @@ Route::get('/index-{variant}', [SiteController::class, 'placeholder'])
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [SiteController::class, 'admin'])->name('index');
+    Route::post('/{section}', [SiteController::class, 'updateAdminSection'])->name('section.update');
+    Route::post('/{section}/{slug}', [SiteController::class, 'updateAdminItem'])->name('item.update');
     Route::get('/{section}', [SiteController::class, 'adminSection'])->name('section');
     Route::get('/{section}/{slug}', [SiteController::class, 'adminItem'])->name('item');
 });

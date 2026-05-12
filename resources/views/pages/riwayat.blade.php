@@ -8,11 +8,11 @@
         <div class="home-hero__grid">
             <div>
                 <span class="cea-kicker">Profil CEA Indonesia</span>
-                <h1>Riwayat Proses Pembentukan</h1>
-                <p>CEA lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.</p>
+                <h1 class="cea-scramble-title">{{ $content['title'] ?: 'Riwayat Proses Pembentukan' }}</h1>
+                <p>{{ $content['subtitle'] ?: 'CEA lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
                 <a class="cea-btn" href="{{ route('home') }}">Kembali ke Beranda</a>
             </div>
-            <img src="{{ asset('assets/img/cea/campur.png') }}" alt="CEA Indonesia">
+            <img src="{{ $content['image_path'] ?: asset('assets/img/cea/campur.png') }}" alt="{{ $content['title'] ?: 'CEA Indonesia' }}">
         </div>
     </div>
 </section>
@@ -21,6 +21,11 @@
     <div class="container">
         <span class="cea-kicker">Linimasa</span>
         <h2 class="mb-4">Dari Sentul menuju rembug nasional di Lembang.</h2>
+        @if (! empty($content['body']))
+            <div class="cea-card mb-4">
+                <p>{!! nl2br(e($content['body'])) !!}</p>
+            </div>
+        @endif
         <div class="cea-card-grid">
             <article class="cea-card">
                 <span class="cea-kicker">Latar</span>
