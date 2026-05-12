@@ -9,13 +9,13 @@ export default function Sidebar({ handleSidebarClose }) {
                     <div className="offCanvas__content">
                         <div className="offCanvas__logo logo">
                             <Link href="/" className="cea-logo-image-link">
-                                <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                                <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                             </Link>
                         </div>
-                        <p>CEA Indonesia adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam.</p>
+                        <p>Pooling Fund - KSO adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam.</p>
                     </div>
                     <div className="offCanvas__contact">
-                        <h4 className="title">Kontak CEA</h4>
+                        <h4 className="title">Kontak Pooling Fund - KSO</h4>
                         <ul className="offCanvas__contact-list list-wrap">
                             <li><i className="fas fa-envelope-open" /><Link href="mailto:sekretariat@ceaindonesia.id">sekretariat@ceaindonesia.id</Link></li>
                             <li><i className="fas fa-map-marker-alt" /> DI Yogyakarta, Indonesia</li>

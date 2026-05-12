@@ -36,14 +36,14 @@ const governanceItems = [
     {
         label: "Struktur Gerak",
         title: "Simpul, gugus tugas, dan kaukus isu yang saling terhubung.",
-        description: "Struktur CEA bergerak sebagai jejaring regional dan nasional yang bekerja otonom namun tetap terikat tujuan bersama.",
+        description: "Struktur Pooling Fund - KSO bergerak sebagai jejaring regional dan nasional yang bekerja otonom namun tetap terikat tujuan bersama.",
         image: images.structure,
         href: "/admin/profil/struktur-gerak",
     },
     {
         label: "Tata Kelola",
         title: "Mobilisasi sumber daya dikelola lewat simpul dan platform penyaluran dana.",
-        description: "Bagian tata kelola pada landing page memakai gambar tatakelola.png sesuai aset yang tersedia di direktori CEA.",
+        description: "Bagian tata kelola pada landing page memakai gambar tatakelola.png sesuai aset yang tersedia di direktori Pooling Fund - KSO.",
         image: images.governance,
         href: "/admin/profil/sumber-daya",
     },
@@ -171,7 +171,7 @@ function ScrambleHeroTitle() {
 
 export default function Home() {
     return (
-        <Layout headerStyle={1} footerStyle={4} headTitle="CEA Indonesia">
+        <Layout headerStyle={1} footerStyle={4} headTitle="Pooling Fund - KSO">
             <section className="cea-landing-hero">
                 <div className="container">
                     <div className="cea-landing-hero__grid">
@@ -179,7 +179,7 @@ export default function Home() {
                             <span className="cea-landing-hero__eyebrow">Civic Engagement Alliance</span>
                             <ScrambleHeroTitle />
                             <p>
-                                CEA Indonesia adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk
+                                Pooling Fund - KSO adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk
                                 demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam.
                             </p>
                             <div className="cea-landing-hero__actions">
@@ -192,8 +192,8 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="cea-landing-hero__visual" aria-label="Gambar header CEA Indonesia">
-                            <img src={images.header} alt="CEA Indonesia" />
+                        <div className="cea-landing-hero__visual" aria-label="Gambar header Pooling Fund - KSO">
+                            <img src={images.header} alt="Pooling Fund - KSO" />
                         </div>
                     </div>
                 </div>
@@ -263,13 +263,13 @@ export default function Home() {
                     <div className="cea-map-shell">
                         <div className="cea-section__head">
                             <span>Peta Simpul</span>
-                            <h2>Sebaran jaringan CEA di berbagai wilayah Indonesia.</h2>
+                            <h2>Sebaran jaringan Pooling Fund - KSO di berbagai wilayah Indonesia.</h2>
                         </div>
                         <div className="cea-map-layout">
                             <div className="cea-map-copy">
                                 <p>
                                     Peta ini memakai Leaflet JS untuk menampilkan gambaran simpul regional,
-                                    sekretariat, dan jaringan pendukung yang terhubung dalam ekosistem CEA.
+                                    sekretariat, dan jaringan pendukung yang terhubung dalam ekosistem Pooling Fund - KSO.
                                 </p>
                                 <div className="cea-map-legend">
                                     <span><i className="is-secretariat" /> Sekretariat</span>
@@ -287,7 +287,7 @@ export default function Home() {
                 <div className="container">
                     <div className="cea-section__head">
                         <span>Menu & Dropdown</span>
-                        <h2>CEA Repositori</h2>
+                        <h2>Pooling Fund - KSO Repositori</h2>
                     </div>
                     <div className="cea-menu-grid">
                         {dropdownSections.map((section) => (
@@ -316,7 +316,7 @@ export default function Home() {
                 <div className="container">
                     <div className="cea-footer-grid">
                         <div className="cea-footer-brand">
-                            <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                            <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                             <p>
                                 Aliansi keterlibatan sipil untuk merawat demokrasi, memperkuat ruang sipil,
                                 dan menghubungkan kerja kolektif lintas wilayah.
@@ -353,7 +353,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="cea-footer-bottom">
-                        <span>2026 CEA Indonesia</span>
+                        <span>2026 Pooling Fund - KSO</span>
                     </div>
                 </div>
             </footer>

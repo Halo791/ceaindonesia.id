@@ -28,12 +28,12 @@ const MobileMenu = ({ handleMobileMenuClose, openClass }) => {
                     <div className="close-btn" onClick={handleMobileMenuClose}><i className="fas fa-times" /></div>
                     <div className="nav-logo">
                         <Link href="/" className="cea-logo-image-link" onClick={handleMobileMenuClose}>
-                            <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                            <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                         </Link>
                     </div>
                     <div className="tgmobile__search">
                         <form action="#">
-                            <input type="text" placeholder="Cari konten CEA..." />
+                            <input type="text" placeholder="Cari konten Pooling Fund - KSO..." />
                             <button><i className="far fa-search" /></button>
                         </form>
                     </div>

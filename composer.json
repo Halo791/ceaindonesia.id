@@ -1,7 +1,7 @@
 {
     "name": "ceaindonesia/laravel",
     "type": "project",
-    "description": "CEA Indonesia website converted from Next.js to Laravel Blade.",
+    "description": "Pooling Fund - KSO website converted from Next.js to Laravel Blade.",
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.0",

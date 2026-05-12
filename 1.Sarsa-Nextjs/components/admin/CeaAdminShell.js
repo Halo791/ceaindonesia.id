@@ -7,7 +7,7 @@ export default function CeaAdminShell({
     activeItem,
     children,
     description,
-    eyebrow = "Panel Admin CEA",
+    eyebrow = "Panel Admin Pooling Fund - KSO",
     headTitle,
     sourceHref,
     title,
@@ -20,7 +20,7 @@ export default function CeaAdminShell({
                 <div className="admin-shell">
                     <aside className="admin-sidebar">
                         <div className="admin-sidebar__brand">
-                            <span>CEA CMS</span>
+                            <span>Pooling Fund - KSO CMS</span>
                             <strong>{childItems.length} kanal dropdown</strong>
                         </div>
                         <nav className="admin-sidebar__nav" aria-label="Navigasi panel admin">

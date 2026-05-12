@@ -81,5 +81,5 @@ export default function CeaLeafletMap() {
         }
     }, [])
 
-    return <div className="cea-leaflet-map" ref={containerRef} aria-label="Peta simpul CEA Indonesia" />
+    return <div className="cea-leaflet-map" ref={containerRef} aria-label="Peta simpul Pooling Fund - KSO" />
 }

@@ -25,7 +25,7 @@ export default function Menu({ handleMobileMenuOpen, handleSidebarOpen, offCanva
                 <nav className="tgmenu__nav">
                     <div className="logo d-block d-lg-none">
                         <Link href="/" className="cea-logo-image-link cea-logo-image-link--mobile">
-                            <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                            <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                         </Link>
                     </div>
                     {logoAlt &&
@@ -35,7 +35,7 @@ export default function Menu({ handleMobileMenuOpen, handleSidebarOpen, offCanva
                             </div>
                             <div className="logo">
                                 <Link href="/" className="cea-logo-image-link">
-                                    <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                                    <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                                 </Link>
                             </div>
                         </div>
@@ -71,12 +71,12 @@ export default function Menu({ handleMobileMenuOpen, handleSidebarOpen, offCanva
                             <li className="mode-switcher">
                                 <ThemeSwitch />
                             </li>
-                            <li className="user"><Link href="/admin" title="Panel Admin CEA"><i className="far fa-user" /></Link></li>
+                            <li className="user"><Link href="/admin" title="Panel Admin Pooling Fund - KSO"><i className="far fa-user" /></Link></li>
                             <li className="header-search"><Link href="#"><i className={`${searchToggle ? "far fa-search fa-times" : "far fa-search"} `} onClick={searchHandle} /></Link>
                                 <div className="header__style-two">
                                     <div className={`header__top-search ${searchToggle ? "d-block" : "d-none"}`}>
                                         <form action="#">
-                                            <input type="text" placeholder="Cari konten CEA..." />
+                                            <input type="text" placeholder="Cari konten Pooling Fund - KSO..." />
                                         </form>
                                     </div>
                                 </div>

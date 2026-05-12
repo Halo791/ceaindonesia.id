@@ -16,12 +16,12 @@ CREATE TABLE IF NOT EXISTS `admin_contents` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `admin_contents` (`section_key`, `item_key`, `title`, `subtitle`, `body`, `image_path`, `source_href`, `status`, `created_at`, `updated_at`) VALUES
-('profil', '', 'Pooling Fund Kemanusiaan - KSO', 'Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama.', 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung.
+('profil', '', 'Pooling Fund - KSO', 'Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama.', 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung.
 
-Pooling Fund Kemanusiaan - KSO adalah platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.
+Pooling Fund - KSO adalah platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.
 
 Tagline: Menguatkan Lokal, Memperluas Dampak.', '/assets/img/cea/campur.png', 'https://ceaindonesia.id/riwayat/', 'active', NOW(), NOW()),
-('profil', 'riwayat', 'Profil Pooling Fund Kemanusiaan - KSO', 'Platform kerja sama operasional yang menghubungkan simpul kekuatan sipil di berbagai wilayah Indonesia.', 'Pooling Fund Kemanusiaan - KSO bukanlah sebuah entitas tunggal yang hierarkis, melainkan infrastruktur bersama yang menghubungkan simpul-simpul kekuatan sipil di berbagai wilayah Indonesia.
+('profil', 'riwayat', 'Profil Pooling Fund - KSO', 'Platform kerja sama operasional yang menghubungkan simpul kekuatan sipil di berbagai wilayah Indonesia.', 'Pooling Fund - KSO bukanlah sebuah entitas tunggal yang hierarkis, melainkan infrastruktur bersama yang menghubungkan simpul-simpul kekuatan sipil di berbagai wilayah Indonesia.
 
 Sebagai platform kerja sama operasional, struktur ini didesain untuk menjaga kedaulatan setiap organisasi anggota sambil memperkuat daya tawar kolektif dalam pengelolaan sumber daya kemanusiaan.
 

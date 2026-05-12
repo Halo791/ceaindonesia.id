@@ -10,13 +10,13 @@ const historySections = [
     },
     {
         label: "Februari 2025",
-        title: "Proses Pembentukan CEA",
-        body: "Pada Februari 2025, 48 organisasi masyarakat sipil (OMS) bertemu di Sentul, Bogor, Jawa Barat dan mendiskusikan kondisi ruang-ruang sipil di Indonesia yang menyempit. Pertemuan itu mengidentifikasi kebutuhan bersama akan platform koordinasi dan konsolidasi gerakan OMS di Indonesia, yang kemudian mengarah ke pembentukan Indonesian Civic Engagement Alliance (CEA).",
+        title: "Proses Pembentukan Pooling Fund - KSO",
+        body: "Pada Februari 2025, 48 organisasi masyarakat sipil (OMS) bertemu di Sentul, Bogor, Jawa Barat dan mendiskusikan kondisi ruang-ruang sipil di Indonesia yang menyempit. Pertemuan itu mengidentifikasi kebutuhan bersama akan platform koordinasi dan konsolidasi gerakan OMS di Indonesia, yang kemudian mengarah ke pembentukan Indonesian Civic Engagement Alliance (Pooling Fund - KSO).",
     },
     {
         label: "6-9 Juli 2025",
-        title: "Rembug Nasional CEA",
-        body: "Mandat pembentukan CEA di Sentul ditindaklanjuti pada pertemuan rembug nasional OMS di Lembang, Jawa Barat, 6-9 Juli 2025. Sebanyak 61 organisasi dari 19 provinsi hadir, merepresentasi sektor pembangunan dan kemanusiaan. Rembug itu menjadi tonggak penting lahirnya CEA sebagai aliansi nasional masyarakat sipil.",
+        title: "Rembug Nasional Pooling Fund - KSO",
+        body: "Mandat pembentukan Pooling Fund - KSO di Sentul ditindaklanjuti pada pertemuan rembug nasional OMS di Lembang, Jawa Barat, 6-9 Juli 2025. Sebanyak 61 organisasi dari 19 provinsi hadir, merepresentasi sektor pembangunan dan kemanusiaan. Rembug itu menjadi tonggak penting lahirnya Pooling Fund - KSO sebagai aliansi nasional masyarakat sipil.",
     },
 ]
 
@@ -114,12 +114,12 @@ export default function RiwayatPage() {
     useRiwayatScramble()
 
     return (
-        <Layout headerStyle={1} footerStyle={4} headTitle="Riwayat CEA Indonesia">
+        <Layout headerStyle={1} footerStyle={4} headTitle="Riwayat Pooling Fund - KSO">
             <section className="riwayat-hero">
                 <div className="container">
                     <div className="riwayat-hero__grid">
                         <div className="riwayat-hero__content">
-                            <span>Profil CEA Indonesia</span>
+                            <span>Profil Pooling Fund - KSO</span>
                             <h1 className="riwayat-scramble" data-scramble-override="2">
                                 Riwayat
                             </h1>
@@ -127,7 +127,7 @@ export default function RiwayatPage() {
                                 Proses Pembentukan
                             </h2>
                             <p>
-                                CEA lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat
+                                Pooling Fund - KSO lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat
                                 koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.
                             </p>
                             <div className="riwayat-actions">
@@ -140,7 +140,7 @@ export default function RiwayatPage() {
                             </div>
                         </div>
                         <div className="riwayat-hero__visual">
-                            <img src="/assets/img/cea/campur.png" alt="CEA Indonesia" />
+                            <img src="/assets/img/cea/campur.png" alt="Pooling Fund - KSO" />
                         </div>
                     </div>
                 </div>
@@ -182,7 +182,7 @@ export default function RiwayatPage() {
 
             <footer className="riwayat-footer">
                 <div className="container">
-                    <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                    <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                     <p>Merawat ruang sipil, memperkuat gerakan akar rumput.</p>
                 </div>
             </footer>

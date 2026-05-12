@@ -5,9 +5,9 @@ const PageHead = ({ headTitle }) => {
         <>
             <Head>
                 <title>
-                    {headTitle ? headTitle : "CEA Indonesia"}
+                    {headTitle ? headTitle : "Pooling Fund - KSO"}
                 </title>
-                <meta name="description" content="CEA Indonesia adalah aliansi organisasi masyarakat sipil untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam." />
+                <meta name="description" content="Pooling Fund - KSO adalah aliansi organisasi masyarakat sipil untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam." />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="shortcut icon" href="/assets/img/favicon.png" />
                 <link rel="preconnect" href="https://fonts.bunny.net" />

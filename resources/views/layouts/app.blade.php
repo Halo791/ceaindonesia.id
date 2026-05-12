@@ -201,7 +201,7 @@
                                             <a href="#"><i class="far fa-search"></i></a>
                                             <div class="header-search-form">
                                                 <form action="{{ route('blog.index') }}">
-                                                    <input type="text" name="q" placeholder="Cari konten CEA...">
+                                                    <input type="text" name="q" placeholder="Cari konten Pooling Fund - KSO...">
                                                 </form>
                                             </div>
                                         </li>

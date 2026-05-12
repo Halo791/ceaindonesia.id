@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Riwayat CEA Indonesia')
+@section('title', 'Riwayat Pooling Fund - KSO')
 
 @section('content')
 <section class="home-hero">
     <div class="container">
         <div class="home-hero__grid">
             <div>
-                <span class="cea-kicker">Profil CEA Indonesia</span>
+                <span class="cea-kicker">Profil Pooling Fund - KSO</span>
                 <h1 class="cea-scramble-title">{{ $content['title'] ?: 'Riwayat Proses Pembentukan' }}</h1>
-                <p>{{ $content['subtitle'] ?: 'CEA lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
+                <p>{{ $content['subtitle'] ?: 'Pooling Fund - KSO lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
                 <a class="cea-btn" href="{{ route('home') }}">Kembali ke Beranda</a>
             </div>
-            <img src="{{ $content['image_path'] ?: asset('assets/img/cea/campur.png') }}" alt="{{ $content['title'] ?: 'CEA Indonesia' }}">
+            <img src="{{ $content['image_path'] ?: asset('assets/img/cea/campur.png') }}" alt="{{ $content['title'] ?: 'Pooling Fund - KSO' }}">
         </div>
     </div>
 </section>
@@ -34,13 +34,13 @@
             </article>
             <article class="cea-card">
                 <span class="cea-kicker">Februari 2025</span>
-                <h3>Proses Pembentukan CEA</h3>
+                <h3>Proses Pembentukan Pooling Fund - KSO</h3>
                 <p>48 organisasi masyarakat sipil bertemu di Sentul dan mengidentifikasi kebutuhan bersama akan platform koordinasi gerakan OMS.</p>
             </article>
             <article class="cea-card">
                 <span class="cea-kicker">6-9 Juli 2025</span>
-                <h3>Rembug Nasional CEA</h3>
-                <p>61 organisasi dari 19 provinsi hadir di Lembang dan menjadi tonggak penting lahirnya CEA sebagai aliansi nasional.</p>
+                <h3>Rembug Nasional Pooling Fund - KSO</h3>
+                <p>61 organisasi dari 19 provinsi hadir di Lembang dan menjadi tonggak penting lahirnya Pooling Fund - KSO sebagai aliansi nasional.</p>
             </article>
         </div>
     </div>

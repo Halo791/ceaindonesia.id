@@ -1,6 +1,6 @@
-# CEA Indonesia
+# Pooling Fund - KSO
 
-Website dan panel admin CEA Indonesia berbasis Next.js.
+Website dan panel admin Pooling Fund - KSO berbasis Next.js.
 
 ## Menjalankan Lokal
 

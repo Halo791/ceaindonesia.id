@@ -27,7 +27,7 @@ const Header1 = ({
                             <div className="col-lg-4 col-md-3 order-0 order-lg-2 d-none d-md-block">
                                 <div className="header__top-logo logo text-lg-center">
                                     <Link href="/" className="cea-logo-image-link">
-                                        <img src="/assets/img/cea/1.png" alt="CEA Indonesia" />
+                                        <img src="/assets/img/cea/1.png" alt="Pooling Fund - KSO" />
                                     </Link>
                                 </div>
                             </div>

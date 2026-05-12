@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Blog CEA Indonesia')
+@section('title', 'Blog Pooling Fund - KSO')
 
 @section('content')
 <section class="cea-section">

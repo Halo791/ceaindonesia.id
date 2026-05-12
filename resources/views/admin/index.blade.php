@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Panel Admin CEA')
+@section('title', 'Panel Admin Pooling Fund - KSO')
 
 @section('content')
 <section class="cea-admin-panel">
@@ -9,8 +9,8 @@
         <div class="admin-workspace">
         <div class="admin-hero">
             <div>
-                <span class="admin-eyebrow">Panel Admin CEA</span>
-                <h1>Dashboard Konten CEA</h1>
+                <span class="admin-eyebrow">Panel Admin Pooling Fund - KSO</span>
+                <h1>Dashboard Konten Pooling Fund - KSO</h1>
                 <p>Panel ini mengadopsi struktur menu dan dropdown dari ceaindonesia.id, lalu menyiapkan ruang kelola untuk setiap kanal.</p>
             </div>
             <a class="admin-source-link" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Sumber resmi</a>

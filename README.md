@@ -1,4 +1,4 @@
-# CEA Indonesia Laravel
+# Pooling Fund - KSO Laravel
 
 Versi Laravel Blade dari aplikasi Next.js `1.Sarsa-Nextjs`.
 

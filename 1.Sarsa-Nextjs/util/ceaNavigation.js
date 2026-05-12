@@ -6,7 +6,7 @@ export const ceaNavigation = [
         label: "BERANDA",
         href: "/",
         sourceHref: `${ceaBaseUrl}/`,
-        description: "Halaman utama CEA Indonesia dan ringkasan aliansi.",
+        description: "Halaman utama Pooling Fund - KSO dan ringkasan aliansi.",
     },
     {
         key: "profil",
@@ -14,7 +14,7 @@ export const ceaNavigation = [
         href: "/admin/profil",
         publicHref: "/profil/riwayat",
         sourceHref: `${ceaBaseUrl}/riwayat/`,
-        description: "Kelola riwayat, mandat, struktur gerak, sumber daya, kontak, dan dokumen profil CEA.",
+        description: "Kelola riwayat, mandat, struktur gerak, sumber daya, kontak, dan dokumen profil Pooling Fund - KSO.",
         children: [
             {
                 key: "riwayat",
@@ -22,14 +22,14 @@ export const ceaNavigation = [
                 href: "/admin/profil/riwayat",
                 publicHref: "/profil/riwayat",
                 sourceHref: `${ceaBaseUrl}/riwayat/`,
-                description: "Latar pembentukan CEA dan kronologi rembug nasional.",
+                description: "Latar pembentukan Pooling Fund - KSO dan kronologi rembug nasional.",
             },
             {
                 key: "mandat-visi-nilai",
                 label: "Mandat, Visi, Nilai",
                 href: "/admin/profil/mandat-visi-nilai",
                 sourceHref: `${ceaBaseUrl}/`,
-                description: "Visi, mandat, tujuan, dan nilai-nilai gerakan CEA.",
+                description: "Visi, mandat, tujuan, dan nilai-nilai gerakan Pooling Fund - KSO.",
             },
             {
                 key: "struktur-gerak",
@@ -57,14 +57,14 @@ export const ceaNavigation = [
                 label: "Unduh Profil (ID)",
                 href: "/admin/profil/unduh-profil-id",
                 sourceHref: `${ceaBaseUrl}/unduh/profil-cea-versi-ponsel/`,
-                description: "Dokumen profil CEA versi bahasa Indonesia.",
+                description: "Dokumen profil Pooling Fund - KSO versi bahasa Indonesia.",
             },
             {
                 key: "download-profile-en",
                 label: "Download Profile (EN)",
                 href: "/admin/profil/download-profile-en",
                 sourceHref: `${ceaBaseUrl}/`,
-                description: "Dokumen profil CEA versi bahasa Inggris.",
+                description: "Dokumen profil Pooling Fund - KSO versi bahasa Inggris.",
             },
         ],
     },
@@ -73,7 +73,7 @@ export const ceaNavigation = [
         label: "REGIO",
         href: "/admin/regio",
         sourceHref: `${ceaBaseUrl}/`,
-        description: "Kelola data simpul regional dan organisasi anggota CEA.",
+        description: "Kelola data simpul regional dan organisasi anggota Pooling Fund - KSO.",
         children: [
             {
                 key: "simpul",
@@ -96,14 +96,14 @@ export const ceaNavigation = [
         label: "SIAR",
         href: "/admin/siar",
         sourceHref: `${ceaBaseUrl}/siar/`,
-        description: "Kelola kanal publikasi CEA: kabar, rilis, prakarsa, refleksi, dan referensi.",
+        description: "Kelola kanal publikasi Pooling Fund - KSO: kabar, rilis, prakarsa, refleksi, dan referensi.",
         children: [
             {
                 key: "kabar",
                 label: "Kabar",
                 href: "/admin/siar/kabar",
                 sourceHref: `${ceaBaseUrl}/siar/`,
-                description: "Artikel kabar terbaru dari kegiatan dan jejaring CEA.",
+                description: "Artikel kabar terbaru dari kegiatan dan jejaring Pooling Fund - KSO.",
             },
             {
                 key: "rilis",
@@ -117,7 +117,7 @@ export const ceaNavigation = [
                 label: "Prakarsa",
                 href: "/admin/siar/prakarsa",
                 sourceHref: `${ceaBaseUrl}/siar/`,
-                description: "Inisiatif, program, dan praktik kolaboratif dari simpul CEA.",
+                description: "Inisiatif, program, dan praktik kolaboratif dari simpul Pooling Fund - KSO.",
             },
             {
                 key: "refleksi",
@@ -140,14 +140,14 @@ export const ceaNavigation = [
         label: "AKSI",
         href: "/admin/aksi",
         sourceHref: `${ceaBaseUrl}/rencana-aksi-cea/`,
-        description: "Kelola manifesto, kajian, gugus tugas, kaukus isu, dan diskursus publik CEA.",
+        description: "Kelola manifesto, kajian, gugus tugas, kaukus isu, dan diskursus publik Pooling Fund - KSO.",
         children: [
             {
                 key: "manifesto",
                 label: "Manifesto",
                 href: "/admin/aksi/manifesto",
                 sourceHref: `${ceaBaseUrl}/rencana-aksi-cea/`,
-                description: "Narasi dasar, posisi gerakan, dan arah aksi CEA.",
+                description: "Narasi dasar, posisi gerakan, dan arah aksi Pooling Fund - KSO.",
             },
             {
                 key: "kajian-strategis",
@@ -184,7 +184,7 @@ export const ceaNavigation = [
         label: "KONEKSI",
         href: "/admin/koneksi",
         sourceHref: `${ceaBaseUrl}/`,
-        description: "Kelola koneksi ekosistem, platform kolaborasi, dan kanal mitra CEA.",
+        description: "Kelola koneksi ekosistem, platform kolaborasi, dan kanal mitra Pooling Fund - KSO.",
         children: [
             {
                 key: "lokadana",

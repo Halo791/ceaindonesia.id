@@ -9,7 +9,7 @@
         <div class="admin-workspace">
         <div class="admin-hero">
             <div>
-                <span class="admin-eyebrow">Panel Admin CEA</span>
+                <span class="admin-eyebrow">Panel Admin Pooling Fund - KSO</span>
                 <h1>Kelola {{ $section['label'] }}</h1>
                 <p>{{ $section['description'] }}</p>
             </div>

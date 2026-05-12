@@ -81,7 +81,7 @@
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
                 <span class="cea-landing-hero__eyebrow">Menguatkan Lokal, Memperluas Dampak</span>
-                <h1 class="cea-scramble-title">Pooling Fund Kemanusiaan - KSO.</h1>
+                <h1 class="cea-scramble-title">Pooling Fund - KSO.</h1>
                 <p>Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal.</p>
                 <div class="cea-landing-hero__actions">
                     <a class="cea-btn" href="/profil">Jelajahi Profil</a>

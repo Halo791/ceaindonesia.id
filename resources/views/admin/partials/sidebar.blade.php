@@ -6,7 +6,7 @@
 
 <aside class="admin-sidebar">
     <div class="admin-sidebar__brand">
-        <span>CEA CMS</span>
+        <span>Pooling Fund - KSO CMS</span>
         <strong>{{ $childCount }} kanal dropdown</strong>
     </div>
     <form method="POST" action="{{ route('admin.logout') }}" style="padding:12px 12px 0;">

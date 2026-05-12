@@ -95,11 +95,11 @@ export default function AdminDropdownItemPage({ item }) {
                     <div className="admin-form-grid">
                         <div className="admin-field full">
                             <label>Catatan editor</label>
-                            <textarea defaultValue="Pastikan narasi sesuai nilai CEA, tautan sumber resmi aktif, dan metadata sudah lengkap." />
+                            <textarea defaultValue="Pastikan narasi sesuai nilai Pooling Fund - KSO, tautan sumber resmi aktif, dan metadata sudah lengkap." />
                         </div>
                         <div className="admin-field">
                             <label>Penanggung jawab</label>
-                            <input defaultValue="Sekretariat CEA" />
+                            <input defaultValue="Sekretariat Pooling Fund - KSO" />
                         </div>
                         <div className="admin-field">
                             <label>Tanggal target</label>
@@ -113,7 +113,7 @@ export default function AdminDropdownItemPage({ item }) {
                     <div className="admin-form-grid">
                         <div className="admin-field full">
                             <label>Meta title</label>
-                            <input defaultValue={`${item.label} | CEA Indonesia`} />
+                            <input defaultValue={`${item.label} | Pooling Fund - KSO`} />
                         </div>
                         <div className="admin-field full">
                             <label>Meta description</label>
@@ -146,7 +146,7 @@ export default function AdminDropdownItemPage({ item }) {
                         <tbody>
                             <tr>
                                 <td>10 Mei 2026</td>
-                                <td>Admin CEA</td>
+                                <td>Admin Pooling Fund - KSO</td>
                                 <td>Halaman admin dibuat dari struktur dropdown ceaindonesia.id.</td>
                                 <td><span className="admin-status">Draft awal</span></td>
                             </tr>
