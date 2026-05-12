@@ -30,7 +30,7 @@
             <div>
                 <h3>Kontak</h3>
                 <p>Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.</p>
-                <p>sekretariat@ceaindonesia.id</p>
+                <p>sekretariat@simpulpfb.id</p>
             </div>
         </div>
         <div class="cea-footer-bottom"><span>2026 {{ config('app.name') }}</span></div>

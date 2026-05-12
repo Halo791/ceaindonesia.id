@@ -5,7 +5,13 @@
         $active = $href === '/' ? request()->is('/') : request()->is($path) || request()->is($path.'/*');
     @endphp
     <li class="{{ ! empty($nav['children']) ? 'menu-item-has-children' : '' }} {{ $active ? 'active' : '' }}">
-        <a href="{{ $href }}">{{ $nav['label'] }}</a>
+        <a
+            href="{{ $href }}"
+            @if (! empty($nav['children']))
+                aria-haspopup="true"
+                aria-expanded="false"
+            @endif
+        >{{ $nav['label'] }}</a>
         @if (! empty($nav['children']))
             <ul class="sub-menu">
                 @include('layouts.nav-items', ['items' => $nav['children']])

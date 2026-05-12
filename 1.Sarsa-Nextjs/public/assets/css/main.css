@@ -1296,6 +1296,10 @@ input[type=color] {
   flex-wrap: wrap;
   justify-content: flex-start;
 }
+.tg-header__area {
+  position: relative;
+  z-index: 100;
+}
 @media (max-width: 991.98px) {
   .tgmenu__nav {
     justify-content: space-between;
@@ -1346,7 +1350,7 @@ input[type=color] {
   display: block;
   visibility: hidden;
   opacity: 0;
-  z-index: 9;
+  z-index: 999;
 }
 .tgmenu__navbar-wrap ul li .sub-menu .sub-menu {
   right: auto;
@@ -1372,12 +1376,16 @@ input[type=color] {
 .tgmenu__navbar-wrap ul li .sub-menu li.active > a, .tgmenu__navbar-wrap ul li .sub-menu li:hover > a {
   color: var(--tg-theme-primary);
 }
-.tgmenu__navbar-wrap ul li:hover > .sub-menu {
+.tgmenu__navbar-wrap ul li:hover > .sub-menu,
+.tgmenu__navbar-wrap ul li:focus-within > .sub-menu,
+.tgmenu__navbar-wrap ul li.is-open > .sub-menu {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
 }
-.tgmenu__navbar-wrap ul li:hover > .sub-menu > li {
+.tgmenu__navbar-wrap ul li:hover > .sub-menu > li,
+.tgmenu__navbar-wrap ul li:focus-within > .sub-menu > li,
+.tgmenu__navbar-wrap ul li.is-open > .sub-menu > li {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -1418,10 +1426,12 @@ input[type=color] {
   font-size: 12px;
   color: #bbbbbb;
 }
-.tgmenu__navbar-wrap > ul > li.menu-item-has-children:hover > a::after {
+.tgmenu__navbar-wrap > ul > li.menu-item-has-children:hover > a::after,
+.tgmenu__navbar-wrap > ul > li.menu-item-has-children:focus-within > a::after,
+.tgmenu__navbar-wrap > ul > li.menu-item-has-children.is-open > a::after {
   content: "\f068";
 }
-.tgmenu__navbar-wrap > ul > li.active a, .tgmenu__navbar-wrap > ul > li.active a::after, .tgmenu__navbar-wrap > ul > li:hover a, .tgmenu__navbar-wrap > ul > li:hover a::after {
+.tgmenu__navbar-wrap > ul > li.active a, .tgmenu__navbar-wrap > ul > li.active a::after, .tgmenu__navbar-wrap > ul > li:hover a, .tgmenu__navbar-wrap > ul > li:hover a::after, .tgmenu__navbar-wrap > ul > li.is-open > a, .tgmenu__navbar-wrap > ul > li.is-open > a::after {
   color: var(--tg-theme-primary);
 }
 .tgmenu__main-menu li.menu-item-has-children .dropdown-btn {

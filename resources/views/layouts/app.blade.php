@@ -21,25 +21,31 @@
         }
         body { background: #fff; color: var(--cea-ink); }
         header, main, footer { position: relative; z-index: 2; }
+        header { z-index: 50; }
         @unless (request()->is('admin*'))
             .kso-cube-field { color: rgba(242, 182, 109, .74); inset: 0; opacity: .22; pointer-events: none; position: fixed; z-index: 3; }
             .kso-cube-field canvas { display: block; height: 100%; width: 100%; }
         @else
             header, main, footer { position: static; z-index: auto; }
         @endunless
+        .tg-header__area { position: relative; z-index: 80; }
+        .tgmenu__navbar-wrap { position: relative; z-index: 90; }
         .tgmenu__navbar-wrap ul.navigation { align-items: center; display: flex; margin: 0; padding: 0; }
         .tgmenu__navbar-wrap ul.navigation > li { list-style: none; position: relative; }
         .tgmenu__navbar-wrap ul.navigation > li > a { display: block; }
-        .tgmenu__navbar-wrap ul.navigation li .sub-menu { display: block; left: 0; opacity: 0; pointer-events: none; top: 100%; transform: translateY(12px); visibility: hidden; }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu { display: block; left: 0; min-width: 240px; opacity: 0; pointer-events: none; position: absolute; top: 100%; transform: translateY(12px); visibility: hidden; z-index: 999; }
         .tgmenu__navbar-wrap ul.navigation li:hover > .sub-menu,
-        .tgmenu__navbar-wrap ul.navigation li:focus-within > .sub-menu { opacity: 1; pointer-events: auto; transform: translateY(0); visibility: visible; }
+        .tgmenu__navbar-wrap ul.navigation li:focus-within > .sub-menu,
+        .tgmenu__navbar-wrap ul.navigation li.is-open > .sub-menu { opacity: 1; pointer-events: auto; transform: translateY(0); visibility: visible; }
         .tgmenu__navbar-wrap ul.navigation li .sub-menu li { position: relative; }
         .tgmenu__navbar-wrap ul.navigation li .sub-menu .sub-menu { left: 100%; top: 0; transform: translateX(12px); }
         .tgmenu__navbar-wrap ul.navigation li .sub-menu li:hover > .sub-menu,
-        .tgmenu__navbar-wrap ul.navigation li .sub-menu li:focus-within > .sub-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu li:focus-within > .sub-menu,
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu li.is-open > .sub-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
         .tgmenu__navbar-wrap ul.navigation li .sub-menu a { max-width: 320px; white-space: normal; }
         .tgmenu__navbar-wrap ul.navigation > li.active > a,
-        .tgmenu__navbar-wrap ul.navigation > li:hover > a { color: var(--tg-theme-primary); }
+        .tgmenu__navbar-wrap ul.navigation > li:hover > a,
+        .tgmenu__navbar-wrap ul.navigation > li.is-open > a { color: var(--tg-theme-primary); }
         .tgmenu__action .header-search-form { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; box-shadow: 0 14px 28px rgba(0,0,0,.08); display: none; padding: 10px; position: absolute; right: 0; top: 42px; width: min(320px, 80vw); z-index: 20; }
         .tgmenu__action li.header-search { position: relative; }
         .tgmenu__action li.header-search:hover .header-search-form,
@@ -47,7 +53,11 @@
         .tgmenu__action .header-search-form input { border: 0; min-height: 44px; outline: none; padding: 0 14px; width: 100%; }
         .mobile-nav-toggler { cursor: pointer; }
         .cea-mobile-menu { background: #fff; border-top: 1px solid #eee; display: none; padding: 18px 0; }
+        .cea-mobile-menu.is-open { display: block; }
         .cea-mobile-menu ul { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
+        .cea-mobile-menu li { position: relative; }
+        .cea-mobile-menu .sub-menu { display: none; margin-top: 8px; padding: 8px 0 8px 14px; }
+        .cea-mobile-menu li.is-open > .sub-menu { display: grid; }
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
@@ -114,7 +124,6 @@
             .home-hero__grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 991px) {
-            .cea-mobile-menu { display: block; }
             .tgmenu__action { margin-left: auto; }
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
@@ -202,9 +211,9 @@
                                     </ul>
                                 </div>
                             </nav>
-                            <div class="mobile-nav-toggler"><i class="fas fa-bars"></i></div>
+                            <button class="mobile-nav-toggler" type="button" aria-label="Buka menu" aria-controls="mobile-menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
                         </div>
-                        <nav class="cea-mobile-menu d-lg-none" aria-label="Menu mobile">
+                        <nav class="cea-mobile-menu d-lg-none" id="mobile-menu" aria-label="Menu mobile">
                             <ul>
                                 @include('layouts.nav-items', ['items' => $navigation])
                             </ul>
@@ -290,6 +299,75 @@
     @endunless
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            var desktopMenu = document.querySelector('.tgmenu__navbar-wrap .navigation');
+            var mobileToggle = document.querySelector('.mobile-nav-toggler');
+            var mobileMenu = document.querySelector('.cea-mobile-menu');
+
+            function closeDropdowns(scope) {
+                (scope || document).querySelectorAll('.menu-item-has-children.is-open').forEach(function (item) {
+                    item.classList.remove('is-open');
+                    var trigger = item.querySelector(':scope > a[aria-expanded]');
+                    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            function bindDropdown(scope) {
+                if (!scope) return;
+
+                scope.querySelectorAll('.menu-item-has-children > a').forEach(function (trigger) {
+                    trigger.addEventListener('click', function (event) {
+                        var item = trigger.parentElement;
+                        if (!item) return;
+
+                        event.preventDefault();
+
+                        var parentList = item.parentElement;
+                        if (parentList) {
+                            parentList.querySelectorAll(':scope > .menu-item-has-children.is-open').forEach(function (sibling) {
+                                if (sibling !== item) {
+                                    sibling.classList.remove('is-open');
+                                    var siblingTrigger = sibling.querySelector(':scope > a[aria-expanded]');
+                                    if (siblingTrigger) siblingTrigger.setAttribute('aria-expanded', 'false');
+                                }
+                            });
+                        }
+
+                        var isOpen = item.classList.toggle('is-open');
+                        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    });
+                });
+            }
+
+            bindDropdown(desktopMenu);
+            bindDropdown(mobileMenu);
+
+            if (mobileToggle && mobileMenu) {
+                mobileToggle.addEventListener('click', function () {
+                    var isOpen = mobileMenu.classList.toggle('is-open');
+                    mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    mobileToggle.setAttribute('aria-label', isOpen ? 'Tutup menu' : 'Buka menu');
+                });
+            }
+
+            document.addEventListener('click', function (event) {
+                if (desktopMenu && !desktopMenu.contains(event.target)) {
+                    closeDropdowns(desktopMenu);
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeDropdowns(document);
+                    if (mobileMenu && mobileMenu.classList.contains('is-open')) {
+                        mobileMenu.classList.remove('is-open');
+                        if (mobileToggle) {
+                            mobileToggle.setAttribute('aria-expanded', 'false');
+                            mobileToggle.setAttribute('aria-label', 'Buka menu');
+                        }
+                    }
+                }
+            });
+
             var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             var animeGlobal = window.anime;
             if (prefersReducedMotion || !animeGlobal) return;

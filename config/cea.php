@@ -1,6 +1,6 @@
 <?php
 
-$baseUrl = 'https://ceaindonesia.id';
+$baseUrl = 'https://simpulpfb.id';
 
 $simpulRegions = [
     [
@@ -226,7 +226,7 @@ return [
                 'eyebrow' => 'Kontak',
                 'title' => 'Hubungi Kami',
                 'subtitle' => 'Sekretariat Pooling Fund - KSO di Bantul, DI Yogyakarta.',
-                'body' => "Sekretariat Pooling Fund - KSO\nJl. Patih Singoranu No. 155\nTamanan, Banguntapan, Bantul\nDI Yogyakarta\n\nEmail: sekretariat@ceaindonesia.id",
+                'body' => "Sekretariat Pooling Fund - KSO\nJl. Patih Singoranu No. 155\nTamanan, Banguntapan, Bantul\nDI Yogyakarta\n\nEmail: sekretariat@simpulpfb.id",
                 'image_path' => '/assets/img/cea/logo-non-bg.png',
                 'cards' => ['Sekretariat', 'Surel', 'Kolaborasi', 'Informasi Publik'],
             ],

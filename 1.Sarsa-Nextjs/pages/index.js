@@ -176,7 +176,7 @@ export default function Home() {
                 <div className="container">
                     <div className="cea-landing-hero__grid">
                         <div className="cea-landing-hero__content">
-                            <span className="cea-landing-hero__eyebrow">Civic Engagement Alliance</span>
+                            <span className="cea-landing-hero__eyebrow">KSO Pooling Fund Kemanusiaan</span>
                             <ScrambleHeroTitle />
                             <p>
                                 Pooling Fund - KSO adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk
@@ -186,8 +186,8 @@ export default function Home() {
                                 <Link className="cea-btn" href="/admin">
                                     Buka Panel Admin
                                 </Link>
-                                <a className="cea-btn secondary" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">
-                                    Lihat Situs Resmi
+                                <a className="cea-btn secondary" href="#kontak-kso">
+                                    Hubungi Sekretariat
                                 </a>
                             </div>
                         </div>
@@ -312,7 +312,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <footer className="cea-landing-footer">
+            <footer className="cea-landing-footer" id="kontak-kso">
                 <div className="container">
                     <div className="cea-footer-grid">
                         <div className="cea-footer-brand">
@@ -323,7 +323,7 @@ export default function Home() {
                             </p>
                             <div className="cea-footer-actions">
                                 <Link href="/admin">Panel Admin</Link>
-                                <a href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Situs Resmi</a>
+                                <a href="#kontak-kso">Kontak</a>
                             </div>
                         </div>
                         <div>
@@ -349,7 +349,7 @@ export default function Home() {
                         <div>
                             <h3>Kontak</h3>
                             <p>Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.</p>
-                            <p>sekretariat@ceaindonesia.id</p>
+                            <p>sekretariat@ksopoolingfund.id</p>
                         </div>
                     </div>
                     <div className="cea-footer-bottom">

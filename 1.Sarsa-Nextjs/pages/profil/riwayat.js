@@ -11,7 +11,7 @@ const historySections = [
     {
         label: "Februari 2025",
         title: "Proses Pembentukan Pooling Fund - KSO",
-        body: "Pada Februari 2025, 48 organisasi masyarakat sipil (OMS) bertemu di Sentul, Bogor, Jawa Barat dan mendiskusikan kondisi ruang-ruang sipil di Indonesia yang menyempit. Pertemuan itu mengidentifikasi kebutuhan bersama akan platform koordinasi dan konsolidasi gerakan OMS di Indonesia, yang kemudian mengarah ke pembentukan Indonesian Civic Engagement Alliance (Pooling Fund - KSO).",
+        body: "Pada Februari 2025, 48 organisasi masyarakat sipil (OMS) bertemu di Sentul, Bogor, Jawa Barat dan mendiskusikan kondisi ruang-ruang sipil di Indonesia yang menyempit. Pertemuan itu mengidentifikasi kebutuhan bersama akan platform koordinasi dan konsolidasi gerakan OMS di Indonesia, yang kemudian mengarah ke pembentukan Pooling Fund - KSO.",
     },
     {
         label: "6-9 Juli 2025",

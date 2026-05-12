@@ -8,8 +8,8 @@ export default function AdminDashboard() {
     return (
         <CeaAdminShell
             title="Dashboard Konten Pooling Fund - KSO"
-            description="Panel ini mengadopsi struktur menu dan dropdown dari ceaindonesia.id, lalu menyiapkan ruang kelola untuk setiap kanal dropdown."
-            sourceHref="https://ceaindonesia.id/"
+            description="Panel ini memakai struktur menu dan dropdown KSO, lalu menyiapkan ruang kelola untuk setiap kanal dropdown."
+            sourceHref="/"
             headTitle="Panel Admin Pooling Fund - KSO"
         >
             <div className="admin-stat-strip">

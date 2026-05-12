@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ceaNavigation, getPublicHref } from "@/util/ceaNavigation"
 const ThemeSwitch = dynamic(() => import('@/components/elements/ThemeSwitch'), {
     ssr: false
@@ -10,6 +10,7 @@ const ThemeSwitch = dynamic(() => import('@/components/elements/ThemeSwitch'), {
 export default function Menu({ handleMobileMenuOpen, handleSidebarOpen, offCanvasNav, logoAlt, white }) {
     const router = useRouter()
     const [searchToggle, setSearchToggle] = useState(false)
+    const [openDropdown, setOpenDropdown] = useState("")
     const searchHandle = () => setSearchToggle(!searchToggle)
     const isActive = (item) => {
         const href = getPublicHref(item)
@@ -18,6 +19,11 @@ export default function Menu({ handleMobileMenuOpen, handleSidebarOpen, offCanva
 
         return router.asPath === href || router.asPath.startsWith(`${href}/`)
     }
+    const closeDropdown = () => setOpenDropdown("")
+
+    useEffect(() => {
+        closeDropdown()
+    }, [router.asPath])
 
     return (
         <>
@@ -50,14 +56,28 @@ export default function Menu({ handleMobileMenuOpen, handleSidebarOpen, offCanva
                             {ceaNavigation.map((item) => (
                                 <li
                                     key={item.key}
-                                    className={`${item.children ? "menu-item-has-children" : ""} ${isActive(item) ? "active" : ""}`}
+                                    className={`${item.children ? "menu-item-has-children" : ""} ${openDropdown === item.key ? "is-open" : ""} ${isActive(item) ? "active" : ""}`}
+                                    onMouseEnter={() => item.children && setOpenDropdown(item.key)}
+                                    onMouseLeave={() => item.children && closeDropdown()}
                                 >
-                                    <Link href={getPublicHref(item)}>{item.label}</Link>
+                                    <Link
+                                        href={getPublicHref(item)}
+                                        aria-expanded={item.children ? openDropdown === item.key : undefined}
+                                        aria-haspopup={item.children ? "true" : undefined}
+                                        onClick={(event) => {
+                                            if (!item.children) return
+                                            event.preventDefault()
+                                            setOpenDropdown((current) => current === item.key ? "" : item.key)
+                                        }}
+                                        onFocus={() => item.children && setOpenDropdown(item.key)}
+                                    >
+                                        {item.label}
+                                    </Link>
                                     {item.children &&
                                         <ul className="sub-menu">
                                             {item.children.map((child) => (
                                                 <li key={child.key} className={isActive(child) ? "active" : ""}>
-                                                    <Link href={getPublicHref(child)}>{child.label}</Link>
+                                                    <Link href={getPublicHref(child)} onClick={closeDropdown}>{child.label}</Link>
                                                 </li>
                                             ))}
                                         </ul>

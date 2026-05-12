@@ -12,6 +12,7 @@ const MobileMenu = ({ handleMobileMenuClose, openClass }) => {
         if (isActive.key === key) {
             setIsActive({
                 status: false,
+                key: "",
             })
         } else {
             setIsActive({
@@ -67,8 +68,18 @@ const MobileMenu = ({ handleMobileMenuClose, openClass }) => {
                                             ))}
                                         </ul>
                                         <div
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-expanded={isActive.key == item.key}
+                                            aria-label={`Buka submenu ${item.label}`}
                                             className={`dropdown-btn ${isActive.key == item.key ? "open" : ""}`}
                                             onClick={() => handleToggle(item.key)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Enter" || event.key === " ") {
+                                                    event.preventDefault()
+                                                    handleToggle(item.key)
+                                                }
+                                            }}
                                         >
                                             <span className="plus-line" />
                                         </div>

@@ -147,7 +147,7 @@ export default function AdminDropdownItemPage({ item }) {
                             <tr>
                                 <td>10 Mei 2026</td>
                                 <td>Admin Pooling Fund - KSO</td>
-                                <td>Halaman admin dibuat dari struktur dropdown ceaindonesia.id.</td>
+                                <td>Halaman admin dibuat dari struktur dropdown KSO.</td>
                                 <td><span className="admin-status">Draft awal</span></td>
                             </tr>
                         </tbody>

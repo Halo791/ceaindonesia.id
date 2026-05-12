@@ -11,9 +11,9 @@
             <div>
                 <span class="admin-eyebrow">Panel Admin Pooling Fund - KSO</span>
                 <h1>Dashboard Konten Pooling Fund - KSO</h1>
-                <p>Panel ini mengadopsi struktur menu dan dropdown dari ceaindonesia.id, lalu menyiapkan ruang kelola untuk setiap kanal.</p>
+                <p>Panel ini mengadopsi struktur menu dan dropdown KSO, lalu menyiapkan ruang kelola untuk setiap kanal.</p>
             </div>
-            <a class="admin-source-link" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Sumber resmi</a>
+            <a class="admin-source-link" href="https://simpulpfb.id/" target="_blank" rel="noreferrer">Sumber resmi</a>
         </div>
 
         <div class="admin-stat-strip">

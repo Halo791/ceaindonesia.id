@@ -17,7 +17,7 @@ export default function Sidebar({ handleSidebarClose }) {
                     <div className="offCanvas__contact">
                         <h4 className="title">Kontak Pooling Fund - KSO</h4>
                         <ul className="offCanvas__contact-list list-wrap">
-                            <li><i className="fas fa-envelope-open" /><Link href="mailto:sekretariat@ceaindonesia.id">sekretariat@ceaindonesia.id</Link></li>
+                            <li><i className="fas fa-envelope-open" /><Link href="mailto:sekretariat@ksopoolingfund.id">sekretariat@ksopoolingfund.id</Link></li>
                             <li><i className="fas fa-map-marker-alt" /> DI Yogyakarta, Indonesia</li>
                         </ul>
                         <ul className="offCanvas__social list-wrap">
