@@ -137,7 +137,7 @@
                     <div class="col-lg-4 col-md-3 col-sm-6 order-3 d-none d-sm-block">
                         <div class="header__top-right">
                             <ul class="list-wrap">
-                                <li class="news-btn"><a href="https://ceaindonesia.id/" class="btn" target="_blank" rel="noreferrer"><span class="btn-text">situs resmi</span></a></li>
+                                <li class="news-btn"><a href="/regio/simpul" class="btn"><span class="btn-text">lihat simpul</span></a></li>
                                 <li class="lang">
                                     <div class="dropdown">
                                         <button class="dropdown-toggle" type="button">ID</button>

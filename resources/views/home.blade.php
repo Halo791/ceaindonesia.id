@@ -13,18 +13,18 @@
         'study' => asset('assets/img/cea/pomelli_bdna_image_0510%20%287%29.png'),
     ];
     $focusAreas = [
-        ['title' => 'Kepemimpinan Lokal', 'description' => 'Memperkuat peran komunitas dan organisasi lokal dalam respon sosial serta kemanusiaan.', 'image' => $images['action']],
-        ['title' => 'Pooling Fund', 'description' => 'Menghimpun dan mengelola sumber daya bersama secara transparan, cepat, dan akuntabel.', 'image' => $images['collective']],
-        ['title' => 'Kolaborasi Multipihak', 'description' => 'Membangun ekosistem kolaborasi yang inklusif, setara, dan berbasis kepercayaan.', 'image' => $images['forum']],
+        ['title' => 'Mandat Kolektif', 'description' => 'Satu mandat bersama untuk memperkuat kepemimpinan lokal dan respon kemanusiaan yang berkeadilan.', 'image' => $images['action'], 'href' => '/profil/mandat-visi-nilai'],
+        ['title' => 'Tanpa Badan Hukum Baru', 'description' => 'Platform kerja sama operasional antar CSO yang menjaga kedaulatan organisasi anggota.', 'image' => $images['collective'], 'href' => '/profil/riwayat'],
+        ['title' => 'Local First', 'description' => 'Keputusan dan sumber daya diarahkan sedekat mungkin dengan komunitas yang menghadapi krisis.', 'image' => $images['forum'], 'href' => '/profil/tujuan-prinsip'],
     ];
     $governanceItems = [
-        ['label' => 'Struktur Gerak', 'title' => 'Arsitektur mandat kolektif yang menghubungkan simpul regional.', 'description' => 'KSO-Pooling Fund bergerak melalui simpul regional yang otonom dan independen, namun terikat dalam satu visi kepemimpinan lokal.', 'image' => $images['structure'], 'href' => '/profil/struktur-gerak'],
-        ['label' => 'Tata Kelola', 'title' => 'Sumber daya dikelola sebagai mandat kolektif.', 'description' => 'Pengambilan keputusan dilakukan sedekat mungkin dengan krisis agar dana dikelola transparan untuk ketangguhan komunitas.', 'image' => $images['governance'], 'href' => '/profil/sumber-daya'],
+        ['label' => 'Arsitektur Mandat', 'title' => 'Simpul regional otonom terhubung dalam satu visi kepemimpinan lokal.', 'description' => 'Forum Anggota memegang mandat kolektif dengan prinsip one organization, one vote, sementara fungsi strategis dan operasional dipisahkan untuk menjaga akuntabilitas.', 'image' => $images['structure'], 'href' => '/profil/struktur-gerak'],
+        ['label' => 'Tata Kelola Sumber Daya', 'title' => 'Dana dikelola sebagai mandat kolektif, bukan aset lembaga.', 'description' => 'Pengambilan keputusan dilakukan oleh mereka yang paling dekat dengan krisis agar respon cepat, transparan, dan relevan dengan kebutuhan komunitas.', 'image' => $images['governance'], 'href' => '/profil/sumber-daya'],
     ];
     $stats = [
-        ['value' => '78', 'label' => 'Organisasi masyarakat sipil'],
-        ['value' => '19', 'label' => 'Provinsi jejaring'],
-        ['value' => '6', 'label' => 'Simpul regional'],
+        ['value' => '1', 'label' => 'Mandat kolektif'],
+        ['value' => '7', 'label' => 'Simpul regional'],
+        ['value' => '33', 'label' => 'Anggota tercatat'],
     ];
     $sectionImage = [
         'profil' => $images['structure'],
@@ -34,6 +34,7 @@
         'koneksi' => $images['governance'],
     ];
     $dropdownSections = collect($navigation)->filter(fn ($item) => ! empty($item['children']))->values();
+    $principles = ['Satu CSO satu suara', 'Berbasis kebutuhan komunitas', 'Kecepatan sebagai nilai utama', 'Transparansi sebagai aset strategis', 'Akuntabilitas kolektif', 'Local leadership & local first'];
 @endphp
 
 @push('styles')
@@ -58,6 +59,10 @@
     .cea-focus-card__body, .cea-menu-card__body, .cea-governance-card__body { padding: 24px; }
     .cea-focus-card h3, .cea-governance-card h3, .cea-menu-card h3 { color: #3a0710; font-size: 24px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; }
     .cea-focus-card p, .cea-governance-card p, .cea-menu-card p { color: #67464b; font-size: 15px; line-height: 1.75; margin: 0; }
+    .cea-focus-card__body a { color: #b91c31; display: inline-flex; font-weight: 900; margin-top: 16px; }
+    .cea-principles { background: #fff; padding: 72px 0; }
+    .cea-principles__grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .cea-principle { background: #fff4f2; border: 1px solid #efd0d0; border-radius: 8px; color: #3a0710; font-weight: 900; padding: 18px; }
     .cea-stats { background: #4b0b17; padding: 40px 0; }
     .cea-stats__grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cea-stat { border: 1px solid rgba(255,255,255,.16); border-radius: 8px; color: #fff; padding: 22px; }
@@ -70,7 +75,7 @@
     .cea-menu-card__body ul { display: grid; gap: 8px; list-style: none; margin: 18px 0 0; padding: 0; }
     @media (max-width: 991px) {
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
-        .cea-focus-grid, .cea-menu-grid, .cea-stats__grid { grid-template-columns: 1fr; }
+        .cea-focus-grid, .cea-menu-grid, .cea-stats__grid, .cea-principles__grid { grid-template-columns: 1fr; }
     }
 </style>
 @endpush
@@ -82,10 +87,10 @@
             <div class="cea-landing-hero__content">
                 <span class="cea-landing-hero__eyebrow">Menguatkan Lokal, Memperluas Dampak</span>
                 <h1 class="cea-scramble-title">Pooling Fund - KSO.</h1>
-                <p>Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal.</p>
+                <p>Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.</p>
                 <div class="cea-landing-hero__actions">
-                    <a class="cea-btn" href="/profil">Jelajahi Profil</a>
-                    <a class="cea-btn secondary" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Lihat Situs Resmi</a>
+                    <a class="cea-btn" href="/profil/mandat-visi-nilai">Baca Mandat</a>
+                    <a class="cea-btn secondary" href="/regio/simpul">Lihat Simpul</a>
                 </div>
             </div>
             <div class="cea-landing-hero__visual" aria-label="Gambar header {{ config('app.name') }}">
@@ -98,7 +103,7 @@
 <section class="cea-section">
     <div class="container">
         <div class="cea-section__head">
-            <span>Fokus Gerakan</span>
+            <span>Platform Mandat Kolektif</span>
             <h2>Ekosistem yang menghubungkan sumber daya, komunitas, dan respon kemanusiaan.</h2>
         </div>
         <div class="cea-focus-grid">
@@ -108,6 +113,7 @@
                     <div class="cea-focus-card__body">
                         <h3>{{ $item['title'] }}</h3>
                         <p>{{ $item['description'] }}</p>
+                        <a href="{{ $item['href'] }}">Pelajari</a>
                     </div>
                 </article>
             @endforeach
@@ -120,6 +126,20 @@
         <div class="cea-stats__grid">
             @foreach ($stats as $item)
                 <div class="cea-stat"><strong>{{ $item['value'] }}</strong><span>{{ $item['label'] }}</span></div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<section class="cea-principles">
+    <div class="container">
+        <div class="cea-section__head">
+            <span>Prinsip & Karakter</span>
+            <h2>Kepercayaan dibangun lewat kesetaraan, transparansi, dan akuntabilitas kolektif.</h2>
+        </div>
+        <div class="cea-principles__grid">
+            @foreach ($principles as $principle)
+                <div class="cea-principle">{{ $principle }}</div>
             @endforeach
         </div>
     </div>
@@ -150,8 +170,8 @@
 <section class="cea-section">
     <div class="container">
         <div class="cea-section__head">
-            <span>Menu & Dropdown</span>
-            <h2>Repositori KSO-Pooling Fund</h2>
+            <span>Navigasi Utama</span>
+            <h2>Konten website diringkas sesuai mandat Pooling Fund - KSO.</h2>
         </div>
         <div class="cea-menu-grid">
             @foreach ($dropdownSections as $section)

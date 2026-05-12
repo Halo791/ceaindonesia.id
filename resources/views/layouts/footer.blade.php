@@ -5,7 +5,8 @@
                 <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
                 <p>Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan berbasis kebutuhan komunitas dan kepemimpinan lokal.</p>
                 <div class="cea-footer-actions mt-3">
-                    <a href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Situs Resmi</a>
+                    <a href="/profil/mandat-visi-nilai">Baca Mandat</a>
+                    <a href="/regio/simpul">Lihat Simpul</a>
                 </div>
             </div>
             <div>
@@ -19,10 +20,11 @@
             <div>
                 <h3>Kanal Publik</h3>
                 <ul>
-                    <li><a href="/profil/struktur-gerak">Struktur Gerak</a></li>
-                    <li><a href="/profil/sumber-daya">Tata Kelola</a></li>
-                    <li><a href="/siar/kabar">Siar Kabar</a></li>
-                    <li><a href="/koneksi">Koneksi</a></li>
+                    <li><a href="/profil/mandat-visi-nilai">Mandat, Visi, Misi</a></li>
+                    <li><a href="/profil/tujuan-prinsip">Tujuan & Prinsip</a></li>
+                    <li><a href="/profil/struktur-gerak">Arsitektur Mandat</a></li>
+                    <li><a href="/profil/sumber-daya">Tata Kelola Sumber Daya</a></li>
+                    <li><a href="/regio/simpul">Sebaran Simpul</a></li>
                 </ul>
             </div>
             <div>
