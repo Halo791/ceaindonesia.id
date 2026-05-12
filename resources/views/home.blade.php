@@ -18,8 +18,8 @@
         ['title' => 'Diskursus Publik', 'description' => 'Membuka ruang belajar, refleksi, dan pertukaran strategi antaraktor masyarakat sipil.', 'image' => $images['forum']],
     ];
     $governanceItems = [
-        ['label' => 'Struktur Gerak', 'title' => 'Simpul, gugus tugas, dan kaukus isu yang saling terhubung.', 'description' => 'Struktur CEA bergerak sebagai jejaring regional dan nasional yang bekerja otonom namun tetap terikat tujuan bersama.', 'image' => $images['structure'], 'href' => '/admin/profil/struktur-gerak'],
-        ['label' => 'Tata Kelola', 'title' => 'Mobilisasi sumber daya dikelola lewat simpul dan platform penyaluran dana.', 'description' => 'Bagian tata kelola pada landing page memakai gambar tatakelola.png sesuai aset yang tersedia di direktori CEA.', 'image' => $images['governance'], 'href' => '/admin/profil/sumber-daya'],
+        ['label' => 'Struktur Gerak', 'title' => 'Simpul, gugus tugas, dan kaukus isu yang saling terhubung.', 'description' => 'Struktur CEA bergerak sebagai jejaring regional dan nasional yang bekerja otonom namun tetap terikat tujuan bersama.', 'image' => $images['structure'], 'href' => '/profil/struktur-gerak'],
+        ['label' => 'Tata Kelola', 'title' => 'Mobilisasi sumber daya dikelola lewat simpul dan platform penyaluran dana.', 'description' => 'Bagian tata kelola pada landing page memakai gambar tatakelola.png sesuai aset yang tersedia di direktori CEA.', 'image' => $images['governance'], 'href' => '/profil/sumber-daya'],
     ];
     $stats = [
         ['value' => '78', 'label' => 'Organisasi masyarakat sipil'],
@@ -84,7 +84,7 @@
                 <h1 class="cea-scramble-title">Merawat ruang sipil, memperkuat gerakan akar rumput.</h1>
                 <p>CEA Indonesia adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam.</p>
                 <div class="cea-landing-hero__actions">
-                    <a class="cea-btn" href="{{ route('admin.index') }}">Buka Panel Admin</a>
+                    <a class="cea-btn" href="/profil">Jelajahi Profil</a>
                     <a class="cea-btn secondary" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Lihat Situs Resmi</a>
                 </div>
             </div>
@@ -139,7 +139,7 @@
                         <span>{{ $item['label'] }}</span>
                         <h3>{{ $item['title'] }}</h3>
                         <p>{{ $item['description'] }}</p>
-                        <a href="{{ $item['href'] }}">Kelola di admin</a>
+                        <a href="{{ $item['href'] }}">Baca selengkapnya</a>
                     </div>
                 </article>
             @endforeach

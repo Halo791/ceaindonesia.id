@@ -9,6 +9,10 @@
         <span>CEA CMS</span>
         <strong>{{ $childCount }} kanal dropdown</strong>
     </div>
+    <form method="POST" action="{{ route('admin.logout') }}" style="padding:12px 12px 0;">
+        @csrf
+        <button class="admin-button secondary" type="submit" style="width:100%;">Logout</button>
+    </form>
     <nav class="admin-sidebar__nav" aria-label="Navigasi panel admin">
         <a href="{{ route('admin.index') }}" class="{{ ! $activeSection ? 'active' : '' }}">Dashboard</a>
         @foreach ($navigation as $section)

@@ -133,7 +133,6 @@
                 <h1 class="cea-scramble-title">{{ $content['title'] }}</h1>
                 <p>{{ $content['subtitle'] }}</p>
                 <div class="cea-footer-actions">
-                    <a href="{{ $item ? route('admin.item', [$section['key'], $item['key']]) : route('admin.section', $section['key']) }}">Kelola Halaman</a>
                     @if (! empty($content['source_href']))
                         <a href="{{ $content['source_href'] }}" target="_blank" rel="noreferrer">Sumber Resmi</a>
                     @endif

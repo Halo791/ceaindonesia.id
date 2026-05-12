@@ -62,50 +62,56 @@
         .home-hero h1 { color: #fff; font-size: clamp(46px, 7vw, 92px); font-weight: 900; line-height: .98; margin-bottom: 24px; }
         .home-hero p { color: rgba(255,255,255,.84); font-size: 18px; line-height: 1.75; margin-bottom: 28px; }
         .home-hero img { border-radius: 8px; box-shadow: 0 24px 70px rgba(0,0,0,.22); width: 100%; }
-        .cea-admin-panel { background: #f4f7f4; min-height: 100vh; padding: 34px 0 54px; }
-        .admin-shell { display: grid; gap: 24px; grid-template-columns: 280px minmax(0, 1fr); margin: 0 auto; max-width: 1320px; padding: 0 20px; }
-        .admin-sidebar { align-self: start; background: #102f22; border: 1px solid rgba(255,255,255,.08); border-radius: 8px; color: #fff; overflow: hidden; position: sticky; top: 92px; }
-        .admin-sidebar__brand { border-bottom: 1px solid rgba(255,255,255,.1); padding: 20px; }
-        .admin-sidebar__brand span, .admin-eyebrow { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: uppercase; }
-        .admin-sidebar__brand strong { display: block; font-size: 14px; font-weight: 600; margin-top: 6px; opacity: .72; }
-        .admin-sidebar__nav { display: flex; flex-direction: column; padding: 12px; }
-        .admin-sidebar__nav a { border-radius: 8px; color: rgba(255,255,255,.78); display: block; font-size: 13px; font-weight: 700; line-height: 1.25; padding: 10px 12px; text-transform: uppercase; }
-        .admin-sidebar__nav a:hover, .admin-sidebar__nav a.active { background: #f3aa3d; color: #102f22; }
-        .admin-sidebar__children { border-left: 1px solid rgba(255,255,255,.12); display: grid; gap: 2px; margin: 2px 0 8px 12px; padding-left: 8px; }
-        .admin-sidebar__children a { font-size: 12px; font-weight: 600; text-transform: none; }
-        .admin-workspace { min-width: 0; }
-        .admin-hero { align-items: flex-start; background: #fff; border: 1px solid #dfe7df; border-radius: 8px; box-shadow: 0 14px 36px rgba(16,47,34,.06); color: #102f22; display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding: 28px; }
-        .admin-hero h1 { color: #102f22; font-size: 32px; line-height: 1.12; margin-bottom: 10px; }
-        .admin-hero p { color: #59675e; font-size: 15px; line-height: 1.7; margin: 0; max-width: 760px; }
-        .admin-eyebrow { color: #1b5e3b; margin-bottom: 8px; }
-        .admin-stat-strip { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: 24px 0; }
-        .admin-stat { background: #fff; border-radius: 8px; padding: 18px; }
-        .admin-stat span { color: var(--cea-muted); display: block; font-size: 13px; }
-        .admin-stat strong { color: var(--cea-red); font-size: 30px; }
-        .admin-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-        .admin-card, .admin-table-card, .admin-form-card { background: #fff; border: 1px solid rgba(122,22,38,.12); border-radius: 8px; padding: 24px; }
-        .admin-card__label, .admin-status { color: var(--cea-red); font-size: 12px; font-weight: 900; text-transform: uppercase; }
-        .admin-card__actions, .admin-form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-        .admin-button, .admin-source-link { align-items: center; background: #1b5e3b; border: 1px solid #1b5e3b; border-radius: 8px; color: #fff; display: inline-flex; font-size: 13px; font-weight: 700; justify-content: center; min-height: 40px; padding: 10px 14px; text-align: center; white-space: nowrap; }
-        .admin-button.secondary { background: #fff; border-color: #cfdacf; color: #102f22; }
-        .admin-source-link:hover, .admin-button:hover { background: #123f29; border-color: #123f29; color: #fff; }
-        .admin-section-spacer { margin-top: 24px; }
-        .admin-table { margin: 0; width: 100%; }
-        .admin-table th, .admin-table td { border-bottom: 1px solid #eee2d7; padding: 14px; vertical-align: top; }
-        .admin-field { margin-bottom: 16px; }
-        .admin-field label { display: block; font-weight: 800; margin-bottom: 8px; }
-        .admin-field input, .admin-field textarea, .admin-field select { border: 1px solid #e5d7ca; border-radius: 8px; min-height: 44px; padding: 10px 12px; width: 100%; }
-        .admin-field textarea { min-height: 130px; }
+        @if (request()->is('admin*'))
+            .cea-admin-panel { background: #f4f7f4; min-height: 100vh; padding: 34px 0 54px; }
+            .admin-shell { display: grid; gap: 24px; grid-template-columns: 280px minmax(0, 1fr); margin: 0 auto; max-width: 1320px; padding: 0 20px; }
+            .admin-sidebar { align-self: start; background: #102f22; border: 1px solid rgba(255,255,255,.08); border-radius: 8px; color: #fff; overflow: hidden; position: sticky; top: 92px; }
+            .admin-sidebar__brand { border-bottom: 1px solid rgba(255,255,255,.1); padding: 20px; }
+            .admin-sidebar__brand span, .admin-eyebrow { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: uppercase; }
+            .admin-sidebar__brand strong { display: block; font-size: 14px; font-weight: 600; margin-top: 6px; opacity: .72; }
+            .admin-sidebar__nav { display: flex; flex-direction: column; padding: 12px; }
+            .admin-sidebar__nav a { border-radius: 8px; color: rgba(255,255,255,.78); display: block; font-size: 13px; font-weight: 700; line-height: 1.25; padding: 10px 12px; text-transform: uppercase; }
+            .admin-sidebar__nav a:hover, .admin-sidebar__nav a.active { background: #f3aa3d; color: #102f22; }
+            .admin-sidebar__children { border-left: 1px solid rgba(255,255,255,.12); display: grid; gap: 2px; margin: 2px 0 8px 12px; padding-left: 8px; }
+            .admin-sidebar__children a { font-size: 12px; font-weight: 600; text-transform: none; }
+            .admin-workspace { min-width: 0; }
+            .admin-hero { align-items: flex-start; background: #fff; border: 1px solid #dfe7df; border-radius: 8px; box-shadow: 0 14px 36px rgba(16,47,34,.06); color: #102f22; display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding: 28px; }
+            .admin-hero h1 { color: #102f22; font-size: 32px; line-height: 1.12; margin-bottom: 10px; }
+            .admin-hero p { color: #59675e; font-size: 15px; line-height: 1.7; margin: 0; max-width: 760px; }
+            .admin-eyebrow { color: #1b5e3b; margin-bottom: 8px; }
+            .admin-stat-strip { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: 24px 0; }
+            .admin-stat { background: #fff; border-radius: 8px; padding: 18px; }
+            .admin-stat span { color: var(--cea-muted); display: block; font-size: 13px; }
+            .admin-stat strong { color: var(--cea-red); font-size: 30px; }
+            .admin-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+            .admin-card, .admin-table-card, .admin-form-card { background: #fff; border: 1px solid rgba(122,22,38,.12); border-radius: 8px; padding: 24px; }
+            .admin-card__label, .admin-status { color: var(--cea-red); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+            .admin-card__actions, .admin-form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+            .admin-button, .admin-source-link { align-items: center; background: #1b5e3b; border: 1px solid #1b5e3b; border-radius: 8px; color: #fff; display: inline-flex; font-size: 13px; font-weight: 700; justify-content: center; min-height: 40px; padding: 10px 14px; text-align: center; white-space: nowrap; }
+            .admin-button.secondary { background: #fff; border-color: #cfdacf; color: #102f22; }
+            .admin-source-link:hover, .admin-button:hover { background: #123f29; border-color: #123f29; color: #fff; }
+            .admin-section-spacer { margin-top: 24px; }
+            .admin-table { margin: 0; width: 100%; }
+            .admin-table th, .admin-table td { border-bottom: 1px solid #eee2d7; padding: 14px; vertical-align: top; }
+            .admin-field { margin-bottom: 16px; }
+            .admin-field label { display: block; font-weight: 800; margin-bottom: 8px; }
+            .admin-field input, .admin-field textarea, .admin-field select { border: 1px solid #e5d7ca; border-radius: 8px; min-height: 44px; padding: 10px 12px; width: 100%; }
+            .admin-field textarea { min-height: 130px; }
+        @endif
         @media (max-width: 767px) {
             .home-hero__grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 991px) {
             .cea-mobile-menu { display: block; }
             .tgmenu__action { margin-left: auto; }
-            .admin-shell { grid-template-columns: 1fr; }
-            .admin-sidebar { position: static; }
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
+        @if (request()->is('admin*'))
+            @media (max-width: 991px) {
+                .admin-shell { grid-template-columns: 1fr; }
+                .admin-sidebar { position: static; }
+            }
+        @endif
     </style>
     @stack('styles')
 </head>
@@ -131,7 +137,7 @@
                     <div class="col-lg-4 col-md-3 col-sm-6 order-3 d-none d-sm-block">
                         <div class="header__top-right">
                             <ul class="list-wrap">
-                                <li class="news-btn"><a href="{{ route('admin.index') }}" class="btn"><span class="btn-text">panel admin</span></a></li>
+                                <li class="news-btn"><a href="https://ceaindonesia.id/" class="btn" target="_blank" rel="noreferrer"><span class="btn-text">situs resmi</span></a></li>
                                 <li class="lang">
                                     <div class="dropdown">
                                         <button class="dropdown-toggle" type="button">ID</button>
@@ -159,8 +165,8 @@
                                         <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
                                     </a>
                                 </div>
-                                <div class="offcanvas-toggle">
-                                    <a href="{{ route('admin.index') }}"><i class="flaticon-menu-bar"></i></a>
+                                <div class="offcanvas-toggle d-none d-lg-block">
+                                    <a href="{{ route('home') }}"><i class="flaticon-menu-bar"></i></a>
                                 </div>
                                 <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-lg-flex">
                                     <ul class="navigation">
@@ -191,7 +197,6 @@
                                 </div>
                                 <div class="tgmenu__action">
                                     <ul class="list-wrap">
-                                        <li class="user"><a href="{{ route('admin.index') }}" title="Panel Admin CEA"><i class="far fa-user"></i></a></li>
                                         <li class="header-search">
                                             <a href="#"><i class="far fa-search"></i></a>
                                             <div class="header-search-form">
@@ -257,7 +262,12 @@
                 });
             });
 
-            document.querySelectorAll('.cea-focus-card, .cea-governance-card, .cea-menu-card, .admin-card').forEach(function (element, index) {
+            var animatedCardSelector = '.cea-focus-card, .cea-governance-card, .cea-menu-card';
+            @if (request()->is('admin*'))
+                animatedCardSelector += ', .admin-card';
+            @endif
+
+            document.querySelectorAll(animatedCardSelector).forEach(function (element, index) {
                 runAnime({
                     targets: element,
                     opacity: [0, 1],

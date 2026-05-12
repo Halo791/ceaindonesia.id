@@ -5,7 +5,6 @@
                 <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
                 <p>Aliansi keterlibatan sipil untuk merawat demokrasi, memperkuat ruang sipil, dan menghubungkan kerja kolektif lintas wilayah.</p>
                 <div class="cea-footer-actions mt-3">
-                    <a href="{{ route('admin.index') }}">Panel Admin</a>
                     <a href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Situs Resmi</a>
                 </div>
             </div>
@@ -18,12 +17,12 @@
                 </ul>
             </div>
             <div>
-                <h3>Kanal Admin</h3>
+                <h3>Kanal Publik</h3>
                 <ul>
-                    <li><a href="/admin/profil/struktur-gerak">Struktur Gerak</a></li>
-                    <li><a href="/admin/profil/sumber-daya">Tata Kelola</a></li>
-                    <li><a href="/admin/siar/kabar">Siar Kabar</a></li>
-                    <li><a href="/admin/koneksi">Koneksi</a></li>
+                    <li><a href="/profil/struktur-gerak">Struktur Gerak</a></li>
+                    <li><a href="/profil/sumber-daya">Tata Kelola</a></li>
+                    <li><a href="/siar/kabar">Siar Kabar</a></li>
+                    <li><a href="/koneksi">Koneksi</a></li>
                 </ul>
             </div>
             <div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
@@ -16,11 +17,17 @@ Route::get('/index-{variant}', [SiteController::class, 'placeholder'])
     ->name('home.variant');
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [SiteController::class, 'admin'])->name('index');
-    Route::post('/{section}', [SiteController::class, 'updateAdminSection'])->name('section.update');
-    Route::post('/{section}/{slug}', [SiteController::class, 'updateAdminItem'])->name('item.update');
-    Route::get('/{section}', [SiteController::class, 'adminSection'])->name('section');
-    Route::get('/{section}/{slug}', [SiteController::class, 'adminItem'])->name('item');
+    Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+
+    Route::middleware('admin.auth')->group(function () {
+        Route::get('/', [SiteController::class, 'admin'])->name('index');
+        Route::post('/{section}', [SiteController::class, 'updateAdminSection'])->name('section.update');
+        Route::post('/{section}/{slug}', [SiteController::class, 'updateAdminItem'])->name('item.update');
+        Route::get('/{section}', [SiteController::class, 'adminSection'])->name('section');
+        Route::get('/{section}/{slug}', [SiteController::class, 'adminItem'])->name('item');
+    });
 });
 
 Route::get('/{section}', [SiteController::class, 'publicSection'])
