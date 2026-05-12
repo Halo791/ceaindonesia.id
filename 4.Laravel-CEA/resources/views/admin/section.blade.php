@@ -3,12 +3,17 @@
 @section('title', 'Admin '.$section['label'])
 
 @section('content')
-<section class="admin-shell">
-    <div class="container">
+<section class="cea-admin-panel">
+    <div class="admin-shell">
+        @include('admin.partials.sidebar', ['activeSection' => $section['key']])
+        <div class="admin-workspace">
         <div class="admin-hero">
-            <span class="cea-kicker">Admin Section</span>
-            <h1>Kelola {{ $section['label'] }}</h1>
-            <p>{{ $section['description'] }}</p>
+            <div>
+                <span class="admin-eyebrow">Panel Admin CEA</span>
+                <h1>Kelola {{ $section['label'] }}</h1>
+                <p>{{ $section['description'] }}</p>
+            </div>
+            <a class="admin-source-link" href="{{ $section['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber resmi</a>
         </div>
 
         <div class="admin-stat-strip">
@@ -38,6 +43,7 @@
                 <p>Halaman ini disiapkan untuk konten menu utama yang tidak memiliki dropdown.</p>
             </div>
         @endif
+        </div>
     </div>
 </section>
 @endsection

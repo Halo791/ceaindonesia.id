@@ -3,12 +3,17 @@
 @section('title', 'Panel Admin CEA')
 
 @section('content')
-<section class="admin-shell">
-    <div class="container">
+<section class="cea-admin-panel">
+    <div class="admin-shell">
+        @include('admin.partials.sidebar')
+        <div class="admin-workspace">
         <div class="admin-hero">
-            <span class="cea-kicker">Admin</span>
-            <h1>Dashboard Konten CEA</h1>
-            <p>Panel ini mengadopsi struktur menu dan dropdown dari ceaindonesia.id, lalu menyiapkan ruang kelola untuk setiap kanal.</p>
+            <div>
+                <span class="admin-eyebrow">Panel Admin CEA</span>
+                <h1>Dashboard Konten CEA</h1>
+                <p>Panel ini mengadopsi struktur menu dan dropdown dari ceaindonesia.id, lalu menyiapkan ruang kelola untuk setiap kanal.</p>
+            </div>
+            <a class="admin-source-link" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Sumber resmi</a>
         </div>
 
         <div class="admin-stat-strip">
@@ -50,6 +55,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         </div>
     </div>
 </section>
