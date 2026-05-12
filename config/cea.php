@@ -171,11 +171,11 @@ return [
             ],
             'simpul' => [
                 'eyebrow' => 'Regio',
-                'title' => 'Simpul',
-                'subtitle' => 'Peta simpul, focal point, dan wilayah kerja regional.',
-                'body' => 'Simpul regional menjadi basis koordinasi CEA di tingkat wilayah. Simpul menghubungkan organisasi, komunitas, dan aktor lokal untuk memperkuat kerja kolektif dalam isu ruang sipil dan demokrasi.',
+                'title' => 'Sebaran Region Simpul KSO-Pooling Fund',
+                'subtitle' => 'Daftar simpul regional dan anggota KSO-Pooling Fund di berbagai wilayah Indonesia.',
+                'body' => "1. KSO-Pooling Fund SUMBAGSEL (Sumatera Bagian Selatan) \"Tangguh\"\nAnggota:\n1. Yayasan Peduli Kemandirian Masyarakat (YAPEMMAS) Medan\n2. Yayasan Fajar Sejahtera Indonesia (YAFSI)-Medan\n3. WALHI Sumbar\n4. WALHI SUMUT\n5. FLOWER Aceh\n6. Yayasan Perempuan dan Anak Negeri (YPANBA) Aceh\n\n2. KSO-Pooling Fund SUMBAGSEL (Sumatera Bagian Selatan) \"Pulih dan Lestari\"\nAnggota:\n1. WALHI Lampung\n2. LBH Bandar Lampung\n3. PKBI Lampung\n4. WALHI Bengkulu\n5. YKWS Lampung\n\n3. KSO-Pooling Fund Region Papua (KSO Tanah Papua)\nAnggota:\n1. LEKAT Jayapura\n2. KIPRA Jayapura\n3. YAPMI Jayapura\n4. GEMAPALA Fakfak\n5. YAPARI Sorong\n6. PERDU Manokwari\n7. KOMPAK Nabire\n8. HUMI INANE Wamena\n\n4. KSO-Pooling Fund Region Kalimantan (Solidaritas Kemanusiaan Borneo)\nAnggota:\n1. WALHI Kalbar\n2. WALHI Kalsel\n3. WALHI Kalteng\n4. WALHI Kaltim\n5. ELPAGAR KalBar\n6. BORNEO Institute Kalteng\n7. PIONIR Bulungan Kaltara\n\n5. KSO-Pooling Fund Region Jawa\nAnggota:\n1. WALHI Jatim\n2. WALHI Jogjakarta\n3. LBH Semarang\n4. LBH Surabaya\n5. LBH Jogjakarta\n6. Yayasan EPIK\n7. KPI Jabar\n\n6. KSO-Pooling Fund Region Sulawesi\n\n7. KSO-Pooling Fund Region Bali Nusra",
                 'image_path' => '/assets/img/cea/campur.png',
-                'cards' => ['Focal Point', 'Member', 'Peta Wilayah', 'Agenda Regional'],
+                'cards' => ['Sumbagsel Tangguh', 'Sumbagsel Pulih dan Lestari', 'Tanah Papua', 'Solidaritas Kemanusiaan Borneo', 'Jawa', 'Sulawesi', 'Bali Nusra'],
             ],
             'anggota' => [
                 'eyebrow' => 'Regio',
