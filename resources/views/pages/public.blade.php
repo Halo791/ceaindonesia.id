@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $content['title'].' - CEA Indonesia')
+@section('title', $content['title'] === config('app.name') ? config('app.name') : $content['title'].' - '.config('app.name'))
 
 @push('styles')
 <style>

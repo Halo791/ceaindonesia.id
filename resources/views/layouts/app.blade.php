@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'CEA Indonesia')</title>
+    <title>@yield('title', config('app.name'))</title>
     <link rel="icon" href="{{ asset('favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
@@ -130,7 +130,7 @@
                     <div class="col-lg-4 col-md-3 order-0 order-lg-2 d-none d-md-block">
                         <div class="header__top-logo logo text-lg-center">
                             <a href="{{ route('home') }}" class="cea-logo-image-link">
-                                <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
+                                <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
                             </a>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                             <nav class="tgmenu__nav">
                                 <div class="logo d-block d-lg-none">
                                     <a href="{{ route('home') }}" class="cea-logo-image-link cea-logo-image-link--mobile">
-                                        <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
+                                        <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
                                     </a>
                                 </div>
                                 <div class="offcanvas-toggle d-none d-lg-block">

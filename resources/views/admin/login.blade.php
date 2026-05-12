@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login Admin CEA')
+@section('title', 'Login Admin - '.config('app.name'))
 
 @push('styles')
 <style>
@@ -44,7 +44,7 @@
 <section class="admin-login">
     <div class="container">
         <div class="admin-login__card">
-            <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
+            <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
             <h1>Login Admin</h1>
             <p>Masuk untuk mengelola konten menu, submenu, tulisan, dan gambar website.</p>
 

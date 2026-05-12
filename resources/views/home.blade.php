@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'CEA Indonesia')
+@section('title', config('app.name'))
 
 @php
     $images = [
@@ -13,13 +13,13 @@
         'study' => asset('assets/img/cea/pomelli_bdna_image_0510%20%287%29.png'),
     ];
     $focusAreas = [
-        ['title' => 'Ruang Sipil', 'description' => 'Mengawal ruang aman bagi organisasi masyarakat sipil, komunitas, dan warga.', 'image' => $images['action']],
-        ['title' => 'Gerakan Kolektif', 'description' => 'Menghubungkan simpul, gagasan, dan aksi lintas wilayah agar gerakan tetap relevan.', 'image' => $images['collective']],
-        ['title' => 'Diskursus Publik', 'description' => 'Membuka ruang belajar, refleksi, dan pertukaran strategi antaraktor masyarakat sipil.', 'image' => $images['forum']],
+        ['title' => 'Kepemimpinan Lokal', 'description' => 'Memperkuat peran komunitas dan organisasi lokal dalam respon sosial serta kemanusiaan.', 'image' => $images['action']],
+        ['title' => 'Pooling Fund', 'description' => 'Menghimpun dan mengelola sumber daya bersama secara transparan, cepat, dan akuntabel.', 'image' => $images['collective']],
+        ['title' => 'Kolaborasi Multipihak', 'description' => 'Membangun ekosistem kolaborasi yang inklusif, setara, dan berbasis kepercayaan.', 'image' => $images['forum']],
     ];
     $governanceItems = [
-        ['label' => 'Struktur Gerak', 'title' => 'Simpul, gugus tugas, dan kaukus isu yang saling terhubung.', 'description' => 'Struktur CEA bergerak sebagai jejaring regional dan nasional yang bekerja otonom namun tetap terikat tujuan bersama.', 'image' => $images['structure'], 'href' => '/profil/struktur-gerak'],
-        ['label' => 'Tata Kelola', 'title' => 'Mobilisasi sumber daya dikelola lewat simpul dan platform penyaluran dana.', 'description' => 'Bagian tata kelola pada landing page memakai gambar tatakelola.png sesuai aset yang tersedia di direktori CEA.', 'image' => $images['governance'], 'href' => '/profil/sumber-daya'],
+        ['label' => 'Struktur Gerak', 'title' => 'Arsitektur mandat kolektif yang menghubungkan simpul regional.', 'description' => 'KSO-Pooling Fund bergerak melalui simpul regional yang otonom dan independen, namun terikat dalam satu visi kepemimpinan lokal.', 'image' => $images['structure'], 'href' => '/profil/struktur-gerak'],
+        ['label' => 'Tata Kelola', 'title' => 'Sumber daya dikelola sebagai mandat kolektif.', 'description' => 'Pengambilan keputusan dilakukan sedekat mungkin dengan krisis agar dana dikelola transparan untuk ketangguhan komunitas.', 'image' => $images['governance'], 'href' => '/profil/sumber-daya'],
     ];
     $stats = [
         ['value' => '78', 'label' => 'Organisasi masyarakat sipil'],
@@ -80,16 +80,16 @@
     <div class="container">
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
-                <span class="cea-landing-hero__eyebrow">Civic Engagement Alliance</span>
-                <h1 class="cea-scramble-title">Merawat ruang sipil, memperkuat gerakan akar rumput.</h1>
-                <p>CEA Indonesia adalah aliansi organisasi masyarakat sipil yang bekerja bersama untuk demokrasi, ruang sipil, keadilan sosial, dan kelestarian alam.</p>
+                <span class="cea-landing-hero__eyebrow">Menguatkan Lokal, Memperluas Dampak</span>
+                <h1 class="cea-scramble-title">Pooling Fund Kemanusiaan - KSO.</h1>
+                <p>Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal.</p>
                 <div class="cea-landing-hero__actions">
                     <a class="cea-btn" href="/profil">Jelajahi Profil</a>
                     <a class="cea-btn secondary" href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Lihat Situs Resmi</a>
                 </div>
             </div>
-            <div class="cea-landing-hero__visual" aria-label="Gambar header CEA Indonesia">
-                <img src="{{ $images['header'] }}" alt="CEA Indonesia">
+            <div class="cea-landing-hero__visual" aria-label="Gambar header {{ config('app.name') }}">
+                <img src="{{ $images['header'] }}" alt="{{ config('app.name') }}">
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@
     <div class="container">
         <div class="cea-section__head">
             <span>Fokus Gerakan</span>
-            <h2>Aliansi yang menghubungkan simpul, gagasan, dan aksi.</h2>
+            <h2>Ekosistem yang menghubungkan sumber daya, komunitas, dan respon kemanusiaan.</h2>
         </div>
         <div class="cea-focus-grid">
             @foreach ($focusAreas as $item)
@@ -129,7 +129,7 @@
     <div class="container">
         <div class="cea-section__head">
             <span>Struktur & Tata Kelola</span>
-            <h2>Gerak kolektif ditopang oleh struktur dan tata kelola sumber daya.</h2>
+            <h2>Gerak kolektif ditopang oleh arsitektur mandat dan tata kelola sumber daya.</h2>
         </div>
         <div class="cea-governance-grid">
             @foreach ($governanceItems as $item)
@@ -151,7 +151,7 @@
     <div class="container">
         <div class="cea-section__head">
             <span>Menu & Dropdown</span>
-            <h2>CEA Repositori</h2>
+            <h2>Repositori KSO-Pooling Fund</h2>
         </div>
         <div class="cea-menu-grid">
             @foreach ($dropdownSections as $section)

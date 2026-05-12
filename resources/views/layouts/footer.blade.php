@@ -2,8 +2,8 @@
     <div class="container">
         <div class="cea-footer-grid">
             <div class="cea-footer-brand">
-                <img src="{{ asset('assets/img/cea/1.png') }}" alt="CEA Indonesia">
-                <p>Aliansi keterlibatan sipil untuk merawat demokrasi, memperkuat ruang sipil, dan menghubungkan kerja kolektif lintas wilayah.</p>
+                <img src="{{ asset('assets/img/cea/1.png') }}" alt="{{ config('app.name') }}">
+                <p>Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan berbasis kebutuhan komunitas dan kepemimpinan lokal.</p>
                 <div class="cea-footer-actions mt-3">
                     <a href="https://ceaindonesia.id/" target="_blank" rel="noreferrer">Situs Resmi</a>
                 </div>
@@ -31,6 +31,6 @@
                 <p>sekretariat@ceaindonesia.id</p>
             </div>
         </div>
-        <div class="cea-footer-bottom"><span>2026 CEA Indonesia</span></div>
+        <div class="cea-footer-bottom"><span>2026 {{ config('app.name') }}</span></div>
     </div>
 </footer>
