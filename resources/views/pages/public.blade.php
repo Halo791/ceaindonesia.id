@@ -107,6 +107,11 @@
         margin: 0;
         padding: 0;
     }
+    .public-sidebar li ul {
+        border-left: 1px solid #efd0d0;
+        margin: 8px 0 2px 10px;
+        padding-left: 10px;
+    }
     .public-sidebar a {
         background: #fff4f2;
         border-radius: 8px;
@@ -176,9 +181,7 @@
             <h2>{{ $section['label'] }}</h2>
             <ul>
                 <li><a href="{{ $section['publicHref'] ?? '#' }}">Ringkasan {{ $section['label'] }}</a></li>
-                @foreach ($siblings as $sibling)
-                    <li><a href="{{ $sibling['publicHref'] ?? $sibling['href'] }}">{{ $sibling['label'] }}</a></li>
-                @endforeach
+                @include('layouts.public-sidebar-items', ['items' => $siblings])
             </ul>
         </aside>
     </div>

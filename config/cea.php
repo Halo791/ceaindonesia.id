@@ -2,7 +2,137 @@
 
 $baseUrl = 'https://ceaindonesia.id';
 
+$simpulRegions = [
+    [
+        'key' => 'sumbagsel-tangguh',
+        'label' => 'KSO-Pooling Fund SUMBAGSEL (Sumatera Bagian Selatan) "Tangguh"',
+        'shortLabel' => 'SUMBAGSEL "Tangguh"',
+        'description' => 'Simpul KSO-Pooling Fund wilayah Sumatera dengan tagline Tangguh.',
+        'members' => [
+            'Yayasan Peduli Kemandirian Masyarakat (YAPEMMAS) Medan',
+            'Yayasan Fajar Sejahtera Indonesia (YAFSI)-Medan',
+            'WALHI Sumbar',
+            'WALHI SUMUT',
+            'FLOWER Aceh',
+            'Yayasan Perempuan dan Anak Negeri (YPANBA) Aceh',
+        ],
+    ],
+    [
+        'key' => 'sumbagsel-pulih-lestari',
+        'label' => 'KSO-Pooling Fund SUMBAGSEL (Sumatera Bagian Selatan) "Pulih dan Lestari"',
+        'shortLabel' => 'SUMBAGSEL "Pulih dan Lestari"',
+        'description' => 'Simpul KSO-Pooling Fund wilayah Sumatera Bagian Selatan dengan tagline Pulih dan Lestari.',
+        'members' => [
+            'WALHI Lampung',
+            'LBH Bandar Lampung',
+            'PKBI Lampung',
+            'WALHI Bengkulu',
+            'YKWS Lampung',
+        ],
+    ],
+    [
+        'key' => 'tanah-papua',
+        'label' => 'KSO-Pooling Fund Region Papua (KSO Tanah Papua)',
+        'shortLabel' => 'KSO Tanah Papua',
+        'description' => 'Simpul KSO-Pooling Fund Region Papua.',
+        'members' => [
+            'LEKAT Jayapura',
+            'KIPRA Jayapura',
+            'YAPMI Jayapura',
+            'GEMAPALA Fakfak',
+            'YAPARI Sorong',
+            'PERDU Manokwari',
+            'KOMPAK Nabire',
+            'HUMI INANE Wamena',
+        ],
+    ],
+    [
+        'key' => 'kalimantan-borneo',
+        'label' => 'KSO-Pooling Fund Region Kalimantan (Solidaritas Kemanusiaan Borneo)',
+        'shortLabel' => 'Solidaritas Kemanusiaan Borneo',
+        'description' => 'Simpul KSO-Pooling Fund Region Kalimantan.',
+        'members' => [
+            'WALHI Kalbar',
+            'WALHI Kalsel',
+            'WALHI Kalteng',
+            'WALHI Kaltim',
+            'ELPAGAR KalBar',
+            'BORNEO Institute Kalteng',
+            'PIONIR Bulungan Kaltara',
+        ],
+    ],
+    [
+        'key' => 'jawa',
+        'label' => 'KSO-Pooling Fund Region Jawa',
+        'shortLabel' => 'Region Jawa',
+        'description' => 'Simpul KSO-Pooling Fund Region Jawa.',
+        'members' => [
+            'WALHI Jatim',
+            'WALHI Jogjakarta',
+            'LBH Semarang',
+            'LBH Surabaya',
+            'LBH Jogjakarta',
+            'Yayasan EPIK',
+            'KPI Jabar',
+        ],
+    ],
+    [
+        'key' => 'sulawesi',
+        'label' => 'KSO-Pooling Fund Region Sulawesi',
+        'shortLabel' => 'Region Sulawesi',
+        'description' => 'Simpul KSO-Pooling Fund Region Sulawesi. Data anggota dapat dilengkapi melalui panel admin.',
+        'members' => [],
+    ],
+    [
+        'key' => 'bali-nusra',
+        'label' => 'KSO-Pooling Fund Region Bali Nusra',
+        'shortLabel' => 'Region Bali Nusra',
+        'description' => 'Simpul KSO-Pooling Fund Region Bali Nusra. Data anggota dapat dilengkapi melalui panel admin.',
+        'members' => [],
+    ],
+];
+
+$simpulNavigation = array_map(function (array $region) {
+    $members = array_map(function (string $member) use ($region) {
+        $memberKey = strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $member), '-'));
+
+        return [
+            'key' => $memberKey,
+            'label' => $member,
+            'href' => "/admin/regio/simpul/{$region['key']}/{$memberKey}",
+            'publicHref' => "/regio/simpul/{$region['key']}/{$memberKey}",
+            'description' => "Anggota {$region['shortLabel']}: {$member}.",
+            'eyebrow' => $region['shortLabel'],
+            'title' => $member,
+            'subtitle' => "Anggota {$region['label']}.",
+            'body' => "{$member} merupakan anggota {$region['label']} dalam ekosistem KSO-Pooling Fund.",
+            'image_path' => '/assets/img/cea/campur.png',
+            'cards' => [$region['shortLabel'], 'Anggota Simpul', 'KSO-Pooling Fund'],
+        ];
+    }, $region['members']);
+
+    $memberLines = empty($region['members'])
+        ? "Data anggota {$region['label']} akan dilengkapi kemudian."
+        : "Anggota:\n".implode("\n", array_map(fn ($member) => "- {$member}", $region['members']));
+
+    return [
+        'key' => $region['key'],
+        'label' => $region['label'],
+        'href' => "/admin/regio/simpul/{$region['key']}",
+        'publicHref' => "/regio/simpul/{$region['key']}",
+        'description' => $region['description'],
+        'eyebrow' => 'Sebaran Simpul',
+        'title' => $region['label'],
+        'subtitle' => $region['description'],
+        'body' => "{$region['description']}\n\n{$memberLines}",
+        'image_path' => '/assets/img/cea/campur.png',
+        'cards' => empty($region['members']) ? ['Data anggota menyusul'] : $region['members'],
+        'children' => $members,
+    ];
+}, $simpulRegions);
+
 return [
+    'simpul_regions' => $simpulRegions,
     'navigation' => [
         ['key' => 'beranda', 'label' => 'BERANDA', 'href' => '/', 'sourceHref' => $baseUrl.'/', 'description' => 'Halaman utama Pooling Fund - KSO dan ringkasan mandat kolektif.'],
         [
@@ -29,7 +159,7 @@ return [
             'sourceHref' => $baseUrl.'/',
             'description' => 'Kelola data simpul regional dan organisasi anggota Pooling Fund - KSO.',
             'children' => [
-                ['key' => 'simpul', 'label' => 'Sebaran Simpul', 'href' => '/admin/regio/simpul', 'publicHref' => '/regio/simpul', 'sourceHref' => $baseUrl.'/', 'description' => 'Sebaran region, anggota simpul, wilayah kerja, dan status regional.'],
+                ['key' => 'simpul', 'label' => 'Sebaran Simpul', 'href' => '/admin/regio/simpul', 'publicHref' => '/regio/simpul', 'sourceHref' => $baseUrl.'/', 'description' => 'Sebaran region, anggota simpul, wilayah kerja, dan status regional.', 'children' => $simpulNavigation],
                 ['key' => 'anggota', 'label' => 'Anggota', 'href' => '/admin/regio/anggota', 'publicHref' => '/regio/anggota', 'sourceHref' => $baseUrl.'/', 'description' => 'Direktori organisasi anggota, profil lembaga, dan relasi simpul.'],
             ],
         ],

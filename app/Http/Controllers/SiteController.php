@@ -42,6 +42,37 @@ class SiteController extends Controller
         return $this->renderPublicPage($sectionData, $item);
     }
 
+    public function publicNestedItem(string $section, string $slug, string $child): View
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $parent = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($parent, 404);
+
+        $item = collect($parent['children'] ?? [])->firstWhere('key', $child);
+        abort_unless($item, 404);
+
+        return $this->renderPublicPage($sectionData, $item, collect($parent['children'] ?? [])->values());
+    }
+
+    public function publicNestedLeaf(string $section, string $slug, string $child, string $leaf): View
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $parent = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($parent, 404);
+
+        $group = collect($parent['children'] ?? [])->firstWhere('key', $child);
+        abort_unless($group, 404);
+
+        $item = collect($group['children'] ?? [])->firstWhere('key', $leaf);
+        abort_unless($item, 404);
+
+        return $this->renderPublicPage($sectionData, $item, collect($group['children'] ?? [])->values());
+    }
+
     public function blog(): View
     {
         return view('blog.index', $this->shared([
@@ -139,7 +170,7 @@ class SiteController extends Controller
         return collect(config('cea.navigation'))->firstWhere('key', $key);
     }
 
-    private function renderPublicPage(array $section, ?array $item = null): View
+    private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null): View
     {
         $pageContent = $this->pageContent($section, $item);
         $dbContent = $this->adminContent($section, $item);
@@ -151,7 +182,7 @@ class SiteController extends Controller
             'section' => $section,
             'item' => $item,
             'content' => $content,
-            'siblings' => collect($section['children'] ?? [])->values(),
+            'siblings' => $siblings ? collect($siblings)->values() : collect($section['children'] ?? [])->values(),
         ]));
     }
 
@@ -161,6 +192,9 @@ class SiteController extends Controller
         $content = $item
             ? data_get($pages, "{$section['key']}.{$item['key']}", [])
             : data_get($pages, "{$section['key']}._section", []);
+        $embeddedContent = $item
+            ? collect($item)->only(['eyebrow', 'title', 'subtitle', 'body', 'image_path', 'source_href', 'cards'])->all()
+            : [];
 
         return array_merge([
             'eyebrow' => $section['label'],
@@ -171,7 +205,7 @@ class SiteController extends Controller
             'source_href' => $item['sourceHref'] ?? $section['sourceHref'] ?? '',
             'status' => 'active',
             'cards' => [],
-        ], $content);
+        ], $embeddedContent, $content);
     }
 
     private function adminContent(array $section, ?array $item = null): array

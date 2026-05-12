@@ -26,6 +26,11 @@
         .tgmenu__navbar-wrap ul.navigation li .sub-menu { display: block; left: 0; opacity: 0; pointer-events: none; top: 100%; transform: translateY(12px); visibility: hidden; }
         .tgmenu__navbar-wrap ul.navigation li:hover > .sub-menu,
         .tgmenu__navbar-wrap ul.navigation li:focus-within > .sub-menu { opacity: 1; pointer-events: auto; transform: translateY(0); visibility: visible; }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu li { position: relative; }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu .sub-menu { left: 100%; top: 0; transform: translateX(12px); }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu li:hover > .sub-menu,
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu li:focus-within > .sub-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu a { max-width: 320px; white-space: normal; }
         .tgmenu__navbar-wrap ul.navigation > li.active > a,
         .tgmenu__navbar-wrap ul.navigation > li:hover > a { color: var(--tg-theme-primary); }
         .tgmenu__action .header-search-form { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; box-shadow: 0 14px 28px rgba(0,0,0,.08); display: none; padding: 10px; position: absolute; right: 0; top: 42px; width: min(320px, 80vw); z-index: 20; }
@@ -170,29 +175,7 @@
                                 </div>
                                 <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-lg-flex">
                                     <ul class="navigation">
-                                        @foreach ($navigation as $nav)
-                                            @php
-                                                $href = $nav['publicHref'] ?? $nav['href'];
-                                                $path = trim($href, '/');
-                                                $active = $href === '/' ? request()->is('/') : request()->is($path) || request()->is($path.'/*');
-                                            @endphp
-                                            <li class="{{ ! empty($nav['children']) ? 'menu-item-has-children' : '' }} {{ $active ? 'active' : '' }}">
-                                                <a href="{{ $href }}">{{ $nav['label'] }}</a>
-                                                @if (! empty($nav['children']))
-                                                    <ul class="sub-menu">
-                                                        @foreach ($nav['children'] as $child)
-                                                            @php
-                                                                $childHref = $child['publicHref'] ?? $child['href'];
-                                                                $childPath = trim($childHref, '/');
-                                                            @endphp
-                                                            <li class="{{ request()->is($childPath) || request()->is($childPath.'/*') ? 'active' : '' }}">
-                                                                <a href="{{ $childHref }}">{{ $child['label'] }}</a>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                @endif
-                                            </li>
-                                        @endforeach
+                                        @include('layouts.nav-items', ['items' => $navigation])
                                     </ul>
                                 </div>
                                 <div class="tgmenu__action">
@@ -212,9 +195,7 @@
                         </div>
                         <nav class="cea-mobile-menu d-lg-none" aria-label="Menu mobile">
                             <ul>
-                                @foreach ($navigation as $nav)
-                                    <li><a href="{{ $nav['publicHref'] ?? $nav['href'] }}">{{ $nav['label'] }}</a></li>
-                                @endforeach
+                                @include('layouts.nav-items', ['items' => $navigation])
                             </ul>
                         </nav>
                     </div>

@@ -34,6 +34,14 @@ Route::get('/{section}', [SiteController::class, 'publicSection'])
     ->whereIn('section', ['profil', 'regio', 'siar', 'aksi', 'koneksi', 'kolektif'])
     ->name('public.section');
 
+Route::get('/{section}/{slug}/{child}/{leaf}', [SiteController::class, 'publicNestedLeaf'])
+    ->whereIn('section', ['regio'])
+    ->name('public.nested.leaf');
+
+Route::get('/{section}/{slug}/{child}', [SiteController::class, 'publicNestedItem'])
+    ->whereIn('section', ['regio'])
+    ->name('public.nested.item');
+
 Route::get('/{section}/{slug}', [SiteController::class, 'publicItem'])
     ->whereIn('section', ['profil', 'regio', 'siar', 'aksi', 'koneksi'])
     ->name('public.item');
