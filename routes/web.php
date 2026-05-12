@@ -22,3 +22,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/{section}', [SiteController::class, 'adminSection'])->name('section');
     Route::get('/{section}/{slug}', [SiteController::class, 'adminItem'])->name('item');
 });
+
+Route::get('/{section}', [SiteController::class, 'publicSection'])
+    ->whereIn('section', ['profil', 'regio', 'siar', 'aksi', 'koneksi', 'kolektif'])
+    ->name('public.section');
+
+Route::get('/{section}/{slug}', [SiteController::class, 'publicItem'])
+    ->whereIn('section', ['profil', 'regio', 'siar', 'aksi', 'koneksi'])
+    ->name('public.item');

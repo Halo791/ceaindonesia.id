@@ -20,9 +20,26 @@ class SiteController extends Controller
         $section = $this->findSection('profil');
         $item = collect($section['children'] ?? [])->firstWhere('key', 'riwayat');
 
-        return view('pages.riwayat', $this->shared([
-            'content' => $this->adminContent($section, $item),
-        ]));
+        return $this->renderPublicPage($section, $item);
+    }
+
+    public function publicSection(string $section): View
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        return $this->renderPublicPage($sectionData);
+    }
+
+    public function publicItem(string $section, string $slug): View
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $item = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($item, 404);
+
+        return $this->renderPublicPage($sectionData, $item);
     }
 
     public function blog(): View
@@ -122,6 +139,41 @@ class SiteController extends Controller
         return collect(config('cea.navigation'))->firstWhere('key', $key);
     }
 
+    private function renderPublicPage(array $section, ?array $item = null): View
+    {
+        $pageContent = $this->pageContent($section, $item);
+        $dbContent = $this->adminContent($section, $item);
+        $content = $dbContent['_from_database']
+            ? array_merge($pageContent, array_filter($dbContent, fn ($value, $key) => $key !== '_from_database' && filled($value), ARRAY_FILTER_USE_BOTH))
+            : $pageContent;
+
+        return view('pages.public', $this->shared([
+            'section' => $section,
+            'item' => $item,
+            'content' => $content,
+            'siblings' => collect($section['children'] ?? [])->values(),
+        ]));
+    }
+
+    private function pageContent(array $section, ?array $item = null): array
+    {
+        $pages = config('cea.page_contents');
+        $content = $item
+            ? data_get($pages, "{$section['key']}.{$item['key']}", [])
+            : data_get($pages, "{$section['key']}._section", []);
+
+        return array_merge([
+            'eyebrow' => $section['label'],
+            'title' => $item['label'] ?? $section['label'],
+            'subtitle' => $item['description'] ?? $section['description'],
+            'body' => $item['description'] ?? $section['description'],
+            'image_path' => '/assets/img/cea/campur.png',
+            'source_href' => $item['sourceHref'] ?? $section['sourceHref'] ?? '',
+            'status' => 'active',
+            'cards' => [],
+        ], $content);
+    }
+
     private function adminContent(array $section, ?array $item = null): array
     {
         $fallback = [
@@ -131,6 +183,7 @@ class SiteController extends Controller
             'image_path' => '',
             'source_href' => $item['sourceHref'] ?? $section['sourceHref'] ?? '',
             'status' => 'draft',
+            '_from_database' => false,
         ];
 
         try {
@@ -150,7 +203,7 @@ class SiteController extends Controller
                 'image_path',
                 'source_href',
                 'status',
-            ]));
+            ]), ['_from_database' => true]);
         } catch (\Throwable) {
             return $fallback;
         }
