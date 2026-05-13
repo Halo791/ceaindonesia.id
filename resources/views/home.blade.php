@@ -69,49 +69,49 @@
 
 @push('styles')
 <style>
-    .cea-landing-hero { background: radial-gradient(circle at 80% 10%, rgba(232,93,74,.34), transparent 32%), linear-gradient(135deg, #2a0710 0%, #5b0f1a 54%, #7a1626 100%); color: #fff; overflow: hidden; padding: 78px 0 86px; }
+    .cea-landing-hero { background: radial-gradient(circle at 80% 10%, rgba(242,201,76,.28), transparent 32%), linear-gradient(135deg, #063d2a 0%, #0f5d3e 54%, #1f7a43 100%); color: #fff; overflow: hidden; padding: 78px 0 86px; }
     .cea-landing-hero__grid { align-items: center; display: grid; gap: 48px; grid-template-columns: minmax(0, .82fr) minmax(420px, 1fr); }
-    .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2b66d; display: block; font-size: 13px; font-weight: 900; margin-bottom: 18px; text-transform: uppercase; }
+    .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 13px; font-weight: 900; margin-bottom: 18px; text-transform: uppercase; }
     .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(52px, 6.8vw, 96px); font-weight: 900; letter-spacing: 0; line-height: .94; margin-bottom: 22px; max-width: 860px; text-transform: none; text-wrap: balance; }
     .cea-landing-hero p { color: rgba(255,255,255,.82); font-size: 18px; line-height: 1.75; margin-bottom: 30px; max-width: 640px; }
     .cea-landing-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .cea-landing-hero__visual { align-items: stretch; border-radius: 8px; box-shadow: 0 34px 80px rgba(42,7,16,.36); display: flex; min-height: 330px; overflow: hidden; }
+    .cea-landing-hero__visual { align-items: stretch; border-radius: 8px; box-shadow: 0 34px 80px rgba(6,61,42,.32); display: flex; min-height: 330px; overflow: hidden; }
     .cea-section { background: #fff; padding: 82px 0; }
-    .cea-section--soft { background: linear-gradient(180deg, #fff8f5 0%, #fff 100%); }
+    .cea-section--soft { background: linear-gradient(180deg, #f6f9e8 0%, #fff 100%); }
     .cea-section__head { margin-bottom: 32px; max-width: 820px; }
-    .cea-section__head span { color: #b91c31; margin-bottom: 9px; }
-    .cea-section__head h2 { color: #3a0710; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.12; margin: 0; }
+    .cea-section__head span { color: #1f7a43; margin-bottom: 9px; }
+    .cea-section__head h2 { color: #063d2a; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.12; margin: 0; }
     .cea-focus-grid, .cea-menu-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .cea-focus-card, .cea-governance-card, .cea-menu-card { background: #fff; border: 1px solid #efd0d0; border-radius: 8px; box-shadow: 0 18px 44px rgba(75,11,23,.08); overflow: hidden; }
-    .cea-focus-card:hover, .cea-governance-card:hover, .cea-menu-card:hover { border-color: rgba(185,28,49,.28); box-shadow: 0 24px 58px rgba(75,11,23,.13); }
-    .cea-focus-card__image, .cea-menu-card__image { aspect-ratio: 16 / 10; background: #fff4f2; overflow: hidden; }
+    .cea-focus-card, .cea-governance-card, .cea-menu-card { background: #fff; border: 1px solid #dfe9c9; border-radius: 8px; box-shadow: 0 18px 44px rgba(6,61,42,.08); overflow: hidden; }
+    .cea-focus-card:hover, .cea-governance-card:hover, .cea-menu-card:hover { border-color: rgba(31,122,67,.32); box-shadow: 0 24px 58px rgba(6,61,42,.13); }
+    .cea-focus-card__image, .cea-menu-card__image { aspect-ratio: 16 / 10; background: #f6f9e8; overflow: hidden; }
     .cea-focus-card__image img, .cea-menu-card__image img, .cea-governance-card__media img { display: block; height: 100%; object-fit: cover; width: 100%; }
     .cea-focus-card__body, .cea-menu-card__body, .cea-governance-card__body { padding: 24px; }
-    .cea-focus-card h3, .cea-governance-card h3, .cea-menu-card h3 { color: #3a0710; font-size: 24px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; }
-    .cea-focus-card p, .cea-governance-card p, .cea-menu-card p { color: #67464b; font-size: 15px; line-height: 1.75; margin: 0; }
-    .cea-focus-card__body a { color: #b91c31; display: inline-flex; font-weight: 900; margin-top: 16px; }
+    .cea-focus-card h3, .cea-governance-card h3, .cea-menu-card h3 { color: #063d2a; font-size: 24px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; }
+    .cea-focus-card p, .cea-governance-card p, .cea-menu-card p { color: #4f6759; font-size: 15px; line-height: 1.75; margin: 0; }
+    .cea-focus-card__body a { color: #1f7a43; display: inline-flex; font-weight: 900; margin-top: 16px; }
     .cea-principles { background: #fff; padding: 72px 0; }
     .cea-principles__grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .cea-principle { background: #fff4f2; border: 1px solid #efd0d0; border-radius: 8px; color: #3a0710; font-weight: 900; padding: 18px; }
-    .cea-field-stories { background: #fffaf7; padding: 80px 0; }
+    .cea-principle { background: #f6f9e8; border: 1px solid #dfe9c9; border-radius: 8px; color: #063d2a; font-weight: 900; padding: 18px; }
+    .cea-field-stories { background: #fbfaf0; padding: 80px 0; }
     .cea-field-stories__grid { display: grid; gap: 22px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .cea-story-card { background: #fff; border: 1px solid rgba(122,22,38,.14); border-radius: 8px; box-shadow: 0 18px 44px rgba(75,11,23,.08); grid-column: span 2; overflow: hidden; }
+    .cea-story-card { background: #fff; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; box-shadow: 0 18px 44px rgba(6,61,42,.08); grid-column: span 2; overflow: hidden; }
     .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: span 3; }
-    .cea-story-card__image { aspect-ratio: 16 / 10; background: #fff4f2; overflow: hidden; }
+    .cea-story-card__image { aspect-ratio: 16 / 10; background: #f6f9e8; overflow: hidden; }
     .cea-story-card__image img { display: block; height: 100%; object-fit: cover; width: 100%; }
     .cea-story-card__body { padding: 22px; }
-    .cea-story-card__label { color: #b91c31; display: block; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
-    .cea-story-card h3 { color: #3a0710; font-size: 23px; font-weight: 900; line-height: 1.16; margin-bottom: 12px; }
-    .cea-story-card p { color: #67464b; font-size: 15px; line-height: 1.75; margin: 0; }
-    .cea-stats { background: #4b0b17; padding: 40px 0; }
+    .cea-story-card__label { color: #1f7a43; display: block; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
+    .cea-story-card h3 { color: #063d2a; font-size: 23px; font-weight: 900; line-height: 1.16; margin-bottom: 12px; }
+    .cea-story-card p { color: #4f6759; font-size: 15px; line-height: 1.75; margin: 0; }
+    .cea-stats { background: #063d2a; padding: 40px 0; }
     .cea-stats__grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cea-stat { border: 1px solid rgba(255,255,255,.16); border-radius: 8px; color: #fff; padding: 22px; }
-    .cea-stat strong { color: #f2b66d; display: block; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 8px; }
+    .cea-stat strong { color: #f2c94c; display: block; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 8px; }
     .cea-stat span { color: rgba(255,255,255,.78); font-size: 14px; font-weight: 800; }
     .cea-governance-grid { display: grid; gap: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .cea-governance-card__media { aspect-ratio: 16 / 10; background: #fff4f2; overflow: hidden; }
-    .cea-governance-card__body span { color: #b91c31; margin-bottom: 10px; }
-    .cea-governance-card__body a, .cea-menu-card__body a { color: #b91c31; font-weight: 900; }
+    .cea-governance-card__media { aspect-ratio: 16 / 10; background: #f6f9e8; overflow: hidden; }
+    .cea-governance-card__body span { color: #1f7a43; margin-bottom: 10px; }
+    .cea-governance-card__body a, .cea-menu-card__body a { color: #1f7a43; font-weight: 900; }
     .cea-menu-card__body ul { display: grid; gap: 8px; list-style: none; margin: 18px 0 0; padding: 0; }
     @media (max-width: 991px) {
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }

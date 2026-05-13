@@ -13,17 +13,17 @@
     <link rel="stylesheet" href="{{ asset('assets/css/spacing.css') }}">
     <style>
         :root {
-            --cea-red: #7a1626;
-            --cea-dark: #240710;
-            --cea-gold: #f2b66d;
-            --cea-ink: #161616;
-            --cea-muted: #686868;
+            --cea-red: #1f7a43;
+            --cea-dark: #063d2a;
+            --cea-gold: #f2c94c;
+            --cea-ink: #10261d;
+            --cea-muted: #5b6c61;
         }
         body { background: #fff; color: var(--cea-ink); }
         header, main, footer { position: relative; z-index: 2; }
         header { z-index: 50; }
         @unless (request()->is('admin*'))
-            .kso-cube-field { color: rgba(242, 182, 109, .74); inset: 0; opacity: .22; pointer-events: none; position: fixed; z-index: 3; }
+            .kso-cube-field { color: rgba(242, 201, 76, .74); inset: 0; opacity: .18; pointer-events: none; position: fixed; z-index: 3; }
             .kso-cube-field canvas { display: block; height: 100%; width: 100%; }
         @else
             header, main, footer { position: static; z-index: auto; }
@@ -61,34 +61,34 @@
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
-        .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(122,22,38,.1); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
+        .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
         .kso-wordmark .kso-wordmark__image { display: block; height: auto; max-height: 100%; object-fit: contain; width: 100%; }
         .kso-wordmark--header { height: 54px; width: 178px; }
         .kso-wordmark--compact { height: 48px; width: 158px; }
         .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
         .kso-wordmark--footer, .kso-wordmark--login { height: 86px; width: 190px; }
-        .kso-wordmark--hero { background: #fff; box-shadow: inset 0 0 0 1px rgba(122,22,38,.08); height: 100%; min-height: 330px; padding: 24px; width: 100%; }
+        .kso-wordmark--hero { background: #fff; box-shadow: inset 0 0 0 1px rgba(31,122,67,.1); height: 100%; min-height: 330px; padding: 24px; width: 100%; }
         .kso-wordmark--panel { min-height: inherit; width: 100%; }
         .kso-wordmark--hero .kso-wordmark__image { max-height: 460px; }
         .cea-footer-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-        .cea-footer-actions a { align-items: center; background: #f2b66d; border: 1px solid #f2b66d; border-radius: 8px; color: #2a0710; display: inline-flex; font-size: 14px; font-weight: 800; min-height: 46px; padding: 12px 18px; }
-        .cea-footer-actions a:hover { background: #fff; border-color: #fff; color: #4b0b17; }
-        .cea-landing-footer { background: #2a0710; padding: 56px 0 24px; }
+        .cea-footer-actions a { align-items: center; background: #f2c94c; border: 1px solid #f2c94c; border-radius: 8px; color: #063d2a; display: inline-flex; font-size: 14px; font-weight: 800; min-height: 46px; padding: 12px 18px; }
+        .cea-footer-actions a:hover { background: #fff; border-color: #fff; color: #0f5d3e; }
+        .cea-landing-footer { background: #063d2a; padding: 56px 0 24px; }
         .cea-footer-grid { display: grid; gap: 30px; grid-template-columns: 1.4fr repeat(3, 1fr); }
         .cea-footer-brand .kso-wordmark { display: grid; margin-bottom: 16px; max-width: 210px; }
         .cea-landing-footer h3 { color: #fff; font-size: 18px; margin-bottom: 14px; }
         .cea-landing-footer p { color: #c9b3b7; font-size: 15px; line-height: 1.75; margin: 0 0 10px; }
         .cea-landing-footer ul { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
         .cea-landing-footer a { color: rgba(255,255,255,.78); }
-        .cea-landing-footer a:hover { color: #f2b66d; }
+        .cea-landing-footer a:hover { color: #f2c94c; }
         .cea-footer-bottom { border-top: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.54); margin-top: 32px; padding-top: 18px; }
         .cea-section { padding: 86px 0; }
         .cea-kicker { color: var(--cea-red); display: block; font-size: 13px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; }
         .cea-card-grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-        .cea-card { background: #fff; border: 1px solid rgba(122, 22, 38, .12); border-radius: 8px; padding: 26px; }
+        .cea-card { background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; padding: 26px; }
         .cea-card h3, .cea-card h2 { color: var(--cea-dark); margin-bottom: 12px; }
         .cea-card p { color: var(--cea-muted); line-height: 1.7; }
-        .home-hero { background: linear-gradient(135deg, #2a0710 0%, #7a1626 64%, #a64034 100%); color: #fff; padding: 92px 0 76px; }
+        .home-hero { background: linear-gradient(135deg, #063d2a 0%, #1f7a43 64%, #7b8f23 100%); color: #fff; padding: 92px 0 76px; }
         .home-hero__grid { align-items: center; display: grid; gap: 48px; grid-template-columns: minmax(0, .88fr) minmax(340px, 1fr); }
         .home-hero h1 { color: #fff; font-size: clamp(46px, 7vw, 92px); font-weight: 900; line-height: .98; margin-bottom: 24px; }
         .home-hero p { color: rgba(255,255,255,.84); font-size: 18px; line-height: 1.75; margin-bottom: 28px; }
@@ -116,7 +116,7 @@
             .admin-stat span { color: var(--cea-muted); display: block; font-size: 13px; }
             .admin-stat strong { color: var(--cea-red); font-size: 30px; }
             .admin-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-            .admin-card, .admin-table-card, .admin-form-card { background: #fff; border: 1px solid rgba(122,22,38,.12); border-radius: 8px; padding: 24px; }
+            .admin-card, .admin-table-card, .admin-form-card { background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; padding: 24px; }
             .admin-card__label, .admin-status { color: var(--cea-red); font-size: 12px; font-weight: 900; text-transform: uppercase; }
             .admin-card__actions, .admin-form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
             .admin-button, .admin-source-link { align-items: center; background: #1b5e3b; border: 1px solid #1b5e3b; border-radius: 8px; color: #fff; display: inline-flex; font-size: 13px; font-weight: 700; justify-content: center; min-height: 40px; padding: 10px 14px; text-align: center; white-space: nowrap; }
@@ -251,7 +251,7 @@
             if ($container && !reduceMotion) {
                 engine.useDefaultMainLoop = false;
 
-                const color = utils.get($container, 'color') || '#f2b66d';
+                const color = utils.get($container, 'color') || '#f2c94c';
                 let { width, height } = $container.getBoundingClientRect();
                 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
                 const scene = new THREE.Scene();

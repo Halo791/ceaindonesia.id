@@ -7,17 +7,17 @@
     .admin-login {
         align-items: center;
         background:
-            radial-gradient(circle at 80% 10%, rgba(242, 182, 109, .22), transparent 30%),
-            linear-gradient(135deg, #2a0710 0%, #5b0f1a 58%, #7a1626 100%);
+            radial-gradient(circle at 80% 10%, rgba(242, 201, 76, .24), transparent 30%),
+            linear-gradient(135deg, #063d2a 0%, #0f5d3e 58%, #1f7a43 100%);
         display: flex;
         min-height: 620px;
         padding: 80px 0;
     }
     .admin-login__card {
         background: #fff;
-        border: 1px solid #efd0d0;
+        border: 1px solid #dfe9c9;
         border-radius: 8px;
-        box-shadow: 0 34px 80px rgba(42,7,16,.3);
+        box-shadow: 0 34px 80px rgba(6,61,42,.28);
         margin: 0 auto;
         max-width: 460px;
         padding: 32px;
@@ -28,12 +28,12 @@
         max-width: 160px;
     }
     .admin-login__card h1 {
-        color: #3a0710;
+        color: #063d2a;
         font-size: 32px;
         margin-bottom: 10px;
     }
     .admin-login__card p {
-        color: #67464b;
+        color: #4f6759;
         line-height: 1.7;
         margin-bottom: 22px;
     }

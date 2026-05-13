@@ -6,8 +6,8 @@
 <style>
     .public-hero {
         background:
-            radial-gradient(circle at 82% 12%, rgba(242, 182, 109, .2), transparent 30%),
-            linear-gradient(135deg, #2a0710 0%, #5b0f1a 58%, #7a1626 100%);
+            radial-gradient(circle at 82% 12%, rgba(242, 201, 76, .24), transparent 30%),
+            linear-gradient(135deg, #063d2a 0%, #0f5d3e 58%, #1f7a43 100%);
         color: #fff;
         padding: 82px 0 88px;
     }
@@ -20,7 +20,7 @@
     .public-hero__eyebrow,
     .public-section__head span,
     .public-card span {
-        color: #f2b66d;
+        color: #f2c94c;
         display: block;
         font-size: 13px;
         font-weight: 900;
@@ -43,9 +43,9 @@
         max-width: 720px;
     }
     .public-hero__visual {
-        background: #fff8f5;
+        background: #f6f9e8;
         border-radius: 8px;
-        box-shadow: 0 34px 80px rgba(42,7,16,.32);
+        box-shadow: 0 34px 80px rgba(6,61,42,.28);
         overflow: hidden;
         padding: 20px;
     }
@@ -66,7 +66,7 @@
         grid-template-columns: minmax(0, 1fr) 320px;
     }
     .public-body {
-        color: #52353a;
+        color: #405d4a;
         font-size: 17px;
         line-height: 1.85;
     }
@@ -80,13 +80,13 @@
     .public-card,
     .public-sidebar {
         background: #fff;
-        border: 1px solid #efd0d0;
+        border: 1px solid #dfe9c9;
         border-radius: 8px;
-        box-shadow: 0 18px 44px rgba(75,11,23,.08);
+        box-shadow: 0 18px 44px rgba(6,61,42,.08);
         padding: 22px;
     }
     .public-card h3 {
-        color: #3a0710;
+        color: #063d2a;
         font-size: 21px;
         margin: 0;
     }
@@ -96,7 +96,7 @@
         top: 100px;
     }
     .public-sidebar h2 {
-        color: #3a0710;
+        color: #063d2a;
         font-size: 20px;
         margin-bottom: 14px;
     }
@@ -108,19 +108,19 @@
         padding: 0;
     }
     .public-sidebar li ul {
-        border-left: 1px solid #efd0d0;
+        border-left: 1px solid #dfe9c9;
         margin: 8px 0 2px 10px;
         padding-left: 10px;
     }
     .public-sidebar a {
-        background: #fff4f2;
+        background: #f6f9e8;
         border-radius: 8px;
-        color: #7a1626;
+        color: #1f7a43;
         display: block;
         font-weight: 800;
         padding: 10px 12px;
     }
-    .public-sidebar a:hover { background: #f2b66d; color: #2a0710; }
+    .public-sidebar a:hover { background: #f2c94c; color: #063d2a; }
     @media (max-width: 991px) {
         .public-hero__grid,
         .public-layout { grid-template-columns: 1fr; }
