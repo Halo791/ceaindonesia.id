@@ -76,6 +76,7 @@
     .cea-landing-hero p { color: rgba(255,255,255,.82); font-size: 18px; line-height: 1.75; margin-bottom: 30px; max-width: 640px; }
     .cea-landing-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .cea-landing-hero__visual { align-items: stretch; border-radius: 8px; box-shadow: 0 34px 80px rgba(6,61,42,.32); display: flex; min-height: 330px; overflow: hidden; }
+    .cea-landing-hero__video { aspect-ratio: 16 / 10; display: block; height: 100%; min-height: 330px; object-fit: cover; width: 100%; }
     .cea-section { background: #fff; padding: 82px 0; }
     .cea-section--soft { background: linear-gradient(180deg, #f6f9e8 0%, #fff 100%); }
     .cea-section__head { margin-bottom: 32px; max-width: 820px; }
@@ -134,8 +135,10 @@
                     <a class="cea-btn secondary" href="/regio/simpul">Lihat Simpul</a>
                 </div>
             </div>
-            <div class="cea-landing-hero__visual" aria-label="Pooling Fund - KSO">
-                @include('layouts.kso-wordmark', ['variant' => 'hero', 'tagline' => 'Menguatkan lokal, memperluas dampak.', 'panel' => true])
+            <div class="cea-landing-hero__visual" aria-label="Video Pooling Fund - KSO">
+                <video class="cea-landing-hero__video" autoplay muted loop playsinline preload="metadata">
+                    <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
+                </video>
             </div>
         </div>
     </div>
