@@ -2,6 +2,13 @@
 
 @section('title', 'Riwayat Pooling Fund - KSO')
 
+@php
+    $riwayatImagePath = $content['image_path'] ?? '';
+    $riwayatHeroImage = ($riwayatImagePath && strpos($riwayatImagePath, 'assets/img/cea/') === false)
+        ? $riwayatImagePath
+        : asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg');
+@endphp
+
 @section('content')
 <section class="home-hero">
     <div class="container">
@@ -12,9 +19,7 @@
                 <p>{{ $content['subtitle'] ?: 'Pooling Fund - KSO lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
                 <a class="cea-btn" href="{{ route('home') }}">Kembali ke Beranda</a>
             </div>
-            <div class="home-hero__wordmark">
-                @include('layouts.kso-wordmark', ['variant' => 'content', 'tagline' => 'Riwayat Proses Pembentukan', 'panel' => true])
-            </div>
+            <img class="home-hero__image" src="{{ $riwayatHeroImage }}" alt="{{ $content['title'] ?: 'Riwayat Pooling Fund - KSO' }}">
         </div>
     </div>
 </section>

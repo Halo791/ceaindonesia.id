@@ -3,14 +3,21 @@
 @section('title', config('app.name'))
 
 @php
+    $disasterImages = [
+        'psychosocial' => asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
+        'children' => asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg'),
+        'waterOne' => asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg'),
+        'waterTwo' => asset('assets/img/lapangan/walhi-sumut-tandon-air-2.jpeg'),
+        'logistics' => asset('assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg'),
+    ];
     $focusAreas = [
-        ['title' => 'Mandat Kolektif', 'description' => 'Satu mandat bersama untuk memperkuat kepemimpinan lokal dan respon kemanusiaan yang berkeadilan.', 'href' => '/profil/mandat-visi-nilai'],
-        ['title' => 'Tanpa Badan Hukum Baru', 'description' => 'Platform kerja sama operasional antar CSO yang menjaga kedaulatan organisasi anggota.', 'href' => '/profil/riwayat'],
-        ['title' => 'Local First', 'description' => 'Keputusan dan sumber daya diarahkan sedekat mungkin dengan komunitas yang menghadapi krisis.', 'href' => '/profil/tujuan-prinsip'],
+        ['title' => 'Mandat Kolektif', 'description' => 'Satu mandat bersama untuk memperkuat kepemimpinan lokal dan respon kemanusiaan yang berkeadilan.', 'image' => $disasterImages['logistics'], 'href' => '/profil/mandat-visi-nilai'],
+        ['title' => 'Tanpa Badan Hukum Baru', 'description' => 'Platform kerja sama operasional antar CSO yang menjaga kedaulatan organisasi anggota.', 'image' => $disasterImages['children'], 'href' => '/profil/riwayat'],
+        ['title' => 'Local First', 'description' => 'Keputusan dan sumber daya diarahkan sedekat mungkin dengan komunitas yang menghadapi krisis.', 'image' => $disasterImages['waterTwo'], 'href' => '/profil/tujuan-prinsip'],
     ];
     $governanceItems = [
-        ['label' => 'Arsitektur Mandat', 'title' => 'Simpul regional otonom terhubung dalam satu visi kepemimpinan lokal.', 'description' => 'Forum Anggota memegang mandat kolektif dengan prinsip one organization, one vote, sementara fungsi strategis dan operasional dipisahkan untuk menjaga akuntabilitas.', 'href' => '/profil/struktur-gerak'],
-        ['label' => 'Tata Kelola Sumber Daya', 'title' => 'Dana dikelola sebagai mandat kolektif, bukan aset lembaga.', 'description' => 'Pengambilan keputusan dilakukan oleh mereka yang paling dekat dengan krisis agar respon cepat, transparan, dan relevan dengan kebutuhan komunitas.', 'href' => '/profil/sumber-daya'],
+        ['label' => 'Arsitektur Mandat', 'title' => 'Simpul regional otonom terhubung dalam satu visi kepemimpinan lokal.', 'description' => 'Forum Anggota memegang mandat kolektif dengan prinsip one organization, one vote, sementara fungsi strategis dan operasional dipisahkan untuk menjaga akuntabilitas.', 'image' => $disasterImages['logistics'], 'href' => '/profil/struktur-gerak'],
+        ['label' => 'Tata Kelola Sumber Daya', 'title' => 'Dana dikelola sebagai mandat kolektif, bukan aset lembaga.', 'description' => 'Pengambilan keputusan dilakukan oleh mereka yang paling dekat dengan krisis agar respon cepat, transparan, dan relevan dengan kebutuhan komunitas.', 'image' => $disasterImages['waterOne'], 'href' => '/profil/sumber-daya'],
     ];
     $stats = [
         ['value' => '1', 'label' => 'Mandat kolektif'],
@@ -21,33 +28,40 @@
         [
             'title' => 'Ruang Aman Pemulihan Anak Penyintas',
             'label' => 'PKBI Aceh',
-            'image' => asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
+            'image' => $disasterImages['psychosocial'],
             'description' => 'Di tengah situasi pascabencana yang masih menyisakan trauma, anak-anak penyintas di Aceh perlahan belajar kembali untuk tersenyum, bermain, dan merasa aman melalui layanan dukungan psikososial.',
         ],
         [
             'title' => 'Harapan yang Tumbuh dari Gambar Anak-Anak',
             'label' => 'PKBI Aceh',
-            'image' => asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg'),
+            'image' => $disasterImages['children'],
             'description' => 'Melalui aktivitas menggambar, bermain, dan belajar bersama, anak-anak diajak mengekspresikan perasaan setelah melewati situasi penuh ketakutan dan kehilangan.',
         ],
         [
             'title' => 'Akses Air Bersih untuk Warga Terdampak',
             'label' => 'WALHI Sumut',
-            'image' => asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg'),
+            'image' => $disasterImages['waterOne'],
             'description' => 'Pemasangan tandon air menjadi bagian dari respon cepat untuk memastikan kebutuhan dasar warga tetap terpenuhi di wilayah yang terdampak krisis dan gangguan akses layanan.',
         ],
         [
             'title' => 'Gotong Royong Menyiapkan Sarana Air',
             'label' => 'WALHI Sumut',
-            'image' => asset('assets/img/lapangan/walhi-sumut-tandon-air-2.jpeg'),
+            'image' => $disasterImages['waterTwo'],
             'description' => 'Warga dan relawan bekerja bersama menyiapkan sarana air bersih. Respon kemanusiaan menjadi lebih kuat ketika komunitas terlibat langsung dalam proses pemulihan.',
         ],
         [
             'title' => 'Distribusi Logistik bagi Penyintas Bencana',
             'label' => 'WALHI Sumbar',
-            'image' => asset('assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg'),
+            'image' => $disasterImages['logistics'],
             'description' => 'Bantuan logistik disalurkan melalui kerja kolektif relawan dan simpul lokal agar kebutuhan mendesak penyintas dapat dijawab secara cepat, transparan, dan tepat sasaran.',
         ],
+    ];
+    $menuImages = [
+        'profil' => $disasterImages['psychosocial'],
+        'regio' => $disasterImages['waterTwo'],
+        'siar' => $disasterImages['children'],
+        'aksi' => $disasterImages['logistics'],
+        'koneksi' => $disasterImages['waterOne'],
     ];
     $dropdownSections = collect($navigation)->filter(fn ($item) => ! empty($item['children']))->values();
     $principles = ['Satu CSO satu suara', 'Berbasis kebutuhan komunitas', 'Kecepatan sebagai nilai utama', 'Transparansi sebagai aset strategis', 'Akuntabilitas kolektif', 'Local leadership & local first'];
@@ -62,14 +76,16 @@
     .cea-landing-hero p { color: rgba(255,255,255,.82); font-size: 18px; line-height: 1.75; margin-bottom: 30px; max-width: 640px; }
     .cea-landing-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .cea-landing-hero__visual { align-items: stretch; border-radius: 8px; box-shadow: 0 34px 80px rgba(42,7,16,.36); display: flex; min-height: 330px; overflow: hidden; }
-    .cea-section { background: #fff; padding: 76px 0; }
-    .cea-section--soft { background: #fff4f2; }
+    .cea-section { background: #fff; padding: 82px 0; }
+    .cea-section--soft { background: linear-gradient(180deg, #fff8f5 0%, #fff 100%); }
     .cea-section__head { margin-bottom: 32px; max-width: 820px; }
     .cea-section__head span { color: #b91c31; margin-bottom: 9px; }
     .cea-section__head h2 { color: #3a0710; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.12; margin: 0; }
     .cea-focus-grid, .cea-menu-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cea-focus-card, .cea-governance-card, .cea-menu-card { background: #fff; border: 1px solid #efd0d0; border-radius: 8px; box-shadow: 0 18px 44px rgba(75,11,23,.08); overflow: hidden; }
-    .cea-focus-card__image, .cea-menu-card__image { align-items: stretch; aspect-ratio: 16 / 10; background: #fff4f2; display: flex; overflow: hidden; }
+    .cea-focus-card:hover, .cea-governance-card:hover, .cea-menu-card:hover { border-color: rgba(185,28,49,.28); box-shadow: 0 24px 58px rgba(75,11,23,.13); }
+    .cea-focus-card__image, .cea-menu-card__image { aspect-ratio: 16 / 10; background: #fff4f2; overflow: hidden; }
+    .cea-focus-card__image img, .cea-menu-card__image img, .cea-governance-card__media img { display: block; height: 100%; object-fit: cover; width: 100%; }
     .cea-focus-card__body, .cea-menu-card__body, .cea-governance-card__body { padding: 24px; }
     .cea-focus-card h3, .cea-governance-card h3, .cea-menu-card h3 { color: #3a0710; font-size: 24px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; }
     .cea-focus-card p, .cea-governance-card p, .cea-menu-card p { color: #67464b; font-size: 15px; line-height: 1.75; margin: 0; }
@@ -93,7 +109,7 @@
     .cea-stat strong { color: #f2b66d; display: block; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 8px; }
     .cea-stat span { color: rgba(255,255,255,.78); font-size: 14px; font-weight: 800; }
     .cea-governance-grid { display: grid; gap: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .cea-governance-card__media { align-items: stretch; background: #fff; display: flex; min-height: 280px; padding: 18px; }
+    .cea-governance-card__media { aspect-ratio: 16 / 10; background: #fff4f2; overflow: hidden; }
     .cea-governance-card__body span { color: #b91c31; margin-bottom: 10px; }
     .cea-governance-card__body a, .cea-menu-card__body a { color: #b91c31; font-weight: 900; }
     .cea-menu-card__body ul { display: grid; gap: 8px; list-style: none; margin: 18px 0 0; padding: 0; }
@@ -135,7 +151,7 @@
             @foreach ($focusAreas as $item)
                 <article class="cea-focus-card">
                     <div class="cea-focus-card__image">
-                        @include('layouts.kso-wordmark', ['variant' => 'card', 'tagline' => $item['title'], 'panel' => true])
+                        <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
                     </div>
                     <div class="cea-focus-card__body">
                         <h3>{{ $item['title'] }}</h3>
@@ -182,7 +198,7 @@
             @foreach ($governanceItems as $item)
                 <article class="cea-governance-card">
                     <div class="cea-governance-card__media">
-                        @include('layouts.kso-wordmark', ['variant' => 'card', 'tagline' => $item['label'], 'panel' => true])
+                        <img src="{{ $item['image'] }}" alt="{{ $item['label'] }}">
                     </div>
                     <div class="cea-governance-card__body">
                         <span>{{ $item['label'] }}</span>
@@ -229,7 +245,7 @@
             @foreach ($dropdownSections as $section)
                 <article class="cea-menu-card">
                     <div class="cea-menu-card__image">
-                        @include('layouts.kso-wordmark', ['variant' => 'card', 'tagline' => $section['label'], 'panel' => true])
+                        <img src="{{ $menuImages[$section['key']] ?? $disasterImages['logistics'] }}" alt="{{ $section['label'] }}">
                     </div>
                     <div class="cea-menu-card__body">
                         <h3>{{ $section['label'] }}</h3>

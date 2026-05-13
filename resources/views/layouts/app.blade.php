@@ -75,17 +75,13 @@
         .kso-wordmark--compact { min-height: 46px; min-width: 156px; padding: 7px 10px; }
         .kso-wordmark--compact strong { font-size: 22px; }
         .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
-        .kso-wordmark--hero, .kso-wordmark--card, .kso-wordmark--content { height: 100%; min-height: 300px; width: 100%; }
+        .kso-wordmark--hero { height: 100%; min-height: 300px; width: 100%; }
         .kso-wordmark--panel { min-height: inherit; width: 100%; }
         .kso-wordmark--hero { --kso-bg: #fffaf7; min-height: 330px; padding: 34px; }
-        .kso-wordmark--hero .kso-wordmark__grid, .kso-wordmark--card .kso-wordmark__grid, .kso-wordmark--content .kso-wordmark__grid { gap: 10px; inset: -12% -6%; }
+        .kso-wordmark--hero .kso-wordmark__grid { gap: 10px; inset: -12% -6%; }
         .kso-wordmark--hero .kso-wordmark__eyebrow { font-size: 15px; }
         .kso-wordmark--hero strong { font-size: clamp(76px, 9vw, 150px); }
         .kso-wordmark--hero .kso-wordmark__tagline { font-size: 17px; }
-        .kso-wordmark--card { min-height: 100%; padding: 22px; }
-        .kso-wordmark--card strong { font-size: clamp(42px, 5vw, 72px); }
-        .kso-wordmark--content { min-height: 380px; padding: 28px; }
-        .kso-wordmark--content strong { font-size: clamp(62px, 8vw, 120px); }
         .cea-footer-actions { display: flex; flex-wrap: wrap; gap: 12px; }
         .cea-footer-actions a { align-items: center; background: #f2b66d; border: 1px solid #f2b66d; border-radius: 8px; color: #2a0710; display: inline-flex; font-size: 14px; font-weight: 800; min-height: 46px; padding: 12px 18px; }
         .cea-footer-actions a:hover { background: #fff; border-color: #fff; color: #4b0b17; }
@@ -108,7 +104,8 @@
         .home-hero__grid { align-items: center; display: grid; gap: 48px; grid-template-columns: minmax(0, .88fr) minmax(340px, 1fr); }
         .home-hero h1 { color: #fff; font-size: clamp(46px, 7vw, 92px); font-weight: 900; line-height: .98; margin-bottom: 24px; }
         .home-hero p { color: rgba(255,255,255,.84); font-size: 18px; line-height: 1.75; margin-bottom: 28px; }
-        .home-hero__wordmark { border-radius: 8px; box-shadow: 0 24px 70px rgba(0,0,0,.22); min-height: 320px; width: 100%; }
+        .home-hero__wordmark, .home-hero__image { border-radius: 8px; box-shadow: 0 24px 70px rgba(0,0,0,.22); min-height: 320px; width: 100%; }
+        .home-hero__image { aspect-ratio: 16 / 10; display: block; min-height: 0; object-fit: cover; }
         @if (request()->is('admin*'))
             .cea-admin-panel { background: #f4f7f4; min-height: 100vh; padding: 34px 0 54px; }
             .admin-shell { display: grid; gap: 24px; grid-template-columns: 280px minmax(0, 1fr); margin: 0 auto; max-width: 1320px; padding: 0 20px; }
@@ -409,7 +406,7 @@
             }
 
             function animateKsoWordmarks() {
-                var wordmarks = Array.prototype.slice.call(document.querySelectorAll('.kso-wordmark'));
+                var wordmarks = Array.prototype.slice.call(document.querySelectorAll('.cea-landing-hero__visual .kso-wordmark--hero'));
                 if (!wordmarks.length || typeof animeGlobal.stagger !== 'function') return;
 
                 var started = new WeakSet();

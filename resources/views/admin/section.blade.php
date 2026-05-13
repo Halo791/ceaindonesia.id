@@ -53,17 +53,12 @@
                     <label>URL / path gambar</label>
                     @php
                         $previewImagePath = old('image_path', $content['image_path']);
-                        $previewAsWordmark = $previewImagePath && strpos($previewImagePath, 'assets/img/cea/') !== false;
+                        $previewFallbackImage = asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg');
+                        $previewImageSrc = ($previewImagePath && strpos($previewImagePath, 'assets/img/cea/') !== false) ? $previewFallbackImage : $previewImagePath;
                     @endphp
-                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="Kosongkan untuk wordmark Pooling Fund - KSO atau gunakan https://...">
-                    @if (! empty($previewImagePath))
-                        @if ($previewAsWordmark)
-                            <div style="border-radius:8px;margin-top:12px;max-height:180px;overflow:hidden;">
-                                @include('layouts.kso-wordmark', ['variant' => 'card', 'tagline' => $content['title'], 'panel' => true])
-                            </div>
-                        @else
-                            <img src="{{ $previewImagePath }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
-                        @endif
+                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="Kosongkan untuk foto lapangan otomatis atau gunakan https://...">
+                    @if (! empty($previewImageSrc))
+                        <img src="{{ $previewImageSrc }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
                     @endif
                 </div>
                 <div class="admin-field">

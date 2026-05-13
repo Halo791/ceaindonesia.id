@@ -131,7 +131,17 @@
 
 @php
     $contentImagePath = $content['image_path'] ?? '';
-    $useKsoWordmark = $contentImagePath === '' || strpos($contentImagePath, 'assets/img/cea/') !== false;
+    $fallbackImages = [
+        asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
+        asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg'),
+        asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg'),
+        asset('assets/img/lapangan/walhi-sumut-tandon-air-2.jpeg'),
+        asset('assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg'),
+    ];
+    $fallbackIndex = abs(crc32($content['title'] ?? config('app.name'))) % count($fallbackImages);
+    $heroImagePath = ($contentImagePath === '' || strpos($contentImagePath, 'assets/img/cea/') !== false)
+        ? $fallbackImages[$fallbackIndex]
+        : $contentImagePath;
 @endphp
 
 @section('content')
@@ -149,11 +159,7 @@
                 </div>
             </div>
             <div class="public-hero__visual">
-                @if ($useKsoWordmark)
-                    @include('layouts.kso-wordmark', ['variant' => 'content', 'tagline' => $content['title'], 'panel' => true])
-                @else
-                    <img src="{{ $contentImagePath }}" alt="{{ $content['title'] }}">
-                @endif
+                <img src="{{ $heroImagePath }}" alt="{{ $content['title'] }}">
             </div>
         </div>
     </div>
