@@ -33,6 +33,6 @@
                 <p>sekretariat@simpulpfb.id</p>
             </div>
         </div>
-        <div class="cea-footer-bottom"><span>2026 {{ config('app.name') }}</span></div>
+        <div class="cea-footer-bottom"><span>2026 SIMPULPFB</span></div>
     </div>
 </footer>
