@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', config('app.name'))</title>
-    <link rel="icon" href="{{ asset('favicon.png') }}">
+    <link rel="icon" type="image/jpeg" href="{{ asset('assets/img/kso/KSO.jpeg') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
@@ -61,27 +61,15 @@
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
-        .kso-wordmark { --kso-bg: #fff8f2; --kso-ink: #3a0710; --kso-accent: #f2b66d; --kso-line: rgba(122,22,38,.16); align-items: center; background: radial-gradient(circle at 78% 22%, rgba(242,182,109,.36), transparent 28%), linear-gradient(135deg, var(--kso-bg), #fff); border: 1px solid var(--kso-line); border-radius: 8px; color: var(--kso-ink); display: grid; isolation: isolate; min-height: 76px; min-width: 210px; overflow: hidden; padding: 16px 18px; position: relative; width: max-content; }
-        .kso-wordmark__grid { display: grid; gap: 8px; grid-template-columns: repeat(11, minmax(9px, 1fr)); inset: -18% -8%; opacity: .38; position: absolute; transform: rotate(-7deg) scale(1.1); z-index: -1; }
-        .kso-wordmark__square { aspect-ratio: 1 / 1; background: linear-gradient(135deg, rgba(122,22,38,.86), rgba(242,182,109,.82)); border-radius: 3px; box-shadow: 0 8px 18px rgba(122,22,38,.14); display: block; opacity: .82; }
-        .kso-wordmark__content { display: grid; gap: 1px; position: relative; z-index: 1; }
-        .kso-wordmark__eyebrow, .kso-wordmark__tagline { color: #a64034; display: block; font-size: 11px; font-weight: 900; letter-spacing: 0; line-height: 1; text-transform: uppercase; }
-        .kso-wordmark strong { color: var(--kso-ink); display: block; font-size: 32px; font-weight: 950; letter-spacing: 0; line-height: .92; text-transform: uppercase; }
-        .kso-wordmark__tagline { color: #5d343a; font-size: 12px; line-height: 1.3; margin-top: 8px; max-width: 420px; text-transform: none; }
-        .kso-wordmark--header { min-height: 52px; min-width: 182px; padding: 8px 12px; }
-        .kso-wordmark--header .kso-wordmark__grid, .kso-wordmark--compact .kso-wordmark__grid { gap: 5px; inset: -26% -12%; }
-        .kso-wordmark--header .kso-wordmark__eyebrow, .kso-wordmark--compact .kso-wordmark__eyebrow { font-size: 9px; }
-        .kso-wordmark--header strong { font-size: 25px; }
-        .kso-wordmark--compact { min-height: 46px; min-width: 156px; padding: 7px 10px; }
-        .kso-wordmark--compact strong { font-size: 22px; }
+        .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(122,22,38,.1); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
+        .kso-wordmark .kso-wordmark__image { display: block; height: auto; max-height: 100%; object-fit: contain; width: 100%; }
+        .kso-wordmark--header { height: 54px; width: 178px; }
+        .kso-wordmark--compact { height: 48px; width: 158px; }
         .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
-        .kso-wordmark--hero { height: 100%; min-height: 300px; width: 100%; }
+        .kso-wordmark--footer, .kso-wordmark--login { height: 86px; width: 190px; }
+        .kso-wordmark--hero { background: #fff; box-shadow: inset 0 0 0 1px rgba(122,22,38,.08); height: 100%; min-height: 330px; padding: 24px; width: 100%; }
         .kso-wordmark--panel { min-height: inherit; width: 100%; }
-        .kso-wordmark--hero { --kso-bg: #fffaf7; min-height: 330px; padding: 34px; }
-        .kso-wordmark--hero .kso-wordmark__grid { gap: 10px; inset: -12% -6%; }
-        .kso-wordmark--hero .kso-wordmark__eyebrow { font-size: 15px; }
-        .kso-wordmark--hero strong { font-size: clamp(76px, 9vw, 150px); }
-        .kso-wordmark--hero .kso-wordmark__tagline { font-size: 17px; }
+        .kso-wordmark--hero .kso-wordmark__image { max-height: 460px; }
         .cea-footer-actions { display: flex; flex-wrap: wrap; gap: 12px; }
         .cea-footer-actions a { align-items: center; background: #f2b66d; border: 1px solid #f2b66d; border-radius: 8px; color: #2a0710; display: inline-flex; font-size: 14px; font-weight: 800; min-height: 46px; padding: 12px 18px; }
         .cea-footer-actions a:hover { background: #fff; border-color: #fff; color: #4b0b17; }
@@ -418,6 +406,7 @@
                     var squares = wordmark.querySelectorAll('.kso-wordmark__square');
                     var textParts = wordmark.querySelectorAll('.kso-wordmark__eyebrow, .kso-wordmark strong, .kso-wordmark__tagline');
                     var grid = [11, 4];
+                    if (!squares.length && !textParts.length) return;
 
                     if (textParts.length) {
                         runAnime({
