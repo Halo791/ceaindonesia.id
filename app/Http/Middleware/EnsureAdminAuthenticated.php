@@ -14,6 +14,17 @@ class EnsureAdminAuthenticated
             return redirect()->route('admin.login');
         }
 
+        if (! $request->session()->has('admin_user')) {
+            $request->session()->put('admin_user', [
+                'id' => null,
+                'name' => 'Super Admin',
+                'username' => (string) env('ADMIN_USERNAME', 'admin'),
+                'role' => 'super_admin',
+                'section_key' => null,
+                'item_key' => null,
+            ]);
+        }
+
         return $next($request);
     }
 }

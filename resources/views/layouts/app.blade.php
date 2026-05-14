@@ -101,11 +101,13 @@
             .admin-sidebar__brand { border-bottom: 1px solid rgba(255,255,255,.1); padding: 20px; }
             .admin-sidebar__brand span, .admin-eyebrow { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: uppercase; }
             .admin-sidebar__brand strong { display: block; font-size: 14px; font-weight: 600; margin-top: 6px; opacity: .72; }
+            .admin-sidebar__brand small { color: rgba(255,255,255,.68); display: block; font-size: 12px; line-height: 1.45; margin-top: 8px; }
             .admin-sidebar__nav { display: flex; flex-direction: column; padding: 12px; }
-            .admin-sidebar__nav a { border-radius: 8px; color: rgba(255,255,255,.78); display: block; font-size: 13px; font-weight: 700; line-height: 1.25; padding: 10px 12px; text-transform: uppercase; }
-            .admin-sidebar__nav a:hover, .admin-sidebar__nav a.active { background: #f3aa3d; color: #102f22; }
+            .admin-sidebar__nav a, .admin-sidebar__nav-label { border-radius: 8px; color: rgba(255,255,255,.78); display: block; font-size: 13px; font-weight: 700; line-height: 1.25; padding: 10px 12px; text-transform: uppercase; }
+            .admin-sidebar__nav-label { color: rgba(255,255,255,.54); cursor: default; }
+            .admin-sidebar__nav a:hover, .admin-sidebar__nav a.active, .admin-sidebar__nav-label.active { background: #f3aa3d; color: #102f22; }
             .admin-sidebar__children { border-left: 1px solid rgba(255,255,255,.12); display: grid; gap: 2px; margin: 2px 0 8px 12px; padding-left: 8px; }
-            .admin-sidebar__children a { font-size: 12px; font-weight: 600; text-transform: none; }
+            .admin-sidebar__children a, .admin-sidebar__children .admin-sidebar__nav-label { font-size: 12px; font-weight: 600; text-transform: none; }
             .admin-workspace { min-width: 0; }
             .admin-hero { align-items: flex-start; background: #fff; border: 1px solid #dfe7df; border-radius: 8px; box-shadow: 0 14px 36px rgba(16,47,34,.06); color: #102f22; display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding: 28px; }
             .admin-hero h1 { color: #102f22; font-size: 32px; line-height: 1.12; margin-bottom: 10px; }

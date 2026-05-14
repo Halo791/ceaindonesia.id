@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminContent;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -53,7 +52,7 @@ class SiteController extends Controller
         $item = collect($parent['children'] ?? [])->firstWhere('key', $child);
         abort_unless($item, 404);
 
-        return $this->renderPublicPage($sectionData, $item, collect($parent['children'] ?? [])->values());
+        return $this->renderPublicPage($sectionData, $item, collect($parent['children'] ?? [])->values(), "{$slug}/{$child}");
     }
 
     public function publicNestedLeaf(string $section, string $slug, string $child, string $leaf): View
@@ -70,7 +69,7 @@ class SiteController extends Controller
         $item = collect($group['children'] ?? [])->firstWhere('key', $leaf);
         abort_unless($item, 404);
 
-        return $this->renderPublicPage($sectionData, $item, collect($group['children'] ?? [])->values());
+        return $this->renderPublicPage($sectionData, $item, collect($group['children'] ?? [])->values(), "{$slug}/{$child}/{$leaf}");
     }
 
     public function blog(): View
@@ -90,16 +89,17 @@ class SiteController extends Controller
         ]));
     }
 
-    public function admin(): View
+    public function admin(): View|RedirectResponse
     {
-        $nav = config('cea.navigation');
+        if ($this->adminIsRestricted()) {
+            return redirect($this->adminLandingUrl($this->adminUser()));
+        }
+
+        $nav = $this->adminNavigation();
         $dropdownSections = collect($nav)->filter(fn ($item) => ! empty($item['children']))->values();
-        $childItems = $dropdownSections->flatMap(function ($section) {
-            return collect($section['children'])->map(fn ($child) => $child + [
-                'section_key' => $section['key'],
-                'section_label' => $section['label'],
-            ]);
-        })->values();
+        $childItems = collect($this->flattenAdminItems($nav))
+            ->filter(fn ($item) => $this->adminCanManage($item['section_key'], $item['item_key']))
+            ->values();
 
         return view('admin.index', $this->shared(compact('dropdownSections', 'childItems')));
     }
@@ -108,10 +108,13 @@ class SiteController extends Controller
     {
         $sectionData = $this->findSection($section);
         abort_unless($sectionData, 404);
+        $this->authorizeAdminContent($sectionData['key']);
 
         return view('admin.section', $this->shared([
             'section' => $sectionData,
             'content' => $this->adminContent($sectionData),
+            'contentKey' => '',
+            'formAction' => route('admin.section.update', $sectionData['key']),
             'dbReady' => $this->databaseReady(),
         ]));
     }
@@ -123,11 +126,65 @@ class SiteController extends Controller
 
         $item = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
         abort_unless($item, 404);
+        $this->authorizeAdminContent($sectionData['key'], $slug);
 
         return view('admin.item', $this->shared([
             'section' => $sectionData,
             'item' => $item,
-            'content' => $this->adminContent($sectionData, $item),
+            'content' => $this->adminContent($sectionData, $item, $slug),
+            'contentKey' => $slug,
+            'formAction' => route('admin.item.update', [$sectionData['key'], $slug]),
+            'dbReady' => $this->databaseReady(),
+        ]));
+    }
+
+    public function adminNestedItem(string $section, string $slug, string $child): View
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $parent = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($parent, 404);
+
+        $item = collect($parent['children'] ?? [])->firstWhere('key', $child);
+        abort_unless($item, 404);
+
+        $contentKey = "{$slug}/{$child}";
+        $this->authorizeAdminContent($sectionData['key'], $contentKey);
+
+        return view('admin.item', $this->shared([
+            'section' => $sectionData,
+            'item' => $item,
+            'content' => $this->adminContent($sectionData, $item, $contentKey),
+            'contentKey' => $contentKey,
+            'formAction' => route('admin.nested.item.update', [$sectionData['key'], $slug, $child]),
+            'dbReady' => $this->databaseReady(),
+        ]));
+    }
+
+    public function adminNestedLeaf(string $section, string $slug, string $child, string $leaf): View
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $parent = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($parent, 404);
+
+        $group = collect($parent['children'] ?? [])->firstWhere('key', $child);
+        abort_unless($group, 404);
+
+        $item = collect($group['children'] ?? [])->firstWhere('key', $leaf);
+        abort_unless($item, 404);
+
+        $contentKey = "{$slug}/{$child}/{$leaf}";
+        $this->authorizeAdminContent($sectionData['key'], $contentKey);
+
+        return view('admin.item', $this->shared([
+            'section' => $sectionData,
+            'item' => $item,
+            'content' => $this->adminContent($sectionData, $item, $contentKey),
+            'contentKey' => $contentKey,
+            'formAction' => route('admin.nested.leaf.update', [$sectionData['key'], $slug, $child, $leaf]),
             'dbReady' => $this->databaseReady(),
         ]));
     }
@@ -148,7 +205,38 @@ class SiteController extends Controller
         $item = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
         abort_unless($item, 404);
 
-        return $this->saveAdminContent($request, $sectionData, $item);
+        return $this->saveAdminContent($request, $sectionData, $item, $slug);
+    }
+
+    public function updateAdminNestedItem(Request $request, string $section, string $slug, string $child): RedirectResponse
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $parent = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($parent, 404);
+
+        $item = collect($parent['children'] ?? [])->firstWhere('key', $child);
+        abort_unless($item, 404);
+
+        return $this->saveAdminContent($request, $sectionData, $item, "{$slug}/{$child}");
+    }
+
+    public function updateAdminNestedLeaf(Request $request, string $section, string $slug, string $child, string $leaf): RedirectResponse
+    {
+        $sectionData = $this->findSection($section);
+        abort_unless($sectionData, 404);
+
+        $parent = collect($sectionData['children'] ?? [])->firstWhere('key', $slug);
+        abort_unless($parent, 404);
+
+        $group = collect($parent['children'] ?? [])->firstWhere('key', $child);
+        abort_unless($group, 404);
+
+        $item = collect($group['children'] ?? [])->firstWhere('key', $leaf);
+        abort_unless($item, 404);
+
+        return $this->saveAdminContent($request, $sectionData, $item, "{$slug}/{$child}/{$leaf}");
     }
 
     public function placeholder(Request $request, string $title): View
@@ -161,7 +249,8 @@ class SiteController extends Controller
     private function shared(array $data = []): array
     {
         return $data + [
-            'navigation' => config('cea.navigation'),
+            'navigation' => request()->is('admin*') ? $this->adminNavigation() : config('cea.navigation'),
+            'adminUser' => $this->adminUser(),
         ];
     }
 
@@ -170,10 +259,10 @@ class SiteController extends Controller
         return collect(config('cea.navigation'))->firstWhere('key', $key);
     }
 
-    private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null): View
+    private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null, ?string $contentKey = null): View
     {
         $pageContent = $this->pageContent($section, $item);
-        $dbContent = $this->adminContent($section, $item);
+        $dbContent = $this->adminContent($section, $item, $contentKey);
         $content = $dbContent['_from_database']
             ? array_merge($pageContent, array_filter($dbContent, fn ($value, $key) => $key !== '_from_database' && filled($value), ARRAY_FILTER_USE_BOTH))
             : $pageContent;
@@ -202,20 +291,21 @@ class SiteController extends Controller
             'subtitle' => $item['description'] ?? $section['description'],
             'body' => $item['description'] ?? $section['description'],
             'image_path' => '/assets/img/cea/campur.png',
-            'source_href' => $item['sourceHref'] ?? $section['sourceHref'] ?? '',
+            'source_href' => $item['sourceHref'] ?? $item['publicHref'] ?? $section['sourceHref'] ?? '',
             'status' => 'active',
             'cards' => [],
         ], $embeddedContent, $content);
     }
 
-    private function adminContent(array $section, ?array $item = null): array
+    private function adminContent(array $section, ?array $item = null, ?string $contentKey = null): array
     {
+        $contentKey ??= $item['key'] ?? '';
         $fallback = [
             'title' => $item['label'] ?? $section['label'],
             'subtitle' => $item['description'] ?? $section['description'],
             'body' => $item['description'] ?? $section['description'],
             'image_path' => '',
-            'source_href' => $item['sourceHref'] ?? $section['sourceHref'] ?? '',
+            'source_href' => $item['sourceHref'] ?? $item['publicHref'] ?? $section['sourceHref'] ?? '',
             'status' => 'draft',
             '_from_database' => false,
         ];
@@ -223,7 +313,7 @@ class SiteController extends Controller
         try {
             $content = AdminContent::query()
                 ->where('section_key', $section['key'])
-                ->where('item_key', $item['key'] ?? '')
+                ->where('item_key', $contentKey)
                 ->first();
 
             if (! $content) {
@@ -243,8 +333,11 @@ class SiteController extends Controller
         }
     }
 
-    private function saveAdminContent(Request $request, array $section, ?array $item = null): RedirectResponse
+    private function saveAdminContent(Request $request, array $section, ?array $item = null, ?string $contentKey = null): RedirectResponse
     {
+        $contentKey ??= $item['key'] ?? '';
+        $this->authorizeAdminContent($section['key'], $contentKey);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
@@ -258,7 +351,7 @@ class SiteController extends Controller
             AdminContent::updateOrCreate(
                 [
                     'section_key' => $section['key'],
-                    'item_key' => $item['key'] ?? '',
+                    'item_key' => $contentKey,
                 ],
                 $validated
             );
@@ -269,6 +362,130 @@ class SiteController extends Controller
                 ->withInput()
                 ->withErrors(['database' => 'Database belum siap atau tabel admin_contents belum dibuat. Import database/sql/admin_contents.sql terlebih dulu.']);
         }
+    }
+
+    private function adminUser(): ?array
+    {
+        return session('admin_user');
+    }
+
+    private function adminIsRestricted(): bool
+    {
+        return ($this->adminUser()['role'] ?? null) === 'member';
+    }
+
+    private function adminCanManage(string $sectionKey, string $itemKey = ''): bool
+    {
+        $adminUser = $this->adminUser();
+
+        if (($adminUser['role'] ?? 'super_admin') === 'super_admin') {
+            return true;
+        }
+
+        return ($adminUser['section_key'] ?? null) === $sectionKey
+            && ($adminUser['item_key'] ?? null) === $itemKey;
+    }
+
+    private function authorizeAdminContent(string $sectionKey, string $itemKey = ''): void
+    {
+        abort_unless($this->adminCanManage($sectionKey, $itemKey), 403, 'Akun ini hanya dapat mengelola submenu yang ditugaskan.');
+    }
+
+    private function adminNavigation(): array
+    {
+        $navigation = config('cea.navigation');
+        $adminUser = $this->adminUser();
+
+        if (($adminUser['role'] ?? 'super_admin') !== 'member') {
+            return $navigation;
+        }
+
+        return $this->filterNavigationForAdmin($navigation, $adminUser);
+    }
+
+    private function filterNavigationForAdmin(array $items, array $adminUser, ?string $sectionKey = null, array $path = []): array
+    {
+        $allowedSection = $adminUser['section_key'] ?? null;
+        $allowedItemKey = $adminUser['item_key'] ?? '';
+        $filtered = [];
+
+        foreach ($items as $item) {
+            $currentSection = $sectionKey ?? $item['key'];
+            $currentPath = $sectionKey ? array_merge($path, [$item['key']]) : [];
+
+            if ($currentSection !== $allowedSection) {
+                continue;
+            }
+
+            $children = $this->filterNavigationForAdmin($item['children'] ?? [], $adminUser, $currentSection, $currentPath);
+            $currentItemKey = implode('/', $currentPath);
+            $isAssignedItem = $currentItemKey !== '' && $currentItemKey === $allowedItemKey;
+
+            if ($isAssignedItem || ! empty($children)) {
+                $item['children'] = $children;
+                $filtered[] = $item;
+            }
+        }
+
+        return $filtered;
+    }
+
+    private function flattenAdminItems(array $navigation): array
+    {
+        $items = [];
+
+        foreach ($navigation as $section) {
+            foreach ($section['children'] ?? [] as $item) {
+                $this->appendAdminItem($items, $section, $item, [$item['key']], 1);
+            }
+        }
+
+        return $items;
+    }
+
+    private function appendAdminItem(array &$items, array $section, array $item, array $path, int $depth): void
+    {
+        $itemKey = implode('/', $path);
+        $items[] = $item + [
+            'section_key' => $section['key'],
+            'section_label' => $section['label'],
+            'item_key' => $itemKey,
+            'depth' => $depth,
+            'admin_href' => $this->adminUrlForContent($section['key'], $itemKey),
+        ];
+
+        foreach ($item['children'] ?? [] as $child) {
+            $this->appendAdminItem($items, $section, $child, array_merge($path, [$child['key']]), $depth + 1);
+        }
+    }
+
+    private function adminLandingUrl(?array $adminUser): string
+    {
+        if (($adminUser['role'] ?? null) !== 'member') {
+            return route('admin.index');
+        }
+
+        return $this->adminUrlForContent($adminUser['section_key'] ?? '', $adminUser['item_key'] ?? '');
+    }
+
+    private function adminUrlForContent(string $sectionKey, string $itemKey = ''): string
+    {
+        if ($sectionKey === '') {
+            return route('admin.index');
+        }
+
+        if ($itemKey === '') {
+            return route('admin.section', $sectionKey);
+        }
+
+        $segments = explode('/', $itemKey);
+
+        return match (count($segments)) {
+            1 => route('admin.item', [$sectionKey, $segments[0]]),
+            2 => route('admin.nested.item', [$sectionKey, $segments[0], $segments[1]]),
+            3 => route('admin.nested.leaf', [$sectionKey, $segments[0], $segments[1], $segments[2]]),
+            default => route('admin.index'),
+        };
     }
 
     private function databaseReady(): bool

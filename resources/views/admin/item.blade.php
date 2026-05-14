@@ -5,7 +5,7 @@
 @section('content')
 <section class="cea-admin-panel">
     <div class="admin-shell">
-        @include('admin.partials.sidebar', ['activeSection' => $section['key'], 'activeItem' => $item['key']])
+        @include('admin.partials.sidebar', ['activeSection' => $section['key'], 'activeItemKey' => $contentKey])
         <div class="admin-workspace">
         <div class="admin-hero">
             <div>
@@ -13,7 +13,7 @@
                 <h1>Kelola {{ $item['label'] }}</h1>
                 <p>{{ $item['description'] }}</p>
             </div>
-            <!-- <a class="admin-source-link" href="{{ $item['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber resmi</a> -->
+            {{-- <a class="admin-source-link" href="{{ $item['sourceHref'] ?? $item['publicHref'] ?? '#' }}" target="_blank" rel="noreferrer">Sumber resmi</a> --}}
         </div>
 
         <div class="admin-form-card admin-section-spacer">
@@ -27,7 +27,7 @@
             @error('database')
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
-            <form method="POST" action="{{ route('admin.item.update', [$section['key'], $item['key']]) }}">
+            <form method="POST" action="{{ $formAction }}">
                 @csrf
                 <div class="admin-field">
                     <label>Judul halaman</label>
@@ -68,10 +68,27 @@
                 </div>
                 <div class="admin-form-actions">
                     <button class="admin-button" type="submit">Simpan ke database</button>
-                    <a class="admin-button secondary" href="{{ $content['source_href'] ?: $item['sourceHref'] }}" target="_blank" rel="noreferrer">Lihat sumber</a>
+                    <a class="admin-button secondary" href="{{ $content['source_href'] ?: ($item['sourceHref'] ?? $item['publicHref'] ?? '#') }}" target="_blank" rel="noreferrer">Lihat sumber</a>
                 </div>
             </form>
         </div>
+        @if (! empty($item['children']))
+            <div class="admin-grid admin-section-spacer">
+                @foreach ($item['children'] as $child)
+                    <article class="admin-card">
+                        <span class="admin-card__label">{{ $item['label'] }}</span>
+                        <h2>{{ $child['label'] }}</h2>
+                        <p>{{ $child['description'] }}</p>
+                        <div class="admin-card__actions">
+                            <a class="admin-button" href="{{ $child['href'] ?? '#' }}">Kelola halaman</a>
+                            @if (! empty($child['sourceHref']))
+                                <a class="admin-button secondary" href="{{ $child['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber</a>
+                            @endif
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        @endif
         </div>
     </div>
 </section>

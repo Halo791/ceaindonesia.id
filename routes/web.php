@@ -23,8 +23,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('admin.auth')->group(function () {
         Route::get('/', [SiteController::class, 'admin'])->name('index');
+        Route::post('/{section}/{slug}/{child}/{leaf}', [SiteController::class, 'updateAdminNestedLeaf'])->name('nested.leaf.update');
+        Route::post('/{section}/{slug}/{child}', [SiteController::class, 'updateAdminNestedItem'])->name('nested.item.update');
         Route::post('/{section}', [SiteController::class, 'updateAdminSection'])->name('section.update');
         Route::post('/{section}/{slug}', [SiteController::class, 'updateAdminItem'])->name('item.update');
+        Route::get('/{section}/{slug}/{child}/{leaf}', [SiteController::class, 'adminNestedLeaf'])->name('nested.leaf');
+        Route::get('/{section}/{slug}/{child}', [SiteController::class, 'adminNestedItem'])->name('nested.item');
         Route::get('/{section}', [SiteController::class, 'adminSection'])->name('section');
         Route::get('/{section}/{slug}', [SiteController::class, 'adminItem'])->name('item');
     });

@@ -34,7 +34,7 @@
             @error('database')
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
-            <form method="POST" action="{{ route('admin.section.update', $section['key']) }}">
+            <form method="POST" action="{{ $formAction }}">
                 @csrf
                 <div class="admin-field">
                     <label>Judul menu</label>

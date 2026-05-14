@@ -92,9 +92,28 @@ $simpulRegions = [
     ],
 ];
 
-$simpulNavigation = array_map(function (array $region) {
-    $members = array_map(function (string $member) use ($region) {
-        $memberKey = strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $member), '-'));
+$memberKeyFor = fn (string $member): string => strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $member), '-'));
+$memberUsernameFor = function (string $member, string $fallbackKey): string {
+    if (preg_match('/\(([A-Za-z0-9-]+)\)\s*-?\s*([A-Za-z]+)?/', $member, $matches)) {
+        return strtolower(trim($matches[1].(! empty($matches[2]) ? '-'.$matches[2] : ''), '-'));
+    }
+
+    return strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $member), '-')) ?: $fallbackKey;
+};
+$simpulAdminAccounts = [];
+
+$simpulNavigation = array_map(function (array $region) use (&$simpulAdminAccounts, $memberKeyFor, $memberUsernameFor) {
+    $members = array_map(function (string $member) use ($region, &$simpulAdminAccounts, $memberKeyFor, $memberUsernameFor) {
+        $memberKey = $memberKeyFor($member);
+        $itemKey = "simpul/{$region['key']}/{$memberKey}";
+        $username = $memberUsernameFor($member, $memberKey);
+
+        $simpulAdminAccounts[] = [
+            'name' => $member,
+            'username' => $username,
+            'section_key' => 'regio',
+            'item_key' => $itemKey,
+        ];
 
         return [
             'key' => $memberKey,
@@ -108,6 +127,7 @@ $simpulNavigation = array_map(function (array $region) {
             'body' => "{$member} merupakan anggota {$region['label']} dalam ekosistem KSO-Pooling Fund.",
             'image_path' => '/assets/img/cea/campur.png',
             'cards' => [$region['shortLabel'], 'Anggota Simpul', 'KSO-Pooling Fund'],
+            'admin_username' => $username,
         ];
     }, $region['members']);
 
@@ -133,6 +153,8 @@ $simpulNavigation = array_map(function (array $region) {
 
 return [
     'simpul_regions' => $simpulRegions,
+    'admin_member_accounts' => $simpulAdminAccounts,
+    'admin_member_default_password' => env('SIMPUL_DEFAULT_PASSWORD', 'Simpul@2026'),
     'navigation' => [
         ['key' => 'beranda', 'label' => 'BERANDA', 'href' => '/', 'sourceHref' => $baseUrl.'/', 'description' => 'Halaman utama Pooling Fund - KSO dan ringkasan mandat kolektif.'],
         [

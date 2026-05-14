@@ -46,10 +46,12 @@
                         @foreach ($childItems as $item)
                             <tr>
                                 <td>{{ $item['section_label'] }}</td>
-                                <td><strong>{{ $item['label'] }}</strong></td>
+                                <td>
+                                    <strong style="padding-left:{{ ($item['depth'] - 1) * 16 }}px;">{{ $item['label'] }}</strong>
+                                </td>
                                 <td>{{ $item['description'] }}</td>
                                 <td><span class="admin-status">Siap diedit</span></td>
-                                <td><a href="{{ route('admin.item', [$item['section_key'], $item['key']]) }}">Kelola</a></td>
+                                <td><a href="{{ $item['admin_href'] }}">Kelola</a></td>
                             </tr>
                         @endforeach
                     </tbody>
