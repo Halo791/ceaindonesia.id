@@ -13,7 +13,7 @@
                 <h1>Kelola {{ $section['label'] }}</h1>
                 <p>{{ $section['description'] }}</p>
             </div>
-            <a class="admin-source-link" href="{{ $section['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber resmi</a>
+            <!-- <a class="admin-source-link" href="{{ $section['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber resmi</a> -->
         </div>
 
         <div class="admin-stat-strip">

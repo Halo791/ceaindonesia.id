@@ -62,10 +62,10 @@ export default function AdminDropdownItemPage({ item }) {
                         <label>Ringkasan</label>
                         <textarea defaultValue={item.description} />
                     </div>
-                    <div className="admin-field">
+                    {/* <div className="admin-field">
                         <label>URL sumber resmi</label>
                         <input defaultValue={item.sourceHref} />
-                    </div>
+                    </div> */}
                     <div className="admin-field">
                         <label>Prioritas tampilan</label>
                         <select defaultValue="normal">

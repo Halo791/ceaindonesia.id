@@ -360,11 +360,11 @@
                 <span class="public-hero__eyebrow">{{ $content['eyebrow'] ?? $section['label'] }}</span>
                 <h1 class="cea-scramble-title">{{ $content['title'] }}</h1>
                 <p>{{ $content['subtitle'] }}</p>
-                <div class="cea-footer-actions">
+                <!-- <div class="cea-footer-actions">
                     @if (! empty($content['source_href']))
                         <a href="{{ $content['source_href'] }}" target="_blank" rel="noreferrer">Sumber Resmi</a>
                     @endif
-                </div>
+                </div> -->
             </div>
             <div class="public-hero__visual">
                 <img src="{{ $heroImagePath }}" alt="{{ $content['title'] }}">

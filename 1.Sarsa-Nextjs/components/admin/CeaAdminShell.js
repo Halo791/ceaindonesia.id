@@ -60,11 +60,11 @@ export default function CeaAdminShell({
                                 <h1>{title}</h1>
                                 {description && <p>{description}</p>}
                             </div>
-                            {sourceHref &&
+                            {/* {sourceHref &&
                                 <a className="admin-source-link" href={sourceHref} target="_blank" rel="noreferrer">
                                     Sumber resmi
                                 </a>
-                            }
+                            } */}
                         </header>
                         {children}
                     </div>

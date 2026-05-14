@@ -13,7 +13,7 @@
                 <h1>Kelola {{ $item['label'] }}</h1>
                 <p>{{ $item['description'] }}</p>
             </div>
-            <a class="admin-source-link" href="{{ $item['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber resmi</a>
+            <!-- <a class="admin-source-link" href="{{ $item['sourceHref'] }}" target="_blank" rel="noreferrer">Sumber resmi</a> -->
         </div>
 
         <div class="admin-form-card admin-section-spacer">
