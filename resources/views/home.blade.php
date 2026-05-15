@@ -262,11 +262,6 @@
                     <a class="cea-btn secondary" href="/regio/simpul">Lihat Simpul</a>
                 </div>
             </div>
-            <div class="cea-landing-hero__panel">
-                <span>Ekosistem KSO</span>
-                <strong>7</strong>
-                <p>Simpul regional otonom yang terhubung dalam satu mandat kolektif.</p>
-            </div>
         </div>
     </div>
 </section>
