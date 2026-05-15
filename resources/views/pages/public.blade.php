@@ -7,9 +7,8 @@
     .public-hero {}
     .public-hero__grid {
         align-items: center;
-        display: grid;
+        display: block;
         gap: 44px;
-        grid-template-columns: minmax(0, .9fr) minmax(340px, 1fr);
     }
     .public-hero__eyebrow,
     .public-section__head span,
@@ -23,18 +22,28 @@
     }
     .public-hero h1 {
         color: #fff;
-        font-size: clamp(48px, 7vw, 92px);
+        font-size: clamp(38px, 5.2vw, 76px);
         font-weight: 900;
         letter-spacing: 0;
-        line-height: .96;
-        margin-bottom: 22px;
+        line-height: 1.02;
+        margin-bottom: 20px;
+        max-width: 780px;
+        text-wrap: balance;
+    }
+    .public-hero h1 span {
+        background: rgba(242,201,76,.92);
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+        color: #063d2a;
+        line-height: 1.22;
+        padding: 0 .14em;
     }
     .public-hero p {
-        color: rgba(255,255,255,.84);
-        font-size: 18px;
+        color: rgba(255,255,255,.86);
+        font-size: 16px;
         line-height: 1.75;
         margin-bottom: 28px;
-        max-width: 720px;
+        max-width: 660px;
     }
     .public-hero__visual { display: none; }
     .public-section {

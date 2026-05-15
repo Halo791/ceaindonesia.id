@@ -202,16 +202,17 @@
     .cea-map-section .cea-section__head h2 { color: #fff; }
     .cea-map-shell { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 8px; overflow: hidden; }
     #simpul-map { background: #0c5266; height: min(72vh, 620px); min-height: 460px; width: 100%; }
-    .cea-map-toolbar { align-items: start; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 16px; }
+    .cea-map-toolbar { align-items: end; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr) minmax(220px, 260px); margin-bottom: 16px; }
     .cea-map-search { background: #1681a4; border-radius: 8px; padding: 14px; width: min(100%, 260px); }
     .cea-map-search label { color: #fff; display: block; font-size: 12px; font-weight: 900; margin-bottom: 8px; }
     .cea-map-search input { border: 0; border-radius: 4px; min-height: 36px; padding: 8px 10px; width: 100%; }
     .cea-map-search__actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; margin-top: 8px; }
     .cea-map-search button, .cea-map-filter button { background: #1c4f78; border: 0; border-radius: 4px; color: #fff; font-size: 11px; font-weight: 900; min-height: 34px; padding: 8px 10px; }
     .cea-map-search button:first-child { background: #7b8893; }
-    .cea-map-filter { background: rgba(22,129,164,.6); border-radius: 8px; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); margin: 0 auto; max-width: 880px; padding: 10px; transform: translateY(-50%); }
-    .cea-map-filter button { background: #204c78; text-align: left; }
-    .cea-map-filter button::before { color: #f2c94c; content: "•"; margin-right: 8px; }
+    .cea-map-filter { background: rgba(22,129,164,.82); border: 1px solid rgba(255,255,255,.14); border-radius: 8px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin: 14px auto 0; padding: 12px; position: relative; z-index: 2; }
+    .cea-map-filter button { align-items: center; background: #204c78; display: inline-flex; gap: 8px; justify-content: flex-start; line-height: 1.25; text-align: left; }
+    .cea-map-filter button::before { background: #f2c94c; border-radius: 999px; content: ""; flex: 0 0 auto; height: 6px; width: 6px; }
+    .cea-map-filter button[data-region-all]::before { background: #99ead9; box-shadow: 0 0 0 3px rgba(153,234,217,.24); }
     .cea-map-filter button.is-active { background: #99ead9; color: #063d2a; }
     .simpul-map-marker { align-items: center; border: 3px solid #fff; border-radius: 999px; box-shadow: 0 12px 24px rgba(0,0,0,.25); display: flex; height: 22px; justify-content: center; width: 22px; }
     .simpul-map-marker--region { background: #f2c94c; }
@@ -223,11 +224,10 @@
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
         .cea-focus-grid, .cea-menu-grid, .cea-stats__grid, .cea-principles__grid, .cea-field-stories__grid { grid-template-columns: 1fr; }
         .cea-story-card, .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: auto; }
-        .cea-landing-hero { min-height: 560px; }
+        .cea-landing-hero { min-height: 100svh; }
         .cea-landing-hero__panel { display: none; }
         .cea-map-toolbar { display: block; }
         .cea-map-search { margin-bottom: 14px; width: 100%; }
-        .cea-map-filter { transform: none; }
     }
 </style>
 @endpush
@@ -301,6 +301,7 @@
             <div id="simpul-map" data-points='@json($mapPoints)'></div>
         </div>
         <div class="cea-map-filter" aria-label="Filter simpul">
+            <button type="button" class="is-active" data-map-reset data-region-all>Semua Simpul</button>
             @foreach ($regionButtons as $regionButton)
                 <button type="button" data-region="{{ $regionButton['key'] }}" data-lat="{{ $regionButton['lat'] }}" data-lng="{{ $regionButton['lng'] }}">{{ $regionButton['label'] }}</button>
             @endforeach
@@ -493,9 +494,11 @@
             map.fitBounds(items.map(function (item) { return item.latLng; }), { padding: [42, 42] });
         }
 
+        var filterButtons = Array.prototype.slice.call(document.querySelectorAll('.cea-map-filter button'));
+
         document.querySelectorAll('[data-region]').forEach(function (button) {
             button.addEventListener('click', function () {
-                document.querySelectorAll('[data-region]').forEach(function (item) {
+                filterButtons.forEach(function (item) {
                     item.classList.remove('is-active');
                 });
                 button.classList.add('is-active');
@@ -510,7 +513,7 @@
 
         var searchForm = document.getElementById('simpul-map-search');
         var searchInput = document.getElementById('simpul-province-search');
-        var resetButton = document.querySelector('[data-map-reset]');
+        var resetButtons = Array.prototype.slice.call(document.querySelectorAll('[data-map-reset]'));
 
         if (searchForm && searchInput) {
             searchForm.addEventListener('submit', function (event) {
@@ -529,13 +532,17 @@
             });
         }
 
-        if (resetButton) {
-            resetButton.addEventListener('click', function () {
-                document.querySelectorAll('[data-region]').forEach(function (item) {
-                    item.classList.remove('is-active');
+        if (resetButtons.length) {
+            resetButtons.forEach(function (resetButton) {
+                resetButton.addEventListener('click', function () {
+                    filterButtons.forEach(function (item) {
+                        item.classList.remove('is-active');
+                    });
+                    var allButton = document.querySelector('[data-region-all]');
+                    if (allButton) allButton.classList.add('is-active');
+                    if (searchInput) searchInput.value = '';
+                    if (bounds.length > 1) map.fitBounds(bounds, { padding: [34, 34] });
                 });
-                if (searchInput) searchInput.value = '';
-                if (bounds.length > 1) map.fitBounds(bounds, { padding: [34, 34] });
             });
         }
     });

@@ -21,24 +21,48 @@
         }
         body { background: #fff; color: var(--cea-ink); }
         header, main, footer { position: relative; z-index: 2; }
-        header { z-index: 50; }
+        header { z-index: 120; }
         @unless (request()->is('admin*'))
             .kso-cube-field { color: rgba(242, 201, 76, .74); inset: 0; opacity: .18; pointer-events: none; position: fixed; z-index: 3; }
             .kso-cube-field canvas { display: block; height: 100%; width: 100%; }
         @else
             header, main, footer { position: static; z-index: auto; }
         @endunless
-        .tg-header__area { position: relative; z-index: 80; }
+        @unless (request()->is('admin*'))
+            header { left: 0; position: absolute; right: 0; top: 0; }
+            #header-fixed-height { display: none !important; }
+            .header__top,
+            .tg-header__area,
+            .tgmenu__wrap { background: transparent !important; box-shadow: none !important; }
+            .header__top { border-bottom: 1px solid rgba(255,255,255,.14); }
+            .tg-header__area { border-bottom: 1px solid rgba(255,255,255,.13); border-top: 1px solid rgba(255,255,255,.08); }
+            .tgmenu__wrap { min-height: 62px; }
+            .header__top-search form { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; }
+            .header__top-search form::before,
+            .header__top-search form input,
+            .header__top-right .lang .dropdown-toggle,
+            .tgmenu__navbar-wrap ul.navigation > li > a,
+            .tgmenu__action ul li a,
+            .mobile-nav-toggler { color: #fff !important; }
+            .header__top-search form input { background: transparent; }
+            .header__top-search form input::placeholder { color: rgba(255,255,255,.72); opacity: 1; }
+            .header__top-right .lang .dropdown-toggle { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
+            .header__top-right .lang .dropdown:hover .dropdown-menu,
+            .header__top-right .lang .dropdown:focus-within .dropdown-menu { display: block; }
+            .header__top-right .btn { box-shadow: 0 14px 32px rgba(0,0,0,.18); }
+            .header__top-logo .kso-wordmark { background: rgba(255,255,255,.9); }
+        @endunless
+        .tg-header__area { position: relative; z-index: 110; }
         .tgmenu__navbar-wrap { position: relative; z-index: 90; }
         .tgmenu__navbar-wrap ul.navigation { align-items: center; display: flex; margin: 0; padding: 0; }
         .tgmenu__navbar-wrap ul.navigation > li { list-style: none; position: relative; }
         .tgmenu__navbar-wrap ul.navigation > li > a { display: block; }
-        .tgmenu__navbar-wrap ul.navigation li .sub-menu { background: #e9e3d8; border: 1px solid rgba(6,61,42,.18); border-top: 5px solid #1b7f55; border-radius: 0 0 8px 8px; box-shadow: 0 18px 44px rgba(6,61,42,.22); display: block; left: 0; max-height: min(72vh, 540px); min-width: 260px; opacity: 0; overflow-y: auto; padding: 0; pointer-events: none; position: absolute; top: 100%; transform: translateY(12px); visibility: hidden; z-index: 999; }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu { background: #e9e3d8; border: 1px solid rgba(6,61,42,.18); border-top: 5px solid #1b7f55; border-radius: 0 0 8px 8px; box-shadow: 0 18px 44px rgba(6,61,42,.22); display: block; left: 0; max-height: min(72vh, 540px); min-width: 260px; opacity: 0; overflow: visible; padding: 0; pointer-events: none; position: absolute; top: 100%; transform: translateY(12px); visibility: hidden; z-index: 999; }
         .tgmenu__navbar-wrap ul.navigation li:hover > .sub-menu,
         .tgmenu__navbar-wrap ul.navigation li:focus-within > .sub-menu,
         .tgmenu__navbar-wrap ul.navigation li.is-open > .sub-menu { opacity: 1; pointer-events: auto; transform: translateY(0); visibility: visible; }
         .tgmenu__navbar-wrap ul.navigation li .sub-menu li { position: relative; }
-        .tgmenu__navbar-wrap ul.navigation li .sub-menu .sub-menu { border-top-color: #f2c94c; left: 100%; top: -5px; transform: translateX(12px); }
+        .tgmenu__navbar-wrap ul.navigation li .sub-menu .sub-menu { border-top-color: #f2c94c; left: 100%; max-height: min(74vh, 560px); overflow: visible; top: -5px; transform: translateX(12px); }
         .tgmenu__navbar-wrap ul.navigation li .sub-menu li:hover > .sub-menu,
         .tgmenu__navbar-wrap ul.navigation li .sub-menu li:focus-within > .sub-menu,
         .tgmenu__navbar-wrap ul.navigation li .sub-menu li.is-open > .sub-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
@@ -64,7 +88,7 @@
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
-        .cea-video-hero { align-items: center; background: #063d2a; color: #fff; display: flex; min-height: clamp(500px, 66vh, 680px); overflow: hidden; padding: 90px 0 70px; position: relative; }
+        .cea-video-hero { align-items: center; background: #063d2a; box-sizing: border-box; color: #fff; display: flex; min-height: 100vh; overflow: hidden; padding: clamp(170px, 19vh, 230px) 0 86px; position: relative; }
         .cea-video-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
         .cea-video-hero__video { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
         .cea-video-hero__content { max-width: 780px; position: relative; z-index: 2; }
@@ -151,6 +175,7 @@
         @endif
         @media (max-width: 767px) {
             .home-hero__grid { grid-template-columns: 1fr; }
+            .cea-video-hero { min-height: 100svh; padding: 138px 0 58px; }
         }
         @media (max-width: 991px) {
             .tgmenu__action { margin-left: auto; }
@@ -343,10 +368,18 @@
             function bindDropdown(scope) {
                 if (!scope) return;
 
+                var isMobileMenu = scope.classList.contains('cea-mobile-menu');
+
                 scope.querySelectorAll('.menu-item-has-children > a').forEach(function (trigger) {
                     trigger.addEventListener('click', function (event) {
                         var item = trigger.parentElement;
                         if (!item) return;
+
+                        var href = trigger.getAttribute('href') || '';
+                        var hasRealHref = href && href !== '#';
+                        if (!isMobileMenu && item.classList.contains('is-open') && hasRealHref) {
+                            return;
+                        }
 
                         event.preventDefault();
 

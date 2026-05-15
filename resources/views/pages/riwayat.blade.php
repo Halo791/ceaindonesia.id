@@ -2,24 +2,19 @@
 
 @section('title', 'Riwayat Pooling Fund - KSO')
 
-@php
-    $riwayatImagePath = $content['image_path'] ?? '';
-    $riwayatHeroImage = ($riwayatImagePath && strpos($riwayatImagePath, 'assets/img/cea/') === false)
-        ? $riwayatImagePath
-        : asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg');
-@endphp
-
 @section('content')
-<section class="home-hero">
+<section class="cea-video-hero">
+    <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
+        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
+    </video>
     <div class="container">
-        <div class="home-hero__grid">
-            <div>
-                <span class="cea-kicker">Profil Pooling Fund - KSO</span>
-                <h1 class="cea-scramble-title">{{ $content['title'] ?: 'Riwayat Proses Pembentukan' }}</h1>
-                <p>{{ $content['subtitle'] ?: 'Pooling Fund - KSO lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
+        <div class="cea-video-hero__content">
+            <span class="cea-video-hero__eyebrow">Profil Pooling Fund - KSO</span>
+            <h1 class="cea-scramble-title"><span>{{ $content['title'] ?: 'Riwayat Proses Pembentukan' }}</span></h1>
+            <p>{{ $content['subtitle'] ?: 'Pooling Fund - KSO lahir dari kebutuhan bersama organisasi masyarakat sipil untuk memperkuat koordinasi, konsolidasi, dan kerja kolektif di tengah penyempitan ruang sipil.' }}</p>
+            <div class="cea-video-hero__actions">
                 <a class="cea-btn" href="{{ route('home') }}">Kembali ke Beranda</a>
             </div>
-            <img class="home-hero__image" src="{{ $riwayatHeroImage }}" alt="{{ $content['title'] ?: 'Riwayat Pooling Fund - KSO' }}">
         </div>
     </div>
 </section>

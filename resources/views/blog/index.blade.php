@@ -3,10 +3,21 @@
 @section('title', 'Blog Pooling Fund - KSO')
 
 @section('content')
+<section class="cea-video-hero">
+    <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
+        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
+    </video>
+    <div class="container">
+        <div class="cea-video-hero__content">
+            <span class="cea-video-hero__eyebrow">Blog</span>
+            <h1 class="cea-scramble-title"><span>Artikel dan Publikasi</span></h1>
+            <p>Kumpulan kabar, rilis, referensi, dan pembaruan dari ekosistem Pooling Fund - KSO.</p>
+        </div>
+    </div>
+</section>
+
 <section class="cea-section">
     <div class="container">
-        <span class="cea-kicker">Blog</span>
-        <h1 class="mb-4">Artikel dan Publikasi</h1>
         <div class="cea-card-grid">
             @foreach ($posts as $post)
                 <article class="cea-card">
