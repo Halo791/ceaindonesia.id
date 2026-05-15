@@ -71,6 +71,24 @@
                     <label>{{ $isHomepage ? 'Deskripsi hero EN' : 'Isi tulisan EN' }}</label>
                     <textarea name="meta[body_en]" placeholder="English content">{{ $metaValue('body_en') }}</textarea>
                 </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>Instagram</label>
+                        <input name="meta[social_instagram]" value="{{ $metaValue('social_instagram') }}" placeholder="https://instagram.com/...">
+                    </div>
+                    <div class="admin-field">
+                        <label>Facebook</label>
+                        <input name="meta[social_facebook]" value="{{ $metaValue('social_facebook') }}" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="admin-field">
+                        <label>YouTube</label>
+                        <input name="meta[social_youtube]" value="{{ $metaValue('social_youtube') }}" placeholder="https://youtube.com/...">
+                    </div>
+                    <div class="admin-field">
+                        <label>Threads</label>
+                        <input name="meta[social_threads]" value="{{ $metaValue('social_threads') }}" placeholder="https://threads.net/@...">
+                    </div>
+                </div>
                 <div class="admin-field">
                     <label>{{ $isHomepage ? 'Path video background' : 'URL / path gambar' }}</label>
                     @php

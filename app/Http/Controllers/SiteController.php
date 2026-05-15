@@ -16,6 +16,7 @@ class SiteController extends Controller
     {
         return view('home', $this->shared([
             'homeContent' => $this->homepageContent(),
+            'socialLinks' => $this->homepageSocialLinks(),
             'latestUpdates' => $this->latestPublicUpdates(),
         ]));
     }
@@ -711,6 +712,7 @@ class SiteController extends Controller
             'item' => $localizedItem,
             'content' => $content,
             'siblings' => $siblingItems,
+            'socialLinks' => $this->contentSocialLinks($content),
             'updates' => $this->publicUpdates($section['key'], $contentKey),
         ]));
     }
@@ -966,6 +968,10 @@ class SiteController extends Controller
                 'title_en' => 'Strengthening local action, expanding impact.',
                 'subtitle_en' => 'Strengthening Local Action, Expanding Impact',
                 'body_en' => 'Large-scale change does not grow from one institution alone, but from a connected ecosystem. Pooling Fund - KSO pools and channels humanitarian funds collectively, based on community needs and local leadership, without creating a new legal entity.',
+                'social_instagram' => '',
+                'social_facebook' => '',
+                'social_youtube' => '',
+                'social_threads' => '',
                 'primary_label' => 'Baca Mandat',
                 'primary_label_en' => 'Read Mandate',
                 'primary_href' => '/profil/mandat-visi-nilai',
@@ -1030,6 +1036,43 @@ class SiteController extends Controller
             'panel_value' => $meta['panel_value'] ?? '',
             'panel_description' => $this->localizedMetaLabel($meta, 'panel_description'),
         ];
+    }
+
+    private function homepageSocialLinks(): array
+    {
+        $content = $this->homepageAdminContent();
+        $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
+
+        return $this->socialLinksFromMeta($meta);
+    }
+
+    private function contentSocialLinks(array $content): array
+    {
+        return $this->socialLinksFromMeta((array) ($content['meta'] ?? []));
+    }
+
+    private function socialLinksFromMeta(array $meta): array
+    {
+        $items = [
+            'instagram' => ['label' => 'Instagram', 'icon' => 'fab fa-instagram'],
+            'facebook' => ['label' => 'Facebook', 'icon' => 'fab fa-facebook-f'],
+            'youtube' => ['label' => 'YouTube', 'icon' => 'fab fa-youtube'],
+            'threads' => ['label' => 'Threads', 'icon' => 'threads'],
+        ];
+
+        return collect($items)
+            ->map(function (array $item, string $key) use ($meta) {
+                $url = trim((string) ($meta['social_'.$key] ?? ''));
+
+                if ($url === '') {
+                    return null;
+                }
+
+                return $item + ['key' => $key, 'url' => $url];
+            })
+            ->filter()
+            ->values()
+            ->all();
     }
 
     private function localizedMetaLabel(array $meta, string $key): string

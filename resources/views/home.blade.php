@@ -337,14 +337,7 @@
             <div class="cea-landing-hero__content">
                 <h1 class="cea-scramble-title"><span>{{ $homeContent['title'] ?? 'Menguatkan lokal, memperluas dampak.' }}</span></h1>
                 <p>{{ $homeContent['description'] ?? 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.' }}</p>
-                <div class="cea-landing-hero__actions">
-                    @if (! empty($homeContent['primary_label']) && ! empty($homeContent['primary_href']))
-                        <a class="cea-btn" href="{{ $homeContent['primary_href'] }}">{{ $homeContent['primary_label'] }}</a>
-                    @endif
-                    @if (! empty($homeContent['secondary_label']) && ! empty($homeContent['secondary_href']))
-                        <a class="cea-btn secondary" href="{{ $homeContent['secondary_href'] }}">{{ $homeContent['secondary_label'] }}</a>
-                    @endif
-                </div>
+                @include('layouts.social-links', ['links' => $socialLinks ?? [], 'variant' => 'hero'])
             </div>
             @if (! empty($homeContent['panel_value']))
                 <div class="cea-landing-hero__panel">

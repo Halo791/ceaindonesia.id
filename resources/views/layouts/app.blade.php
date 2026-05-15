@@ -88,6 +88,16 @@
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
+        .cea-social-links { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; }
+        .cea-social-links a { align-items: center; background: #f2c94c; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #063d2a; display: inline-flex; font-size: 16px; font-weight: 900; height: 42px; justify-content: center; width: 42px; }
+        .cea-social-links a:hover { background: #fff; color: #1f7a43; }
+        .cea-social-links--header { flex-wrap: nowrap; }
+        .cea-social-links--header a { background: rgba(255,255,255,.14); color: #fff; height: 38px; width: 38px; }
+        .cea-social-links--footer a { background: rgba(255,255,255,.1); color: #fff; }
+        .cea-social-links--hero { margin-top: 18px; }
+        .mobile-language-switch { align-items: center; display: none; gap: 6px; margin-left: auto; }
+        .mobile-language-switch a { align-items: center; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #fff; display: inline-flex; font-size: 12px; font-weight: 900; gap: 4px; min-height: 34px; padding: 6px 9px; }
+        .mobile-language-switch a.active { background: #f2c94c; color: #063d2a; }
         .cea-video-hero { align-items: center; background: #063d2a; box-sizing: border-box; color: #fff; display: flex; min-height: 100vh; overflow: hidden; padding: clamp(170px, 19vh, 230px) 0 86px; position: relative; }
         .cea-video-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
         .cea-video-hero__video { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
@@ -197,6 +207,7 @@
         @media (max-width: 991px) {
             .tgmenu__action { margin-left: auto; }
             .header__top-logo { display: none !important; }
+            .mobile-language-switch { display: inline-flex; }
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
         @if (request()->is('admin*'))
@@ -234,7 +245,9 @@
                     <div class="col-lg-4 col-md-3 col-sm-6 order-3 d-none d-sm-block">
                         <div class="header__top-right">
                             <ul class="list-wrap">
-                                <li class="news-btn"><a href="/regio/simpul" class="btn"><span class="btn-text">{{ $ui['view_hubs'] ?? 'lihat simpul' }}</span></a></li>
+                                @if (! empty($socialLinks ?? []))
+                                    <li>@include('layouts.social-links', ['links' => $socialLinks, 'variant' => 'header'])</li>
+                                @endif
                                 <li class="lang">
                                     <div class="dropdown">
                                         <button class="dropdown-toggle" type="button">{{ strtoupper($currentLocale ?? 'id') }}</button>
@@ -269,6 +282,10 @@
                                     <ul class="navigation">
                                         @include('layouts.nav-items', ['items' => $navigation])
                                     </ul>
+                                </div>
+                                <div class="mobile-language-switch" aria-label="Language">
+                                    <a class="{{ ($currentLocale ?? 'id') === 'id' ? 'active' : '' }}" href="{{ route('language.switch', 'id') }}"><span aria-hidden="true">🇮🇩</span>ID</a>
+                                    <a class="{{ ($currentLocale ?? 'id') === 'en' ? 'active' : '' }}" href="{{ route('language.switch', 'en') }}"><span aria-hidden="true">🇬🇧</span>EN</a>
                                 </div>
                                 <div class="tgmenu__action">
                                     <ul class="list-wrap">

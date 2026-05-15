@@ -14,9 +14,8 @@
             <div class="cea-footer-brand">
                 @include('layouts.kso-wordmark', ['variant' => 'footer', 'compact' => true])
                 <p>{{ $ui['footer_description'] ?? 'Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan berbasis kebutuhan komunitas dan kepemimpinan lokal.' }}</p>
-                <div class="cea-footer-actions mt-3">
-                    <a href="/profil/mandat-visi-nilai">{{ $ui['read_mandate'] ?? 'Baca Mandat' }}</a>
-                    <a href="/regio/simpul">{{ $ui['see_hubs'] ?? 'Lihat Simpul' }}</a>
+                <div class="mt-3">
+                    @include('layouts.social-links', ['links' => $socialLinks ?? [], 'variant' => 'footer'])
                 </div>
             </div>
             <div>
