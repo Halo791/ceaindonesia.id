@@ -333,9 +333,6 @@
     <div class="container">
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
-                @if (! empty($homeContent['eyebrow']))
-                    <span class="cea-landing-hero__eyebrow">{{ $homeContent['eyebrow'] }}</span>
-                @endif
                 <h1 class="cea-scramble-title"><span>{{ $homeContent['title'] ?? 'Menguatkan lokal, memperluas dampak.' }}</span></h1>
                 <p>{{ $homeContent['description'] ?? 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.' }}</p>
                 <div class="cea-landing-hero__actions">
