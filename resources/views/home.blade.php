@@ -65,18 +65,93 @@
     ];
     $dropdownSections = collect($navigation)->filter(fn ($item) => ! empty($item['children']))->values();
     $principles = ['Satu CSO satu suara', 'Berbasis kebutuhan komunitas', 'Kecepatan sebagai nilai utama', 'Transparansi sebagai aset strategis', 'Akuntabilitas kolektif', 'Local leadership & local first'];
+    $locationCoordinates = [
+        'sumbagsel-tangguh' => [3.35, 98.67],
+        'yayasan-peduli-kemandirian-masyarakat-yapemmas-medan' => [3.58, 98.67],
+        'yayasan-fajar-sejahtera-indonesia-yafsi-medan' => [3.57, 98.65],
+        'walhi-sumbar' => [-0.95, 100.35],
+        'walhi-sumut' => [3.54, 98.64],
+        'flower-aceh' => [5.55, 95.32],
+        'yayasan-perempuan-dan-anak-negeri-ypanba-aceh' => [5.51, 95.35],
+        'sumbagsel-pulih-lestari' => [-5.43, 105.26],
+        'walhi-lampung' => [-5.45, 105.27],
+        'lbh-bandar-lampung' => [-5.43, 105.25],
+        'pkbi-lampung' => [-5.40, 105.24],
+        'walhi-bengkulu' => [-3.80, 102.27],
+        'ykws-lampung' => [-5.38, 105.29],
+        'tanah-papua' => [-2.53, 140.72],
+        'lekat-jayapura' => [-2.54, 140.71],
+        'kipra-jayapura' => [-2.57, 140.69],
+        'yapmi-jayapura' => [-2.50, 140.74],
+        'gemapala-fakfak' => [-2.93, 132.30],
+        'yapari-sorong' => [-0.88, 131.25],
+        'perdu-manokwari' => [-0.86, 134.06],
+        'kompak-nabire' => [-3.36, 135.50],
+        'humi-inane-wamena' => [-4.10, 138.95],
+        'kalimantan-borneo' => [-1.60, 113.50],
+        'walhi-kalbar' => [-0.03, 109.34],
+        'walhi-kalsel' => [-3.32, 114.59],
+        'walhi-kalteng' => [-2.21, 113.92],
+        'walhi-kaltim' => [-0.50, 117.15],
+        'elpagar-kalbar' => [-0.06, 109.36],
+        'borneo-institute-kalteng' => [-2.23, 113.90],
+        'pionir-bulungan-kaltara' => [2.84, 117.37],
+        'jawa' => [-7.25, 110.00],
+        'walhi-jatim' => [-7.25, 112.75],
+        'walhi-jogjakarta' => [-7.80, 110.37],
+        'lbh-semarang' => [-6.99, 110.42],
+        'lbh-surabaya' => [-7.27, 112.74],
+        'lbh-jogjakarta' => [-7.79, 110.36],
+        'yayasan-epik' => [-6.90, 107.61],
+        'kpi-jabar' => [-6.91, 107.62],
+        'sulawesi' => [-2.10, 120.10],
+        'bali-nusra' => [-8.65, 117.30],
+    ];
+    $slugify = fn (string $value): string => strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $value), '-'));
+    $mapPoints = [];
+
+    foreach (config('cea.simpul_regions', []) as $region) {
+        $regionCoordinate = $locationCoordinates[$region['key']] ?? [-2.5, 118.0];
+        $mapPoints[] = [
+            'type' => 'Simpul',
+            'key' => $region['key'],
+            'title' => $region['shortLabel'],
+            'description' => $region['label'],
+            'lat' => $regionCoordinate[0],
+            'lng' => $regionCoordinate[1],
+            'url' => "/regio/simpul/{$region['key']}",
+        ];
+
+        foreach ($region['members'] ?? [] as $member) {
+            $memberKey = $slugify($member);
+            $memberCoordinate = $locationCoordinates[$memberKey] ?? $regionCoordinate;
+            $mapPoints[] = [
+                'type' => 'Anggota',
+                'key' => $memberKey,
+                'title' => $member,
+                'description' => $region['shortLabel'],
+                'lat' => $memberCoordinate[0],
+                'lng' => $memberCoordinate[1],
+                'url' => "/regio/simpul/{$region['key']}/{$memberKey}",
+            ];
+        }
+    }
 @endphp
 
 @push('styles')
 <style>
-    .cea-landing-hero { background: radial-gradient(circle at 80% 10%, rgba(242,201,76,.28), transparent 32%), linear-gradient(135deg, #063d2a 0%, #0f5d3e 54%, #1f7a43 100%); color: #fff; overflow: hidden; padding: 78px 0 86px; }
-    .cea-landing-hero__grid { align-items: center; display: grid; gap: 48px; grid-template-columns: minmax(0, .82fr) minmax(420px, 1fr); }
+    @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+    .cea-landing-hero { align-items: center; background: #063d2a; color: #fff; display: flex; min-height: clamp(560px, 76vh, 760px); overflow: hidden; padding: 96px 0 72px; position: relative; }
+    .cea-landing-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.68) 44%, rgba(6,61,42,.16) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
+    .cea-landing-hero__video-bg { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
+    .cea-landing-hero__grid { align-items: end; display: grid; gap: 48px; grid-template-columns: minmax(0, .9fr) minmax(280px, .55fr); min-height: 440px; position: relative; z-index: 2; }
     .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 13px; font-weight: 900; margin-bottom: 18px; text-transform: uppercase; }
-    .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(52px, 6.8vw, 96px); font-weight: 900; letter-spacing: 0; line-height: .94; margin-bottom: 22px; max-width: 860px; text-transform: none; text-wrap: balance; }
+    .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(54px, 8vw, 118px); font-weight: 900; letter-spacing: 0; line-height: .9; margin-bottom: 22px; max-width: 900px; text-transform: uppercase; text-wrap: balance; }
     .cea-landing-hero p { color: rgba(255,255,255,.82); font-size: 18px; line-height: 1.75; margin-bottom: 30px; max-width: 640px; }
     .cea-landing-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .cea-landing-hero__visual { align-items: stretch; border-radius: 8px; box-shadow: 0 34px 80px rgba(6,61,42,.32); display: flex; min-height: 330px; overflow: hidden; }
-    .cea-landing-hero__video { aspect-ratio: 16 / 10; display: block; height: 100%; min-height: 330px; object-fit: cover; width: 100%; }
+    .cea-landing-hero__panel { align-self: end; background: rgba(246,249,232,.92); border: 1px solid rgba(255,255,255,.42); border-radius: 8px; color: #063d2a; padding: 24px; }
+    .cea-landing-hero__panel strong { display: block; font-size: 44px; font-weight: 900; line-height: 1; }
+    .cea-landing-hero__panel span { color: #1f7a43; font-size: 13px; font-weight: 900; text-transform: uppercase; }
     .cea-section { background: #fff; padding: 82px 0; }
     .cea-section--soft { background: linear-gradient(180deg, #f6f9e8 0%, #fff 100%); }
     .cea-section__head { margin-bottom: 32px; max-width: 820px; }
@@ -114,31 +189,46 @@
     .cea-governance-card__body span { color: #1f7a43; margin-bottom: 10px; }
     .cea-governance-card__body a, .cea-menu-card__body a { color: #1f7a43; font-weight: 900; }
     .cea-menu-card__body ul { display: grid; gap: 8px; list-style: none; margin: 18px 0 0; padding: 0; }
+    .cea-map-section { background: #063d2a; color: #fff; padding: 82px 0; }
+    .cea-map-section .cea-section__head h2 { color: #fff; }
+    .cea-map-shell { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 8px; overflow: hidden; }
+    #simpul-map { background: #0c5266; height: min(72vh, 620px); min-height: 460px; width: 100%; }
+    .simpul-map-marker { align-items: center; border: 3px solid #fff; border-radius: 999px; box-shadow: 0 12px 24px rgba(0,0,0,.25); display: flex; height: 22px; justify-content: center; width: 22px; }
+    .simpul-map-marker--region { background: #f2c94c; }
+    .simpul-map-marker--member { background: #ff3ab7; height: 16px; width: 16px; }
+    .simpul-map-popup strong { color: #063d2a; display: block; font-size: 15px; line-height: 1.25; margin-bottom: 6px; }
+    .simpul-map-popup span { color: #1f7a43; display: block; font-size: 12px; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; }
+    .simpul-map-popup a { color: #b85f14; font-weight: 900; }
     @media (max-width: 991px) {
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
         .cea-focus-grid, .cea-menu-grid, .cea-stats__grid, .cea-principles__grid, .cea-field-stories__grid { grid-template-columns: 1fr; }
         .cea-story-card, .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: auto; }
+        .cea-landing-hero { min-height: 620px; }
+        .cea-landing-hero__panel { display: none; }
     }
 </style>
 @endpush
 
 @section('content')
 <section class="cea-landing-hero">
+    <video class="cea-landing-hero__video-bg" autoplay muted loop playsinline preload="metadata">
+        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
+    </video>
     <div class="container">
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
                 <span class="cea-landing-hero__eyebrow">Menguatkan Lokal, Memperluas Dampak</span>
-                <h1 class="cea-scramble-title">Pooling Fund - KSO.</h1>
+                <h1 class="cea-scramble-title">Menguatkan Lokal, Memperluas Dampak.</h1>
                 <p>Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.</p>
                 <div class="cea-landing-hero__actions">
                     <a class="cea-btn" href="/profil/mandat-visi-nilai">Baca Mandat</a>
                     <a class="cea-btn secondary" href="/regio/simpul">Lihat Simpul</a>
                 </div>
             </div>
-            <div class="cea-landing-hero__visual" aria-label="Video Pooling Fund - KSO">
-                <video class="cea-landing-hero__video" autoplay muted loop playsinline preload="metadata">
-                    <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
-                </video>
+            <div class="cea-landing-hero__panel">
+                <span>Ekosistem KSO</span>
+                <strong>7</strong>
+                <p>Simpul regional otonom yang terhubung dalam satu mandat kolektif.</p>
             </div>
         </div>
     </div>
@@ -163,6 +253,18 @@
                     </div>
                 </article>
             @endforeach
+        </div>
+    </div>
+</section>
+
+<section class="cea-map-section" id="simpul-map-section">
+    <div class="container">
+        <div class="cea-section__head">
+            <span>Peta Simpul</span>
+            <h2>Jelajahi simpul dan anggota melalui peta interaktif.</h2>
+        </div>
+        <div class="cea-map-shell">
+            <div id="simpul-map" data-points='@json($mapPoints)'></div>
         </div>
     </div>
 </section>
@@ -266,3 +368,75 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var mapElement = document.getElementById('simpul-map');
+        if (!mapElement || !window.L) return;
+
+        var points = [];
+        try {
+            points = JSON.parse(mapElement.dataset.points || '[]');
+        } catch (error) {
+            points = [];
+        }
+
+        if (!points.length) return;
+
+        var map = L.map(mapElement, {
+            scrollWheelZoom: false,
+            worldCopyJump: true
+        }).setView([-2.5, 118], 5);
+        var escapeHtml = function (value) {
+            return String(value || '').replace(/[&<>"']/g, function (character) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[character];
+            });
+        };
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 12
+        }).addTo(map);
+
+        var bounds = [];
+
+        points.forEach(function (point) {
+            var markerClass = point.type === 'Simpul' ? 'simpul-map-marker--region' : 'simpul-map-marker--member';
+            var icon = L.divIcon({
+                className: '',
+                html: '<span class="simpul-map-marker ' + markerClass + '"></span>',
+                iconSize: point.type === 'Simpul' ? [22, 22] : [16, 16],
+                iconAnchor: point.type === 'Simpul' ? [11, 11] : [8, 8]
+            });
+            var latLng = [point.lat, point.lng];
+            var popup = '<div class="simpul-map-popup">'
+                + '<span>' + escapeHtml(point.type) + '</span>'
+                + '<strong>' + escapeHtml(point.title) + '</strong>'
+                + '<p>' + escapeHtml(point.description) + '</p>'
+                + '<a href="' + escapeHtml(point.url) + '">Buka halaman</a>'
+                + '</div>';
+
+            L.marker(latLng, { icon: icon, title: point.title })
+                .addTo(map)
+                .bindPopup(popup)
+                .on('click', function () {
+                    window.location.href = point.url;
+                });
+
+            bounds.push(latLng);
+        });
+
+        if (bounds.length > 1) {
+            map.fitBounds(bounds, { padding: [34, 34] });
+        }
+    });
+</script>
+@endpush
