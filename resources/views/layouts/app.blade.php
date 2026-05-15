@@ -34,8 +34,8 @@
             .header__top,
             .tg-header__area,
             .tgmenu__wrap { background: transparent !important; box-shadow: none !important; }
-            .header__top { border-bottom: 1px solid rgba(255,255,255,.14); }
-            .tg-header__area { border-bottom: 1px solid rgba(255,255,255,.13); border-top: 1px solid rgba(255,255,255,.08); }
+            .header__top,
+            .tg-header__area { border: 0 !important; }
             .tgmenu__wrap { min-height: 62px; }
             .header__top-search form { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; }
             .header__top-search form::before,
