@@ -93,8 +93,8 @@
         .cea-video-hero__video { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
         .cea-video-hero__content { max-width: 780px; position: relative; z-index: 2; }
         .cea-video-hero__eyebrow { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
-        .cea-video-hero h1 { color: #fff; font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 780px; text-wrap: balance; }
-        .cea-video-hero h1 span { background: rgba(242,201,76,.92); box-decoration-break: clone; -webkit-box-decoration-break: clone; color: #063d2a; line-height: 1.22; padding: 0 .14em; }
+        .cea-video-hero h1 { color: #fff; font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 780px; text-shadow: 0 16px 34px rgba(0,0,0,.36); text-wrap: balance; }
+        .cea-video-hero h1 span { background: transparent; color: #fff; line-height: 1.08; padding: 0; }
         .cea-video-hero p { color: rgba(255,255,255,.86); font-size: 16px; line-height: 1.75; margin-bottom: 28px; max-width: 660px; }
         .cea-video-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
         .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
@@ -118,6 +118,16 @@
         .cea-landing-footer a { color: rgba(255,255,255,.78); }
         .cea-landing-footer a:hover { color: #f2c94c; }
         .cea-footer-bottom { border-top: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.54); margin-top: 32px; padding-top: 18px; }
+        .cea-donation-link { align-items: center; background: #f2c94c; border: 0; border-radius: 8px; color: #063d2a; cursor: pointer; display: inline-flex; font-size: 14px; font-weight: 900; min-height: 42px; padding: 10px 16px; }
+        .cea-donation-link:hover { background: #fff; color: #063d2a; }
+        .cea-donation-modal { align-items: center; background: rgba(0,0,0,.58); display: none; inset: 0; justify-content: center; padding: 22px; position: fixed; z-index: 9999; }
+        .cea-donation-modal.is-open { display: flex; }
+        .cea-donation-modal__dialog { background: #fff; border-radius: 8px; box-shadow: 0 30px 80px rgba(0,0,0,.32); color: #063d2a; max-width: 430px; padding: 24px; position: relative; width: min(100%, 430px); }
+        .cea-donation-modal__close { align-items: center; background: #f6f9e8; border: 0; border-radius: 999px; color: #063d2a; cursor: pointer; display: inline-flex; font-size: 24px; height: 38px; justify-content: center; line-height: 1; position: absolute; right: 14px; top: 14px; width: 38px; }
+        .cea-donation-modal__dialog h2 { color: #063d2a; font-size: 25px; line-height: 1.2; margin: 0 42px 10px 0; }
+        .cea-donation-modal__dialog p { color: #4f6759; margin-bottom: 16px; }
+        .cea-qris-placeholder { align-items: center; aspect-ratio: 1 / 1; background: repeating-linear-gradient(45deg, #f6f9e8 0 12px, #fff 12px 24px); border: 1px dashed #9ebc91; border-radius: 8px; color: #1f7a43; display: flex; font-weight: 900; justify-content: center; margin-bottom: 14px; text-align: center; }
+        .cea-donation-modal__note { background: #f6f9e8; border-radius: 8px; color: #405d4a; font-size: 13px; line-height: 1.55; padding: 12px; }
         .cea-section { padding: 86px 0; }
         .cea-kicker { color: var(--cea-red); display: block; font-size: 13px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; }
         .cea-card-grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
@@ -179,7 +189,7 @@
             .cea-video-hero__content { max-width: 100%; }
             .cea-video-hero__eyebrow { display: none; }
             .cea-video-hero h1 { font-size: clamp(30px, 11vw, 46px); line-height: 1.08; margin-bottom: 16px; }
-            .cea-video-hero h1 span { line-height: 1.2; padding: 0 .11em; }
+            .cea-video-hero h1 span { line-height: 1.12; padding: 0; }
             .cea-video-hero p { font-size: 14px; line-height: 1.65; margin-bottom: 20px; max-width: 100%; }
             .cea-video-hero__actions { gap: 10px; }
             .cea-video-hero__actions .cea-btn { font-size: 13px; min-height: 42px; padding: 0 14px; }
@@ -435,6 +445,40 @@
                             mobileToggle.setAttribute('aria-label', 'Buka menu');
                         }
                     }
+                }
+            });
+
+            var donationModal = document.querySelector('[data-donation-modal]');
+            var donationOpen = document.querySelector('[data-donation-open]');
+            var donationClose = document.querySelector('[data-donation-close]');
+
+            function closeDonationModal() {
+                if (!donationModal) return;
+                donationModal.classList.remove('is-open');
+                donationModal.setAttribute('aria-hidden', 'true');
+            }
+
+            if (donationModal && donationOpen) {
+                donationOpen.addEventListener('click', function () {
+                    donationModal.classList.add('is-open');
+                    donationModal.setAttribute('aria-hidden', 'false');
+                    if (donationClose) donationClose.focus();
+                });
+
+                donationModal.addEventListener('click', function (event) {
+                    if (event.target === donationModal) {
+                        closeDonationModal();
+                    }
+                });
+            }
+
+            if (donationClose) {
+                donationClose.addEventListener('click', closeDonationModal);
+            }
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeDonationModal();
                 }
             });
 

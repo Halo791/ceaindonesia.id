@@ -157,8 +157,8 @@
     .cea-landing-hero__grid { align-items: end; display: grid; gap: 48px; grid-template-columns: minmax(0, .86fr) minmax(250px, .5fr); min-height: 390px; position: relative; z-index: 2; }
     .cea-landing-hero__content { max-width: 760px; }
     .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
-    .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 760px; text-transform: none; text-wrap: balance; }
-    .cea-landing-hero h1 span { background: rgba(242,201,76,.92); box-decoration-break: clone; -webkit-box-decoration-break: clone; color: #063d2a; line-height: 1.22; padding: 0 .14em; }
+    .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 760px; text-shadow: 0 16px 34px rgba(0,0,0,.36); text-transform: none; text-wrap: balance; }
+    .cea-landing-hero h1 span { background: transparent; color: #fff; line-height: 1.08; padding: 0; }
     .cea-landing-hero p { color: rgba(255,255,255,.86); font-size: 16px; line-height: 1.75; margin-bottom: 28px; max-width: 620px; }
     .cea-landing-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .cea-landing-hero__panel { align-self: end; background: rgba(246,249,232,.95); border: 1px solid rgba(255,255,255,.5); border-radius: 8px; color: #063d2a; max-width: 360px; padding: 20px; }
@@ -184,14 +184,14 @@
     .cea-principle { background: #f6f9e8; border: 1px solid #dfe9c9; border-radius: 8px; color: #063d2a; font-weight: 900; padding: 18px; }
     .cea-field-stories { background: #fbfaf0; padding: 80px 0; }
     .cea-field-stories__grid { display: grid; gap: 22px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .cea-story-card { background: #fff; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; box-shadow: 0 18px 44px rgba(6,61,42,.08); grid-column: span 2; overflow: hidden; }
+    .cea-story-card { background: #063d2a; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; box-shadow: 0 18px 44px rgba(6,61,42,.08); grid-column: span 2; min-height: 360px; overflow: hidden; position: relative; }
     .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: span 3; }
-    .cea-story-card__image { aspect-ratio: 16 / 10; background: #f6f9e8; overflow: hidden; }
+    .cea-story-card__image { background: #f6f9e8; inset: 0; overflow: hidden; position: absolute; }
     .cea-story-card__image img { display: block; height: 100%; object-fit: cover; width: 100%; }
-    .cea-story-card__body { padding: 22px; }
-    .cea-story-card__label { color: #1f7a43; display: block; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
-    .cea-story-card h3 { color: #063d2a; font-size: 23px; font-weight: 900; line-height: 1.16; margin-bottom: 12px; }
-    .cea-story-card p { color: #4f6759; font-size: 15px; line-height: 1.75; margin: 0; }
+    .cea-story-card__body { background: linear-gradient(180deg, rgba(6,61,42,.06) 0%, rgba(6,61,42,.94) 100%); bottom: 0; color: #fff; left: 0; padding: 80px 24px 24px; position: absolute; right: 0; z-index: 1; }
+    .cea-story-card__label { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
+    .cea-story-card h3 { color: #fff; font-size: 23px; font-weight: 900; line-height: 1.16; margin-bottom: 12px; text-shadow: 0 8px 20px rgba(0,0,0,.28); }
+    .cea-story-card p { color: rgba(255,255,255,.84); display: -webkit-box; font-size: 14px; line-height: 1.65; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
     .cea-stats { background: #063d2a; padding: 40px 0; }
     .cea-stats__grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cea-stat { border: 1px solid rgba(255,255,255,.16); border-radius: 8px; color: #fff; padding: 22px; }
@@ -231,6 +231,7 @@
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
         .cea-focus-grid, .cea-menu-grid, .cea-stats__grid, .cea-principles__grid, .cea-field-stories__grid { grid-template-columns: 1fr; }
         .cea-story-card, .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: auto; }
+        .cea-story-card { min-height: 320px; }
         .cea-landing-hero { min-height: 100svh; }
         .cea-map-toolbar { display: block; }
         .cea-map-search { margin-bottom: 14px; width: 100%; }

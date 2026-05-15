@@ -52,35 +52,47 @@
             gap: 12px;
         }
         .cea-news-item {
-            align-items: center;
-            background: rgba(255,255,255,.94);
+            background: #063d2a;
             border-radius: 8px;
-            color: #063d2a;
-            display: grid;
-            gap: 14px;
-            grid-template-columns: 96px minmax(0, 1fr);
-            padding: 10px;
+            color: #fff;
+            display: block;
+            min-height: 158px;
+            overflow: hidden;
+            position: relative;
         }
         .cea-news-item img {
-            aspect-ratio: 4 / 3;
-            border-radius: 6px;
             display: block;
+            height: 100%;
+            inset: 0;
             object-fit: cover;
+            position: absolute;
             width: 100%;
         }
+        .cea-news-item span {
+            background: linear-gradient(180deg, rgba(6,61,42,.1) 0%, rgba(6,61,42,.9) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 158px;
+            padding: 18px;
+            position: relative;
+            z-index: 1;
+        }
         .cea-news-item strong {
-            color: #04724d;
+            color: #fff;
             display: block;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 900;
-            line-height: 1.25;
-            margin-bottom: 4px;
+            line-height: 1.2;
+            margin-bottom: 7px;
         }
         .cea-news-item small {
-            color: #6a746c;
+            color: rgba(255,255,255,.72);
             display: block;
             font-size: 11px;
-            margin-top: 5px;
+            font-weight: 800;
+            margin-top: 8px;
+            text-transform: uppercase;
         }
         .cea-news-empty {
             background: rgba(255,255,255,.12);
@@ -130,7 +142,7 @@
                             <img src="{{ $articleImage }}" alt="{{ $article->title }}">
                             <span>
                                 <strong>{{ $article->title }}</strong>
-                                {{ $article->excerpt ?: str($article->body)->limit(105) }}
+                                {{ $article->excerpt ?: str($article->body)->limit(82) }}
                                 <small>{{ optional($article->published_at)->format('l, j F Y') ?: $article->category }}</small>
                             </span>
                         </a>

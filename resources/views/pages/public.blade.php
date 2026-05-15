@@ -28,15 +28,14 @@
         line-height: 1.02;
         margin-bottom: 20px;
         max-width: 780px;
+        text-shadow: 0 16px 34px rgba(0,0,0,.36);
         text-wrap: balance;
     }
     .public-hero h1 span {
-        background: rgba(242,201,76,.92);
-        box-decoration-break: clone;
-        -webkit-box-decoration-break: clone;
-        color: #063d2a;
-        line-height: 1.22;
-        padding: 0 .14em;
+        background: transparent;
+        color: #fff;
+        line-height: 1.08;
+        padding: 0;
     }
     .public-hero p {
         color: rgba(255,255,255,.86);
