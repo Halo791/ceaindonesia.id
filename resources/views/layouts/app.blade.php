@@ -175,7 +175,14 @@
         @endif
         @media (max-width: 767px) {
             .home-hero__grid { grid-template-columns: 1fr; }
-            .cea-video-hero { min-height: 100svh; padding: 138px 0 58px; }
+            .cea-video-hero { align-items: end; min-height: 100svh; padding: 150px 0 54px; }
+            .cea-video-hero__content { max-width: 100%; }
+            .cea-video-hero__eyebrow { display: none; }
+            .cea-video-hero h1 { font-size: clamp(30px, 11vw, 46px); line-height: 1.08; margin-bottom: 16px; }
+            .cea-video-hero h1 span { line-height: 1.2; padding: 0 .11em; }
+            .cea-video-hero p { font-size: 14px; line-height: 1.65; margin-bottom: 20px; max-width: 100%; }
+            .cea-video-hero__actions { gap: 10px; }
+            .cea-video-hero__actions .cea-btn { font-size: 13px; min-height: 42px; padding: 0 14px; }
         }
         @media (max-width: 991px) {
             .tgmenu__action { margin-left: auto; }

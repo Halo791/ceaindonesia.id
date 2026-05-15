@@ -361,6 +361,9 @@
         .member-network__overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 575px) {
+        .public-hero__eyebrow { display: none; }
+        .public-hero h1 { font-size: clamp(30px, 11vw, 46px); line-height: 1.08; margin-bottom: 16px; }
+        .public-hero p { font-size: 14px; line-height: 1.65; margin-bottom: 20px; }
         .member-network__overview,
         .member-network__regions { grid-template-columns: 1fr; }
         .member-network__map { padding: 18px; }
