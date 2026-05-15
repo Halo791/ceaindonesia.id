@@ -186,6 +186,7 @@
         }
         @media (max-width: 991px) {
             .tgmenu__action { margin-left: auto; }
+            .header__top-logo { display: none !important; }
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
         @if (request()->is('admin*'))
@@ -213,7 +214,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-3 order-0 order-lg-2 d-none d-md-block">
+                    <div class="col-lg-4 order-0 order-lg-2 d-none d-lg-block">
                         <div class="header__top-logo logo text-lg-center">
                             <a href="{{ route('home') }}" class="cea-logo-image-link">
                                 @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true])
