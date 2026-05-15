@@ -298,7 +298,9 @@
     .simpul-map-marker--member { background: #ff3ab7; height: 16px; width: 16px; }
     .simpul-map-popup strong { color: #063d2a; display: block; font-size: 15px; line-height: 1.25; margin-bottom: 6px; }
     .simpul-map-popup span { color: #1f7a43; display: block; font-size: 12px; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; }
-    .simpul-map-popup a { color: #b85f14; font-weight: 900; }
+    .simpul-map-popup p { color: #405d4a; font-size: 13px; line-height: 1.45; margin: 0 0 10px; }
+    .simpul-map-popup a { align-items: center; background: #1f7a43; border-radius: 6px; color: #fff; display: inline-flex; font-size: 12px; font-weight: 900; min-height: 32px; padding: 8px 11px; }
+    .simpul-map-popup a:hover { background: #063d2a; color: #fff; }
     @media (max-width: 1199px) {
         .cea-landing-hero__panel { display: none; }
     }
@@ -541,10 +543,7 @@
 
             var marker = L.marker(latLng, { icon: icon, title: point.title })
                 .addTo(map)
-                .bindPopup(popup)
-                .on('click', function () {
-                    window.location.href = point.url;
-                });
+                .bindPopup(popup, { maxWidth: 260 });
 
             markers.push({ marker: marker, point: point, latLng: latLng });
             bounds.push(latLng);
