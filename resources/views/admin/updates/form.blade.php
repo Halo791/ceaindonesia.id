@@ -52,6 +52,7 @@
                     <div class="admin-field">
                         <label>Slug URL</label>
                         <input name="slug" value="{{ old('slug', $update->slug) }}" placeholder="Kosongkan untuk otomatis">
+                        <small>URL publik akan menjadi <code>/artikel/detail/slug</code>.</small>
                     </div>
 
                     <div class="admin-field">

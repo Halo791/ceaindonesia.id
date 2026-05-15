@@ -52,42 +52,53 @@
             gap: 12px;
         }
         .cea-news-item {
-            background: #063d2a;
+            background: #f7f4ee;
             border-radius: 8px;
-            color: #fff;
-            display: block;
-            min-height: 158px;
+            color: #10261d;
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 108px minmax(0, 1fr);
+            min-height: 0;
             overflow: hidden;
-            position: relative;
+            padding: 8px;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .cea-news-item:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,.14);
+            transform: translateY(-2px);
         }
         .cea-news-item img {
             display: block;
-            height: 100%;
-            inset: 0;
+            height: 92px;
             object-fit: cover;
-            position: absolute;
-            width: 100%;
+            position: static;
+            width: 108px;
+            border-radius: 6px;
         }
         .cea-news-item span {
-            background: linear-gradient(180deg, rgba(6,61,42,.1) 0%, rgba(6,61,42,.9) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            min-height: 158px;
-            padding: 18px;
-            position: relative;
-            z-index: 1;
+            background: transparent;
+            color: #10261d;
+            display: block;
+            min-height: 0;
+            padding: 4px 2px 2px;
         }
         .cea-news-item strong {
-            color: #fff;
-            display: block;
+            color: #0f7a4a;
+            display: -webkit-box;
             font-size: 16px;
             font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 7px;
+            line-height: 1.18;
+            margin-bottom: 6px;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        .cea-news-item span {
+            font-size: 13px;
+            line-height: 1.45;
         }
         .cea-news-item small {
-            color: rgba(255,255,255,.72);
+            color: #7b8077;
             display: block;
             font-size: 11px;
             font-weight: 800;
@@ -102,6 +113,11 @@
         }
         @media (max-width: 991px) {
             .cea-news-columns__grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 575px) {
+            .cea-news-item { grid-template-columns: 88px minmax(0, 1fr); }
+            .cea-news-item img { height: 76px; width: 88px; }
+            .cea-news-item strong { font-size: 14px; }
         }
     </style>
     @endpush
@@ -142,7 +158,8 @@
                             $articleExcerpt = $locale === 'en' && filled($article->excerpt_en) ? $article->excerpt_en : $article->excerpt;
                             $articleBody = $locale === 'en' && filled($article->body_en) ? $article->body_en : $article->body;
                             $articleCategory = $locale === 'en' && filled($article->category_en) ? $article->category_en : $article->category;
-                            $articleImage = $article->image_path ?: $newsFallbackImages[abs(crc32($articleTitle)) % count($newsFallbackImages)];
+                            $articleImagePath = $article->image_path ?: $newsFallbackImages[abs(crc32($articleTitle)) % count($newsFallbackImages)];
+                            $articleImage = preg_match('/^https?:\/\//', $articleImagePath) ? $articleImagePath : asset(ltrim($articleImagePath, '/'));
                         @endphp
                         <a class="cea-news-item" href="{{ route('public.update', $article->slug) }}">
                             <img src="{{ $articleImage }}" alt="{{ $articleTitle }}">

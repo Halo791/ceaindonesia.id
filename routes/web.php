@@ -12,7 +12,8 @@ Route::get('/profil/riwayat', [SiteController::class, 'riwayat'])->name('profil.
 Route::get('/blog', [SiteController::class, 'blog'])->name('blog.index');
 Route::get('/blog/{id}', [SiteController::class, 'blogShow'])->name('blog.show');
 Route::get('/halaman/{slug}', [SiteController::class, 'dynamicPage'])->name('dynamic.page');
-Route::get('/update/{slug}', [SiteController::class, 'publicUpdate'])->name('public.update');
+Route::get('/artikel/detail/{slug}', [SiteController::class, 'publicUpdate'])->name('public.update');
+Route::get('/update/{slug}', [SiteController::class, 'publicUpdate'])->name('public.update.legacy');
 Route::get('/travel', [SiteController::class, 'placeholder'])->defaults('title', 'Travel')->name('travel');
 Route::get('/lifestyle', [SiteController::class, 'placeholder'])->defaults('title', 'Lifestyle')->name('lifestyle');
 Route::get('/nft', [SiteController::class, 'placeholder'])->defaults('title', 'NFT')->name('nft');

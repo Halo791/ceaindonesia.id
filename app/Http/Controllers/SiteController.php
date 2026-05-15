@@ -163,7 +163,19 @@ class SiteController extends Controller
         $excerpt = $this->localizedModelValue($update, 'excerpt');
         $body = $this->localizedModelValue($update, 'body');
 
-        return view('pages.public', $this->shared([
+        $content = [
+            'eyebrow' => $category,
+            'title' => $title,
+            'subtitle' => $excerpt ?: '',
+            'body' => $body ?: '',
+            'image_path' => $update->image_path ?: '',
+            'source_href' => route('public.update', $update->slug),
+            'status' => $update->status,
+            'cards' => [],
+            'published_at' => $update->published_at,
+        ];
+
+        return view('pages.update', $this->shared([
             'section' => [
                 'key' => 'update',
                 'label' => $category,
@@ -171,16 +183,9 @@ class SiteController extends Controller
                 'publicHref' => route('public.update', $update->slug),
             ],
             'item' => null,
-            'content' => [
-                'eyebrow' => $category,
-                'title' => $title,
-                'subtitle' => $excerpt ?: '',
-                'body' => $body ?: '',
-                'image_path' => $update->image_path ?: '',
-                'source_href' => '',
-                'status' => $update->status,
-                'cards' => [],
-            ],
+            'content' => $content,
+            'update' => $update,
+            'relatedUpdates' => $this->latestPublicUpdates(5)->where('id', '!=', $update->id)->take(4)->values(),
             'siblings' => collect(),
             'updates' => collect(),
         ]));
