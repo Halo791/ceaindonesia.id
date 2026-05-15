@@ -254,8 +254,7 @@
     <div class="container">
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
-                <span class="cea-landing-hero__eyebrow">Menguatkan Lokal, Memperluas Dampak</span>
-                <h2 class="cea-scramble-title"><span>Menguatkan lokal, memperluas dampak.</span></h2>
+                <h1 class="cea-scramble-title"><span>Menguatkan lokal, memperluas dampak.</span></h1>
                 <p>Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.</p>
                 <div class="cea-landing-hero__actions">
                     <a class="cea-btn" href="/profil/mandat-visi-nilai">Baca Mandat</a>
