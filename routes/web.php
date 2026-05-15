@@ -8,6 +8,8 @@ Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::get('/profil/riwayat', [SiteController::class, 'riwayat'])->name('profil.riwayat');
 Route::get('/blog', [SiteController::class, 'blog'])->name('blog.index');
 Route::get('/blog/{id}', [SiteController::class, 'blogShow'])->name('blog.show');
+Route::get('/halaman/{slug}', [SiteController::class, 'dynamicPage'])->name('dynamic.page');
+Route::get('/update/{slug}', [SiteController::class, 'publicUpdate'])->name('public.update');
 Route::get('/travel', [SiteController::class, 'placeholder'])->defaults('title', 'Travel')->name('travel');
 Route::get('/lifestyle', [SiteController::class, 'placeholder'])->defaults('title', 'Lifestyle')->name('lifestyle');
 Route::get('/nft', [SiteController::class, 'placeholder'])->defaults('title', 'NFT')->name('nft');
@@ -23,6 +25,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('admin.auth')->group(function () {
         Route::get('/', [SiteController::class, 'admin'])->name('index');
+        Route::get('/pages', [SiteController::class, 'adminPages'])->name('pages.index');
+        Route::get('/pages/create', [SiteController::class, 'createAdminPage'])->name('pages.create');
+        Route::post('/pages', [SiteController::class, 'storeAdminPage'])->name('pages.store');
+        Route::get('/pages/{page}/edit', [SiteController::class, 'editAdminPage'])->name('pages.edit');
+        Route::put('/pages/{page}', [SiteController::class, 'updateAdminPage'])->name('pages.update');
+        Route::delete('/pages/{page}', [SiteController::class, 'destroyAdminPage'])->name('pages.destroy');
+        Route::get('/updates', [SiteController::class, 'adminUpdates'])->name('updates.index');
+        Route::get('/updates/create', [SiteController::class, 'createAdminUpdate'])->name('updates.create');
+        Route::post('/updates', [SiteController::class, 'storeAdminUpdate'])->name('updates.store');
+        Route::get('/updates/{update}/edit', [SiteController::class, 'editAdminUpdate'])->name('updates.edit');
+        Route::put('/updates/{update}', [SiteController::class, 'updateAdminUpdate'])->name('updates.update');
+        Route::delete('/updates/{update}', [SiteController::class, 'destroyAdminUpdate'])->name('updates.destroy');
         Route::post('/{section}/{slug}/{child}/{leaf}', [SiteController::class, 'updateAdminNestedLeaf'])->name('nested.leaf.update');
         Route::post('/{section}/{slug}/{child}', [SiteController::class, 'updateAdminNestedItem'])->name('nested.item.update');
         Route::post('/{section}', [SiteController::class, 'updateAdminSection'])->name('section.update');

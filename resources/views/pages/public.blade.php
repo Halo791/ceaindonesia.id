@@ -90,6 +90,50 @@
         font-size: 21px;
         margin: 0;
     }
+    .public-update-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        margin-top: 36px;
+    }
+    .public-update-card {
+        background: #fff;
+        border: 1px solid #dfe9c9;
+        border-radius: 8px;
+        box-shadow: 0 18px 44px rgba(6,61,42,.08);
+        overflow: hidden;
+    }
+    .public-update-card img {
+        aspect-ratio: 16 / 9;
+        display: block;
+        object-fit: cover;
+        width: 100%;
+    }
+    .public-update-card__body { padding: 18px; }
+    .public-update-card__body span {
+        color: #1f7a43;
+        display: block;
+        font-size: 12px;
+        font-weight: 900;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+    .public-update-card__body h3 {
+        color: #063d2a;
+        font-size: 19px;
+        line-height: 1.25;
+        margin-bottom: 10px;
+    }
+    .public-update-card__body p {
+        color: #4f6759;
+        font-size: 14px;
+        line-height: 1.65;
+        margin-bottom: 14px;
+    }
+    .public-update-card__body a {
+        color: #b85f14;
+        font-weight: 900;
+    }
     .public-sidebar {
         align-self: start;
         position: sticky;
@@ -451,6 +495,29 @@
                             <span>{{ $section['label'] }}</span>
                             <h3>{{ $card }}</h3>
                         </div>
+                    @endforeach
+                </div>
+            @endif
+
+            @if (($updates ?? collect())->isNotEmpty())
+                <div class="public-section__head" style="margin-top:42px;">
+                    <span>Informasi Terkini</span>
+                    <h2>Update dari {{ $item['label'] ?? $section['label'] }}</h2>
+                </div>
+                <div class="public-update-grid">
+                    @foreach ($updates as $update)
+                        @php
+                            $updateImage = $update->image_path ?: $fallbackImages[abs(crc32($update->title)) % count($fallbackImages)];
+                        @endphp
+                        <article class="public-update-card">
+                            <img src="{{ $updateImage }}" alt="{{ $update->title }}">
+                            <div class="public-update-card__body">
+                                <span>{{ $update->category }} · {{ optional($update->published_at)->format('d M Y') ?: 'Draft' }}</span>
+                                <h3>{{ $update->title }}</h3>
+                                <p>{{ $update->excerpt ?: str($update->body)->limit(120) }}</p>
+                                <a href="{{ route('public.update', $update->slug) }}">Baca update</a>
+                            </div>
+                        </article>
                     @endforeach
                 </div>
             @endif

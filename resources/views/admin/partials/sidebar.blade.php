@@ -1,6 +1,7 @@
 @php
     $activeSection = $activeSection ?? null;
     $activeItemKey = $activeItemKey ?? null;
+    $activeCustom = $activeCustom ?? null;
     $countItems = function ($items) use (&$countItems) {
         return collect($items)->sum(fn ($item) => 1 + $countItems($item['children'] ?? []));
     };
@@ -21,8 +22,10 @@
     </form>
     <nav class="admin-sidebar__nav" aria-label="Navigasi panel admin">
         @if (($adminUser['role'] ?? 'super_admin') !== 'member')
-            <a href="{{ route('admin.index') }}" class="{{ ! $activeSection ? 'active' : '' }}">Dashboard</a>
+            <a href="{{ route('admin.index') }}" class="{{ ! $activeSection && ! $activeCustom ? 'active' : '' }}">Dashboard</a>
+            <a href="{{ route('admin.pages.index') }}" class="{{ $activeCustom === 'pages' ? 'active' : '' }}">Halaman Dinamis</a>
         @endif
+        <a href="{{ route('admin.updates.index') }}" class="{{ $activeCustom === 'updates' ? 'active' : '' }}">Update Berita</a>
         @include('admin.partials.sidebar-items', [
             'items' => $navigation,
             'activeSection' => $activeSection,

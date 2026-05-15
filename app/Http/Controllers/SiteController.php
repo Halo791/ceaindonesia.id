@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminContent;
+use App\Models\AdminPage;
+use App\Models\AdminUpdate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class SiteController extends Controller
@@ -89,6 +92,76 @@ class SiteController extends Controller
         ]));
     }
 
+    public function dynamicPage(string $slug): View
+    {
+        $page = AdminPage::query()
+            ->with(['parent', 'children' => fn ($query) => $query->where('status', 'active')->where('show_in_navigation', true)])
+            ->where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        $section = [
+            'key' => 'halaman',
+            'label' => $page->parent?->menu_label ?: $page->parent?->title ?: 'Halaman',
+            'description' => 'Halaman website',
+            'publicHref' => $page->parent ? route('dynamic.page', $page->parent->slug) : route('dynamic.page', $page->slug),
+        ];
+        $siblings = $page->parent
+            ? $page->parent->children()->where('status', 'active')->where('show_in_navigation', true)->get()
+            : $page->children;
+
+        return view('pages.public', $this->shared([
+            'section' => $section,
+            'item' => [
+                'key' => $page->slug,
+                'label' => $page->menu_label ?: $page->title,
+                'description' => $page->subtitle ?: '',
+            ],
+            'content' => [
+                'eyebrow' => $page->parent?->menu_label ?: $page->parent?->title ?: 'Halaman',
+                'title' => $page->title,
+                'subtitle' => $page->subtitle ?: '',
+                'body' => $page->body ?: '',
+                'image_path' => $page->image_path ?: '',
+                'source_href' => '',
+                'status' => $page->status,
+                'cards' => [],
+            ],
+            'siblings' => collect($siblings)->map(fn ($item) => $this->adminPageNavigationItem($item))->values(),
+            'updates' => collect(),
+        ]));
+    }
+
+    public function publicUpdate(string $slug): View
+    {
+        $update = AdminUpdate::query()
+            ->where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        return view('pages.public', $this->shared([
+            'section' => [
+                'key' => 'update',
+                'label' => $update->category,
+                'description' => $update->excerpt ?: $update->title,
+                'publicHref' => route('public.update', $update->slug),
+            ],
+            'item' => null,
+            'content' => [
+                'eyebrow' => $update->category,
+                'title' => $update->title,
+                'subtitle' => $update->excerpt ?: '',
+                'body' => $update->body ?: '',
+                'image_path' => $update->image_path ?: '',
+                'source_href' => '',
+                'status' => $update->status,
+                'cards' => [],
+            ],
+            'siblings' => collect(),
+            'updates' => collect(),
+        ]));
+    }
+
     public function admin(): View|RedirectResponse
     {
         if ($this->adminIsRestricted()) {
@@ -102,6 +175,182 @@ class SiteController extends Controller
             ->values();
 
         return view('admin.index', $this->shared(compact('dropdownSections', 'childItems')));
+    }
+
+    public function adminPages(): View
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengelola halaman dinamis.');
+
+        return view('admin.pages.index', $this->shared([
+            'pages' => $this->adminPagesReady()
+                ? AdminPage::query()->with('parent')->orderBy('parent_id')->orderBy('sort_order')->orderBy('title')->get()
+                : collect(),
+            'dbReady' => $this->adminPagesReady(),
+        ]));
+    }
+
+    public function adminUpdates(): View
+    {
+        $query = AdminUpdate::query()->latest('published_at')->latest();
+
+        if ($this->adminIsRestricted()) {
+            $adminUser = $this->adminUser();
+            $query->where('owner_section_key', $adminUser['section_key'] ?? '')
+                ->where('owner_item_key', $adminUser['item_key'] ?? '');
+        }
+
+        return view('admin.updates.index', $this->shared([
+            'updates' => $this->adminUpdatesReady() ? $query->get() : collect(),
+            'dbReady' => $this->adminUpdatesReady(),
+        ]));
+    }
+
+    public function createAdminUpdate(): View
+    {
+        return view('admin.updates.form', $this->shared([
+            'update' => new AdminUpdate(['status' => 'draft', 'category' => 'Berita', 'published_at' => now()]),
+            'targets' => $this->updateTargetOptions(),
+            'formAction' => route('admin.updates.store'),
+            'method' => 'POST',
+            'title' => 'Tambah Update',
+            'dbReady' => $this->adminUpdatesReady(),
+        ]));
+    }
+
+    public function storeAdminUpdate(Request $request): RedirectResponse
+    {
+        if (! $this->adminUpdatesReady()) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_updates belum tersedia. Jalankan migration atau import database/sql/admin_updates.sql terlebih dulu.']);
+        }
+
+        $validated = $this->validateAdminUpdate($request);
+
+        try {
+            AdminUpdate::create($validated);
+        } catch (\Throwable) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_updates belum tersedia. Jalankan migration atau import database/sql/admin_updates.sql terlebih dulu.']);
+        }
+
+        return redirect()->route('admin.updates.index')->with('status', 'Update berhasil dibuat.');
+    }
+
+    public function editAdminUpdate(AdminUpdate $update): View
+    {
+        $this->authorizeUpdateOwner($update);
+
+        return view('admin.updates.form', $this->shared([
+            'update' => $update,
+            'targets' => $this->updateTargetOptions(),
+            'formAction' => route('admin.updates.update', $update),
+            'method' => 'PUT',
+            'title' => 'Edit Update',
+            'dbReady' => $this->adminUpdatesReady(),
+        ]));
+    }
+
+    public function updateAdminUpdate(Request $request, AdminUpdate $update): RedirectResponse
+    {
+        $this->authorizeUpdateOwner($update);
+
+        try {
+            $update->update($this->validateAdminUpdate($request, $update));
+        } catch (\Throwable) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_updates belum tersedia. Jalankan migration atau import database/sql/admin_updates.sql terlebih dulu.']);
+        }
+
+        return redirect()->route('admin.updates.index')->with('status', 'Update berhasil diperbarui.');
+    }
+
+    public function destroyAdminUpdate(AdminUpdate $update): RedirectResponse
+    {
+        $this->authorizeUpdateOwner($update);
+        $update->delete();
+
+        return redirect()->route('admin.updates.index')->with('status', 'Update berhasil dihapus.');
+    }
+
+    public function createAdminPage(): View
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengelola halaman dinamis.');
+
+        return view('admin.pages.form', $this->shared([
+            'page' => new AdminPage(['status' => 'draft', 'show_in_navigation' => true, 'sort_order' => 0]),
+            'parentPages' => $this->parentPageOptions(),
+            'formAction' => route('admin.pages.store'),
+            'method' => 'POST',
+            'title' => 'Tambah Halaman',
+            'dbReady' => $this->adminPagesReady(),
+        ]));
+    }
+
+    public function storeAdminPage(Request $request): RedirectResponse
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengelola halaman dinamis.');
+        if (! $this->adminPagesReady()) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_pages belum tersedia. Jalankan migration atau import database/sql/admin_pages.sql terlebih dulu.']);
+        }
+
+        $validated = $this->validateAdminPage($request);
+
+        try {
+            AdminPage::create($validated);
+        } catch (\Throwable) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_pages belum tersedia. Jalankan migration atau import database/sql/admin_pages.sql terlebih dulu.']);
+        }
+
+        return redirect()->route('admin.pages.index')->with('status', 'Halaman baru berhasil dibuat.');
+    }
+
+    public function editAdminPage(AdminPage $page): View
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengelola halaman dinamis.');
+
+        return view('admin.pages.form', $this->shared([
+            'page' => $page,
+            'parentPages' => $this->parentPageOptions($page),
+            'formAction' => route('admin.pages.update', $page),
+            'method' => 'PUT',
+            'title' => 'Edit Halaman',
+            'dbReady' => $this->adminPagesReady(),
+        ]));
+    }
+
+    public function updateAdminPage(Request $request, AdminPage $page): RedirectResponse
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengelola halaman dinamis.');
+
+        try {
+            $page->update($this->validateAdminPage($request, $page));
+        } catch (\Throwable) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_pages belum tersedia. Jalankan migration atau import database/sql/admin_pages.sql terlebih dulu.']);
+        }
+
+        return redirect()->route('admin.pages.index')->with('status', 'Halaman berhasil diperbarui.');
+    }
+
+    public function destroyAdminPage(AdminPage $page): RedirectResponse
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengelola halaman dinamis.');
+
+        try {
+            $page->delete();
+        } catch (\Throwable) {
+            return back()->withErrors(['database' => 'Halaman belum dapat dihapus karena database belum siap.']);
+        }
+
+        return redirect()->route('admin.pages.index')->with('status', 'Halaman berhasil dihapus.');
     }
 
     public function adminSection(string $section): View
@@ -249,7 +498,7 @@ class SiteController extends Controller
     private function shared(array $data = []): array
     {
         return $data + [
-            'navigation' => request()->is('admin*') ? $this->adminNavigation() : config('cea.navigation'),
+            'navigation' => request()->is('admin*') ? $this->adminNavigation() : $this->publicNavigation(),
             'adminUser' => $this->adminUser(),
         ];
     }
@@ -261,6 +510,7 @@ class SiteController extends Controller
 
     private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null, ?string $contentKey = null): View
     {
+        $contentKey ??= $item['key'] ?? '';
         $pageContent = $this->pageContent($section, $item);
         $dbContent = $this->adminContent($section, $item, $contentKey);
         $content = $dbContent['_from_database']
@@ -272,6 +522,7 @@ class SiteController extends Controller
             'item' => $item,
             'content' => $content,
             'siblings' => $siblings ? collect($siblings)->values() : collect($section['children'] ?? [])->values(),
+            'updates' => $this->publicUpdates($section['key'], $contentKey),
         ]));
     }
 
@@ -486,6 +737,244 @@ class SiteController extends Controller
             3 => route('admin.nested.leaf', [$sectionKey, $segments[0], $segments[1], $segments[2]]),
             default => route('admin.index'),
         };
+    }
+
+    private function publicNavigation(): array
+    {
+        $navigation = config('cea.navigation');
+
+        try {
+            $pages = AdminPage::query()
+                ->whereNull('parent_id')
+                ->where('status', 'active')
+                ->where('show_in_navigation', true)
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get();
+
+            foreach ($pages as $page) {
+                $navigation[] = $this->adminPageNavigationItem($page);
+            }
+        } catch (\Throwable) {
+            return $navigation;
+        }
+
+        return $navigation;
+    }
+
+    private function adminPageNavigationItem(AdminPage $page): array
+    {
+        $children = $page->children()
+            ->where('status', 'active')
+            ->where('show_in_navigation', true)
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
+
+        return [
+            'key' => 'page-'.$page->slug,
+            'label' => $page->menu_label ?: $page->title,
+            'href' => route('dynamic.page', $page->slug),
+            'publicHref' => route('dynamic.page', $page->slug),
+            'description' => $page->subtitle ?: $page->title,
+            'children' => $children->map(fn (AdminPage $child) => $this->adminPageNavigationItem($child))->values()->all(),
+        ];
+    }
+
+    private function validateAdminPage(Request $request, ?AdminPage $page = null): array
+    {
+        $validated = $request->validate([
+            'parent_id' => ['nullable', 'integer', 'exists:admin_pages,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:120'],
+            'menu_label' => ['nullable', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
+            'body' => ['nullable', 'string'],
+            'image_path' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:draft,active,archived'],
+            'show_in_navigation' => ['nullable', 'boolean'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
+        ]);
+
+        $validated['slug'] = Str::slug($validated['slug'] ?: $validated['title']) ?: 'halaman';
+        $validated['show_in_navigation'] = $request->boolean('show_in_navigation');
+        $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+        $validated['parent_id'] = $validated['parent_id'] ?: null;
+
+        if ($page && $validated['parent_id'] === $page->id) {
+            $validated['parent_id'] = null;
+        }
+
+        $slugExists = AdminPage::query()
+            ->where('slug', $validated['slug'])
+            ->when($page, fn ($query) => $query->whereKeyNot($page->id))
+            ->exists();
+
+        if ($slugExists) {
+            $validated['slug'] = $this->uniquePageSlug($validated['slug'], $page);
+        }
+
+        return $validated;
+    }
+
+    private function validateAdminUpdate(Request $request, ?AdminUpdate $update = null): array
+    {
+        $rules = [
+            'target' => ['nullable', 'string'],
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:150'],
+            'category' => ['required', 'string', 'max:80'],
+            'excerpt' => ['nullable', 'string', 'max:255'],
+            'body' => ['nullable', 'string'],
+            'image_path' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:draft,active,archived'],
+            'published_at' => ['nullable', 'date'],
+        ];
+        $validated = $request->validate($rules);
+        $adminUser = $this->adminUser();
+
+        if ($this->adminIsRestricted()) {
+            $validated['owner_section_key'] = $adminUser['section_key'] ?? '';
+            $validated['owner_item_key'] = $adminUser['item_key'] ?? '';
+        } else {
+            [$sectionKey, $itemKey] = array_pad(explode('|', $validated['target'] ?? '', 2), 2, '');
+            $validated['owner_section_key'] = $sectionKey ?: 'regio';
+            $validated['owner_item_key'] = $itemKey;
+        }
+
+        unset($validated['target']);
+        $validated['slug'] = Str::slug($validated['slug'] ?: $validated['title']) ?: 'update';
+
+        if (AdminUpdate::query()->where('slug', $validated['slug'])->when($update, fn ($query) => $query->whereKeyNot($update->id))->exists()) {
+            $validated['slug'] = $this->uniqueUpdateSlug($validated['slug'], $update);
+        }
+
+        return $validated;
+    }
+
+    private function uniqueUpdateSlug(string $slug, ?AdminUpdate $update = null): string
+    {
+        $baseSlug = $slug;
+        $counter = 2;
+
+        while (AdminUpdate::query()->where('slug', $slug)->when($update, fn ($query) => $query->whereKeyNot($update->id))->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    private function authorizeUpdateOwner(AdminUpdate $update): void
+    {
+        if (! $this->adminIsRestricted()) {
+            return;
+        }
+
+        $adminUser = $this->adminUser();
+        abort_unless(
+            $update->owner_section_key === ($adminUser['section_key'] ?? null)
+            && $update->owner_item_key === ($adminUser['item_key'] ?? null),
+            403,
+            'Akun ini hanya dapat mengelola update pada halaman yang ditugaskan.'
+        );
+    }
+
+    private function updateTargetOptions(): array
+    {
+        if ($this->adminIsRestricted()) {
+            $adminUser = $this->adminUser();
+
+            return [[
+                'value' => ($adminUser['section_key'] ?? '').'|'.($adminUser['item_key'] ?? ''),
+                'label' => 'Halaman saya',
+            ]];
+        }
+
+        return collect($this->flattenAdminItems(config('cea.navigation')))
+            ->map(fn ($item) => [
+                'value' => $item['section_key'].'|'.$item['item_key'],
+                'label' => $item['section_label'].' / '.str_repeat('- ', max($item['depth'] - 1, 0)).$item['label'],
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function publicUpdates(string $sectionKey, string $itemKey)
+    {
+        try {
+            return AdminUpdate::query()
+                ->where('owner_section_key', $sectionKey)
+                ->where('owner_item_key', $itemKey)
+                ->where('status', 'active')
+                ->latest('published_at')
+                ->latest()
+                ->limit(6)
+                ->get();
+        } catch (\Throwable) {
+            return collect();
+        }
+    }
+
+    private function uniquePageSlug(string $slug, ?AdminPage $page = null): string
+    {
+        $baseSlug = $slug;
+        $counter = 2;
+
+        while (AdminPage::query()->where('slug', $slug)->when($page, fn ($query) => $query->whereKeyNot($page->id))->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    private function parentPageOptions(?AdminPage $exceptPage = null)
+    {
+        try {
+            $excludedIds = $exceptPage ? array_merge([$exceptPage->id], $this->descendantPageIds($exceptPage)) : [];
+
+            return AdminPage::query()
+                ->when(! empty($excludedIds), fn ($query) => $query->whereNotIn('id', $excludedIds))
+                ->orderBy('title')
+                ->get();
+        } catch (\Throwable) {
+            return collect();
+        }
+    }
+
+    private function descendantPageIds(AdminPage $page): array
+    {
+        $ids = [];
+
+        foreach ($page->children as $child) {
+            $ids[] = $child->id;
+            $ids = array_merge($ids, $this->descendantPageIds($child));
+        }
+
+        return $ids;
+    }
+
+    private function adminPagesReady(): bool
+    {
+        try {
+            AdminPage::query()->limit(1)->exists();
+
+            return true;
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function adminUpdatesReady(): bool
+    {
+        try {
+            AdminUpdate::query()->limit(1)->exists();
+
+            return true;
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function databaseReady(): bool

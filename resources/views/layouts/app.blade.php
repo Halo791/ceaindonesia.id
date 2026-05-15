@@ -127,10 +127,15 @@
             .admin-section-spacer { margin-top: 24px; }
             .admin-table { margin: 0; width: 100%; }
             .admin-table th, .admin-table td { border-bottom: 1px solid #eee2d7; padding: 14px; vertical-align: top; }
+            .admin-inline-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; }
+            .admin-inline-actions form { margin: 0; }
+            .admin-inline-actions button { background: transparent; border: 0; color: #b23b27; font-weight: 800; padding: 0; }
             .admin-field { margin-bottom: 16px; }
             .admin-field label { display: block; font-weight: 800; margin-bottom: 8px; }
             .admin-field input, .admin-field textarea, .admin-field select { border: 1px solid #e5d7ca; border-radius: 8px; min-height: 44px; padding: 10px 12px; width: 100%; }
             .admin-field textarea { min-height: 130px; }
+            .admin-check-field label { align-items: center; display: flex; gap: 10px; }
+            .admin-check-field input { min-height: 0; width: auto; }
         @endif
         @media (max-width: 767px) {
             .home-hero__grid { grid-template-columns: 1fr; }

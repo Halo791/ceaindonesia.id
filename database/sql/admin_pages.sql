@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `admin_pages` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` bigint unsigned DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `slug` varchar(120) NOT NULL,
+  `menu_label` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `body` longtext,
+  `image_path` varchar(255) DEFAULT NULL,
+  `status` varchar(30) NOT NULL DEFAULT 'draft',
+  `show_in_navigation` tinyint(1) NOT NULL DEFAULT 0,
+  `sort_order` int unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `admin_pages_slug_unique` (`slug`),
+  KEY `admin_pages_parent_id_foreign` (`parent_id`),
+  CONSTRAINT `admin_pages_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `admin_pages` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
