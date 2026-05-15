@@ -2,6 +2,14 @@
 
 @section('title', 'Admin '.$section['label'])
 
+@php
+    $isHomepage = $section['key'] === 'beranda';
+    $homeMeta = $content['meta'] ?? [];
+    $metaValue = function (string $key, string $fallback = '') use ($homeMeta) {
+        return old("meta.{$key}", $homeMeta[$key] ?? $fallback);
+    };
+@endphp
+
 @section('content')
 <section class="cea-admin-panel">
     <div class="admin-shell">
@@ -24,7 +32,7 @@
         </div>
 
         <div class="admin-form-card admin-section-spacer">
-            <h2>Form Konten Menu {{ $section['label'] }}</h2>
+            <h2>{{ $isHomepage ? 'Pengaturan Halaman Beranda' : 'Form Konten Menu '.$section['label'] }}</h2>
             @if (! $dbReady)
                 <div class="alert alert-warning">Tabel <strong>admin_contents</strong> belum tersedia. Import <code>database/sql/admin_contents.sql</code> di phpMyAdmin.</div>
             @endif
@@ -37,34 +45,71 @@
             <form method="POST" action="{{ $formAction }}">
                 @csrf
                 <div class="admin-field">
-                    <label>Judul menu</label>
+                    <label>{{ $isHomepage ? 'Judul hero beranda' : 'Judul menu' }}</label>
                     <input name="title" value="{{ old('title', $content['title']) }}" required>
                     @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
                 <div class="admin-field">
-                    <label>Subtitle / Ringkasan</label>
+                    <label>{{ $isHomepage ? 'Tulisan kecil di atas judul' : 'Subtitle / Ringkasan' }}</label>
                     <input name="subtitle" value="{{ old('subtitle', $content['subtitle']) }}">
                 </div>
                 <div class="admin-field">
-                    <label>Isi tulisan</label>
+                    <label>{{ $isHomepage ? 'Deskripsi hero beranda' : 'Isi tulisan' }}</label>
                     <textarea name="body">{{ old('body', $content['body']) }}</textarea>
                 </div>
                 <div class="admin-field">
-                    <label>URL / path gambar</label>
+                    <label>{{ $isHomepage ? 'Path video background' : 'URL / path gambar' }}</label>
                     @php
-                        $previewImagePath = old('image_path', $content['image_path']);
+                        $previewImagePath = (string) old('image_path', $content['image_path']);
                         $previewFallbackImage = asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg');
                         $previewImageSrc = ($previewImagePath && strpos($previewImagePath, 'assets/img/cea/') !== false) ? $previewFallbackImage : $previewImagePath;
+                        $previewVideoSrc = ($previewImagePath && preg_match('/^https?:\/\//', $previewImagePath)) ? $previewImagePath : asset(ltrim($previewImagePath, '/'));
                     @endphp
-                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="Kosongkan untuk foto lapangan otomatis atau gunakan https://...">
-                    @if (! empty($previewImageSrc))
+                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="{{ $isHomepage ? '/assets/img/cea/video.mp4' : 'Kosongkan untuk foto lapangan otomatis atau gunakan https://...' }}">
+                    @if ($isHomepage && ! empty($previewImagePath))
+                        <video src="{{ $previewVideoSrc }}" autoplay muted loop playsinline style="border-radius:8px;margin-top:12px;max-height:190px;object-fit:cover;width:100%;"></video>
+                    @elseif (! empty($previewImageSrc))
                         <img src="{{ $previewImageSrc }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
                     @endif
                 </div>
-                <div class="admin-field">
-                    <label>URL sumber</label>
-                    <input name="source_href" value="{{ old('source_href', $content['source_href']) }}">
-                </div>
+                @if ($isHomepage)
+                    <input type="hidden" name="source_href" value="{{ old('source_href', $content['source_href']) }}">
+                    <div class="admin-grid" style="margin-bottom:16px;">
+                        <div class="admin-field">
+                            <label>Label tombol utama</label>
+                            <input name="meta[primary_label]" value="{{ $metaValue('primary_label') }}">
+                        </div>
+                        <div class="admin-field">
+                            <label>URL tombol utama</label>
+                            <input name="meta[primary_href]" value="{{ $metaValue('primary_href') }}">
+                        </div>
+                        <div class="admin-field">
+                            <label>Label tombol kedua</label>
+                            <input name="meta[secondary_label]" value="{{ $metaValue('secondary_label') }}">
+                        </div>
+                        <div class="admin-field">
+                            <label>URL tombol kedua</label>
+                            <input name="meta[secondary_href]" value="{{ $metaValue('secondary_href') }}">
+                        </div>
+                        <div class="admin-field">
+                            <label>Label panel angka</label>
+                            <input name="meta[panel_label]" value="{{ $metaValue('panel_label') }}">
+                        </div>
+                        <div class="admin-field">
+                            <label>Angka panel</label>
+                            <input name="meta[panel_value]" value="{{ $metaValue('panel_value') }}">
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Deskripsi panel angka</label>
+                        <input name="meta[panel_description]" value="{{ $metaValue('panel_description') }}">
+                    </div>
+                @else
+                    <div class="admin-field">
+                        <label>URL sumber</label>
+                        <input name="source_href" value="{{ old('source_href', $content['source_href']) }}">
+                    </div>
+                @endif
                 <div class="admin-field">
                     <label>Status publikasi</label>
                     <select name="status">

@@ -24,6 +24,15 @@
         </div>
 
         <div class="admin-grid">
+            <article class="admin-card">
+                <span class="admin-card__label">Halaman utama</span>
+                <h2>Pengaturan Beranda</h2>
+                <p>Atur judul hero, deskripsi, video background, tombol, dan panel angka di halaman depan website.</p>
+                <div class="admin-card__actions">
+                    <a class="admin-button" href="{{ route('admin.section', 'beranda') }}">Kelola Beranda</a>
+                    <a class="admin-button secondary" href="{{ route('home') }}" target="_blank" rel="noreferrer">Lihat halaman</a>
+                </div>
+            </article>
             @foreach ($dropdownSections as $section)
                 <article class="admin-card">
                     <span class="admin-card__label">{{ count($section['children']) }} dropdown</span>

@@ -15,6 +15,18 @@ CREATE TABLE IF NOT EXISTS `admin_contents` (
   UNIQUE KEY `admin_contents_section_item_unique` (`section_key`, `item_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO `admin_contents` (`section_key`, `item_key`, `title`, `subtitle`, `body`, `image_path`, `source_href`, `status`, `meta`, `created_at`, `updated_at`) VALUES
+('beranda', '', 'Menguatkan lokal, memperluas dampak.', 'Menguatkan Lokal, Memperluas Dampak', 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.', '/assets/img/cea/video.mp4', '/', 'active', '{"primary_label":"Baca Mandat","primary_href":"/profil/mandat-visi-nilai","secondary_label":"Lihat Simpul","secondary_href":"/regio/simpul","panel_label":"Ekosistem KSO","panel_value":"7","panel_description":"Simpul regional otonom yang terhubung dalam satu mandat kolektif."}', NOW(), NOW())
+ON DUPLICATE KEY UPDATE
+  `title` = VALUES(`title`),
+  `subtitle` = VALUES(`subtitle`),
+  `body` = VALUES(`body`),
+  `image_path` = VALUES(`image_path`),
+  `source_href` = VALUES(`source_href`),
+  `status` = VALUES(`status`),
+  `meta` = VALUES(`meta`),
+  `updated_at` = NOW();
+
 INSERT INTO `admin_contents` (`section_key`, `item_key`, `title`, `subtitle`, `body`, `image_path`, `source_href`, `status`, `created_at`, `updated_at`) VALUES
 ('profil', '', 'Pooling Fund - KSO', 'Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan secara bersama.', 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung.
 

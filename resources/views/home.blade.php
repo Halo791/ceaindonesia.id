@@ -3,6 +3,9 @@
 @section('title', config('app.name'))
 
 @php
+    $homeContent = $homeContent ?? [];
+    $heroVideoPath = (string) ($homeContent['video_path'] ?? '/assets/img/cea/video.mp4');
+    $heroVideoSrc = preg_match('/^https?:\/\//', $heroVideoPath) ? $heroVideoPath : asset(ltrim($heroVideoPath, '/'));
     $disasterImages = [
         'psychosocial' => asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
         'children' => asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg'),
@@ -249,18 +252,32 @@
 @section('content')
 <section class="cea-video-hero cea-landing-hero">
     <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
-        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
+        <source src="{{ $heroVideoSrc }}" type="video/mp4">
     </video>
     <div class="container">
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
-                <h1 class="cea-scramble-title"><span>Menguatkan lokal, memperluas dampak.</span></h1>
-                <p>Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.</p>
+                @if (! empty($homeContent['eyebrow']))
+                    <span class="cea-landing-hero__eyebrow">{{ $homeContent['eyebrow'] }}</span>
+                @endif
+                <h1 class="cea-scramble-title"><span>{{ $homeContent['title'] ?? 'Menguatkan lokal, memperluas dampak.' }}</span></h1>
+                <p>{{ $homeContent['description'] ?? 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.' }}</p>
                 <div class="cea-landing-hero__actions">
-                    <a class="cea-btn" href="/profil/mandat-visi-nilai">Baca Mandat</a>
-                    <a class="cea-btn secondary" href="/regio/simpul">Lihat Simpul</a>
+                    @if (! empty($homeContent['primary_label']) && ! empty($homeContent['primary_href']))
+                        <a class="cea-btn" href="{{ $homeContent['primary_href'] }}">{{ $homeContent['primary_label'] }}</a>
+                    @endif
+                    @if (! empty($homeContent['secondary_label']) && ! empty($homeContent['secondary_href']))
+                        <a class="cea-btn secondary" href="{{ $homeContent['secondary_href'] }}">{{ $homeContent['secondary_label'] }}</a>
+                    @endif
                 </div>
             </div>
+            @if (! empty($homeContent['panel_value']))
+                <div class="cea-landing-hero__panel">
+                    <span>{{ $homeContent['panel_label'] ?? 'Ekosistem KSO' }}</span>
+                    <strong>{{ $homeContent['panel_value'] }}</strong>
+                    <p>{{ $homeContent['panel_description'] ?? 'Simpul regional otonom yang terhubung dalam satu mandat kolektif.' }}</p>
+                </div>
+            @endif
         </div>
     </div>
 </section>

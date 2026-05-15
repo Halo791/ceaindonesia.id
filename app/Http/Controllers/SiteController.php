@@ -15,6 +15,7 @@ class SiteController extends Controller
     public function home(): View
     {
         return view('home', $this->shared([
+            'homeContent' => $this->homepageContent(),
             'latestUpdates' => $this->latestPublicUpdates(),
         ]));
     }
@@ -363,7 +364,7 @@ class SiteController extends Controller
 
         return view('admin.section', $this->shared([
             'section' => $sectionData,
-            'content' => $this->adminContent($sectionData),
+            'content' => $sectionData['key'] === 'beranda' ? $this->homepageAdminContent() : $this->adminContent($sectionData),
             'contentKey' => '',
             'formAction' => route('admin.section.update', $sectionData['key']),
             'dbReady' => $this->databaseReady(),
@@ -560,6 +561,7 @@ class SiteController extends Controller
             'image_path' => '',
             'source_href' => $item['sourceHref'] ?? $item['publicHref'] ?? $section['sourceHref'] ?? '',
             'status' => 'draft',
+            'meta' => [],
             '_from_database' => false,
         ];
 
@@ -580,10 +582,84 @@ class SiteController extends Controller
                 'image_path',
                 'source_href',
                 'status',
+                'meta',
             ]), ['_from_database' => true]);
         } catch (\Throwable) {
             return $fallback;
         }
+    }
+
+    private function homepageSection(): array
+    {
+        return $this->findSection('beranda') ?: [
+            'key' => 'beranda',
+            'label' => 'BERANDA',
+            'description' => 'Halaman utama Pooling Fund - KSO.',
+            'sourceHref' => url('/'),
+        ];
+    }
+
+    private function homepageDefaults(): array
+    {
+        return [
+            'title' => 'Menguatkan lokal, memperluas dampak.',
+            'subtitle' => 'Menguatkan Lokal, Memperluas Dampak',
+            'body' => 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.',
+            'image_path' => '/assets/img/cea/video.mp4',
+            'source_href' => '/',
+            'status' => 'active',
+            'meta' => [
+                'primary_label' => 'Baca Mandat',
+                'primary_href' => '/profil/mandat-visi-nilai',
+                'secondary_label' => 'Lihat Simpul',
+                'secondary_href' => '/regio/simpul',
+                'panel_label' => 'Ekosistem KSO',
+                'panel_value' => '7',
+                'panel_description' => 'Simpul regional otonom yang terhubung dalam satu mandat kolektif.',
+            ],
+        ];
+    }
+
+    private function homepageAdminContent(): array
+    {
+        $defaults = $this->homepageDefaults();
+        $content = $this->adminContent($this->homepageSection());
+
+        if (! ($content['_from_database'] ?? false)) {
+            return $defaults + ['_from_database' => false];
+        }
+
+        $meta = array_merge($defaults['meta'], (array) ($content['meta'] ?? []));
+        $merged = array_merge($defaults, array_filter($content, fn ($value, $key) => $key !== 'meta' && $key !== '_from_database' && filled($value), ARRAY_FILTER_USE_BOTH));
+        $merged['meta'] = $meta;
+        $merged['_from_database'] = true;
+
+        return $merged;
+    }
+
+    private function homepageContent(): array
+    {
+        $content = $this->homepageAdminContent();
+
+        if (($content['_from_database'] ?? false) && ($content['status'] ?? 'active') !== 'active') {
+            $content = $this->homepageDefaults() + ['_from_database' => false];
+        }
+
+        $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
+
+        return [
+            'eyebrow' => $content['subtitle'] ?: $this->homepageDefaults()['subtitle'],
+            'title' => $content['title'] ?: $this->homepageDefaults()['title'],
+            'description' => $content['body'] ?: $this->homepageDefaults()['body'],
+            'video_path' => $content['image_path'] ?: $this->homepageDefaults()['image_path'],
+            'primary_label' => $meta['primary_label'] ?? '',
+            'primary_href' => $meta['primary_href'] ?? '',
+            'secondary_label' => $meta['secondary_label'] ?? '',
+            'secondary_href' => $meta['secondary_href'] ?? '',
+            'panel_label' => $meta['panel_label'] ?? '',
+            'panel_value' => $meta['panel_value'] ?? '',
+            'panel_description' => $meta['panel_description'] ?? '',
+        ];
     }
 
     private function saveAdminContent(Request $request, array $section, ?array $item = null, ?string $contentKey = null): RedirectResponse
@@ -598,7 +674,13 @@ class SiteController extends Controller
             'image_path' => ['nullable', 'string', 'max:255'],
             'source_href' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,active,archived'],
+            'meta' => ['nullable', 'array'],
+            'meta.*' => ['nullable', 'string', 'max:500'],
         ]);
+        $validated['meta'] = collect($request->input('meta', []))
+            ->map(fn ($value) => is_string($value) ? trim($value) : $value)
+            ->all();
+        $validated['meta'] = empty($validated['meta']) ? null : $validated['meta'];
 
         try {
             AdminContent::updateOrCreate(
