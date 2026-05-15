@@ -4,6 +4,9 @@
 
 @push('styles')
 <style>
+    .kso-cube-field {
+        display: none !important;
+    }
     .article-detail-hero .cea-video-hero__content {
         max-width: 920px;
     }
@@ -12,7 +15,7 @@
     }
     .article-detail-meta {
         align-items: center;
-        color: rgba(255,255,255,.78);
+        color: #fff;
         display: flex;
         flex-wrap: wrap;
         font-size: 13px;
@@ -21,10 +24,14 @@
         margin-bottom: 16px;
         text-transform: uppercase;
     }
-    .article-detail-meta span {
-        background: rgba(255,255,255,.14);
-        border: 1px solid rgba(255,255,255,.2);
+    .article-detail-meta span,
+    .article-detail-meta time {
+        background: rgba(6,61,42,.72);
+        border: 0;
         border-radius: 999px;
+        box-shadow: 0 10px 24px rgba(0,0,0,.16);
+        display: inline-flex;
+        line-height: 1;
         padding: 6px 10px;
     }
     .article-detail {
