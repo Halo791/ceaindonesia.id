@@ -103,6 +103,9 @@
         box-shadow: 0 18px 44px rgba(6,61,42,.08);
         overflow: hidden;
     }
+    .public-update-card__image {
+        display: block;
+    }
     .public-update-card img {
         aspect-ratio: 16 / 9;
         display: block;
@@ -510,7 +513,9 @@
                             $updateImage = $update->image_path ?: $fallbackImages[abs(crc32($update->title)) % count($fallbackImages)];
                         @endphp
                         <article class="public-update-card">
-                            <img src="{{ $updateImage }}" alt="{{ $update->title }}">
+                            <a class="public-update-card__image" href="{{ route('public.update', $update->slug) }}" aria-label="Baca update {{ $update->title }}">
+                                <img src="{{ $updateImage }}" alt="{{ $update->title }}">
+                            </a>
                             <div class="public-update-card__body">
                                 <span>{{ $update->category }} · {{ optional($update->published_at)->format('d M Y') ?: 'Draft' }}</span>
                                 <h3>{{ $update->title }}</h3>
