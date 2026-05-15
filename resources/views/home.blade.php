@@ -59,14 +59,6 @@
             'description' => 'Bantuan logistik disalurkan melalui kerja kolektif relawan dan simpul lokal agar kebutuhan mendesak penyintas dapat dijawab secara cepat, transparan, dan tepat sasaran.',
         ],
     ];
-    $menuImages = [
-        'profil' => $disasterImages['psychosocial'],
-        'regio' => $disasterImages['waterTwo'],
-        'siar' => $disasterImages['children'],
-        'aksi' => $disasterImages['logistics'],
-        'koneksi' => $disasterImages['waterOne'],
-    ];
-    $dropdownSections = collect($navigation)->filter(fn ($item) => ! empty($item['children']))->values();
     $principles = ['Satu CSO satu suara', 'Berbasis kebutuhan komunitas', 'Kecepatan sebagai nilai utama', 'Transparansi sebagai aset strategis', 'Akuntabilitas kolektif', 'Local leadership & local first'];
     $locationCoordinates = [
         'sumbagsel-tangguh' => [3.35, 98.67],
@@ -401,33 +393,6 @@
                         <span class="cea-story-card__label">{{ $story['label'] }}</span>
                         <h3>{{ $story['title'] }}</h3>
                         <p>{{ $story['description'] }}</p>
-                    </div>
-                </article>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-<section class="cea-section">
-    <div class="container">
-        <div class="cea-section__head">
-            <span>Navigasi Utama</span>
-            <h2>Konten website diringkas sesuai mandat Pooling Fund - KSO.</h2>
-        </div>
-        <div class="cea-menu-grid">
-            @foreach ($dropdownSections as $section)
-                <article class="cea-menu-card">
-                    <div class="cea-menu-card__image">
-                        <img src="{{ $menuImages[$section['key']] ?? $disasterImages['logistics'] }}" alt="{{ $section['label'] }}">
-                    </div>
-                    <div class="cea-menu-card__body">
-                        <h3>{{ $section['label'] }}</h3>
-                        <p>{{ $section['description'] }}</p>
-                        <ul>
-                            @foreach (array_slice($section['children'], 0, 5) as $item)
-                                <li><a href="{{ $item['publicHref'] ?? $item['href'] }}">{{ $item['label'] }}</a></li>
-                            @endforeach
-                        </ul>
                     </div>
                 </article>
             @endforeach
