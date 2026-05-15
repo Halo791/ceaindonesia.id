@@ -20,6 +20,16 @@ class SiteController extends Controller
         ]));
     }
 
+    public function switchLanguage(Request $request, string $locale): RedirectResponse
+    {
+        abort_unless(in_array($locale, ['id', 'en'], true), 404);
+
+        $request->session()->put('site_locale', $locale);
+        app()->setLocale($locale);
+
+        return redirect()->back();
+    }
+
     public function riwayat(): View
     {
         $section = $this->findSection('profil');
@@ -103,10 +113,16 @@ class SiteController extends Controller
             ->where('status', 'active')
             ->firstOrFail();
 
+        $parentLabel = $page->parent ? $this->localizedPageLabel($page->parent) : ($this->currentLocale() === 'en' ? 'Page' : 'Halaman');
+        $pageLabel = $this->localizedPageLabel($page);
+        $pageTitle = $this->localizedModelValue($page, 'title');
+        $pageSubtitle = $this->localizedModelValue($page, 'subtitle');
+        $pageBody = $this->localizedModelValue($page, 'body');
+
         $section = [
             'key' => 'halaman',
-            'label' => $page->parent?->menu_label ?: $page->parent?->title ?: 'Halaman',
-            'description' => 'Halaman website',
+            'label' => $parentLabel,
+            'description' => $this->currentLocale() === 'en' ? 'Website page' : 'Halaman website',
             'publicHref' => $page->parent ? route('dynamic.page', $page->parent->slug) : route('dynamic.page', $page->slug),
         ];
         $siblings = $page->parent
@@ -117,14 +133,14 @@ class SiteController extends Controller
             'section' => $section,
             'item' => [
                 'key' => $page->slug,
-                'label' => $page->menu_label ?: $page->title,
-                'description' => $page->subtitle ?: '',
+                'label' => $pageLabel,
+                'description' => $pageSubtitle ?: '',
             ],
             'content' => [
-                'eyebrow' => $page->parent?->menu_label ?: $page->parent?->title ?: 'Halaman',
-                'title' => $page->title,
-                'subtitle' => $page->subtitle ?: '',
-                'body' => $page->body ?: '',
+                'eyebrow' => $parentLabel,
+                'title' => $pageTitle,
+                'subtitle' => $pageSubtitle ?: '',
+                'body' => $pageBody ?: '',
                 'image_path' => $page->image_path ?: '',
                 'source_href' => '',
                 'status' => $page->status,
@@ -142,19 +158,24 @@ class SiteController extends Controller
             ->where('status', 'active')
             ->firstOrFail();
 
+        $category = $this->localizedModelValue($update, 'category');
+        $title = $this->localizedModelValue($update, 'title');
+        $excerpt = $this->localizedModelValue($update, 'excerpt');
+        $body = $this->localizedModelValue($update, 'body');
+
         return view('pages.public', $this->shared([
             'section' => [
                 'key' => 'update',
-                'label' => $update->category,
-                'description' => $update->excerpt ?: $update->title,
+                'label' => $category,
+                'description' => $excerpt ?: $title,
                 'publicHref' => route('public.update', $update->slug),
             ],
             'item' => null,
             'content' => [
-                'eyebrow' => $update->category,
-                'title' => $update->title,
-                'subtitle' => $update->excerpt ?: '',
-                'body' => $update->body ?: '',
+                'eyebrow' => $category,
+                'title' => $title,
+                'subtitle' => $excerpt ?: '',
+                'body' => $body ?: '',
                 'image_path' => $update->image_path ?: '',
                 'source_href' => '',
                 'status' => $update->status,
@@ -225,7 +246,7 @@ class SiteController extends Controller
         if (! $this->adminUpdatesReady()) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_updates belum tersedia. Jalankan migration atau import database/sql/admin_updates.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_updates belum siap. Jalankan migration atau import database/sql/admin_updates.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
         }
 
         $validated = $this->validateAdminUpdate($request);
@@ -235,7 +256,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_updates belum tersedia. Jalankan migration atau import database/sql/admin_updates.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_updates belum siap. Jalankan migration atau import database/sql/admin_updates.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.updates.index')->with('status', 'Update berhasil dibuat.');
@@ -264,7 +285,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_updates belum tersedia. Jalankan migration atau import database/sql/admin_updates.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_updates belum siap. Jalankan migration atau import database/sql/admin_updates.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.updates.index')->with('status', 'Update berhasil diperbarui.');
@@ -298,7 +319,7 @@ class SiteController extends Controller
         if (! $this->adminPagesReady()) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum tersedia. Jalankan migration atau import database/sql/admin_pages.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
         }
 
         $validated = $this->validateAdminPage($request);
@@ -308,7 +329,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum tersedia. Jalankan migration atau import database/sql/admin_pages.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.pages.index')->with('status', 'Halaman baru berhasil dibuat.');
@@ -337,7 +358,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum tersedia. Jalankan migration atau import database/sql/admin_pages.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.pages.index')->with('status', 'Halaman berhasil diperbarui.');
@@ -500,10 +521,158 @@ class SiteController extends Controller
 
     private function shared(array $data = []): array
     {
+        $locale = $this->currentLocale();
+        app()->setLocale($locale);
+        $navigation = request()->is('admin*') ? $this->adminNavigation() : $this->translateNavigation($this->publicNavigation(), $locale);
+
         return $data + [
-            'navigation' => request()->is('admin*') ? $this->adminNavigation() : $this->publicNavigation(),
+            'navigation' => $navigation,
+            'currentLocale' => $locale,
+            'ui' => $this->uiText($locale),
             'adminUser' => $this->adminUser(),
         ];
+    }
+
+    private function currentLocale(): string
+    {
+        $locale = session('site_locale', 'id');
+
+        return in_array($locale, ['id', 'en'], true) ? $locale : 'id';
+    }
+
+    private function uiText(string $locale): array
+    {
+        $text = [
+            'id' => [
+                'search_placeholder' => 'Cari kabar, rilis, dan referensi...',
+                'search_content_placeholder' => 'Cari konten Pooling Fund - KSO...',
+                'view_hubs' => 'lihat simpul',
+                'open_menu' => 'Buka menu',
+                'close_menu' => 'Tutup menu',
+                'mobile_menu' => 'Menu mobile',
+                'footer_description' => 'Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan berbasis kebutuhan komunitas dan kepemimpinan lokal.',
+                'read_mandate' => 'Baca Mandat',
+                'see_hubs' => 'Lihat Simpul',
+                'menu' => 'Menu',
+                'public_channels' => 'Kanal Publik',
+                'contact' => 'Kontak',
+                'donate_qris' => 'Donasi via QRIS',
+                'donation_title' => 'Donasi Pooling Fund - KSO',
+                'donation_body' => 'Dukungan Anda membantu memperkuat respon kemanusiaan berbasis komunitas dan kepemimpinan lokal.',
+                'qris_placeholder' => 'QRIS Donasi<br>segera tersedia',
+                'donation_note' => 'Tempatkan gambar QRIS resmi di area ini saat sudah tersedia. Pastikan nama penerima dan nominal dicek sebelum transaksi.',
+                'close_donation' => 'Tutup modal donasi',
+                'summary' => 'Ringkasan',
+                'summary_prefix' => 'Ringkasan',
+                'diagram_relation' => 'Diagram Relasi',
+                'members_heading' => 'Simpul & Anggota PF KSO',
+                'members_description' => 'Setiap simpul bekerja otonom sesuai konteks wilayah, dengan :active simpul aktif dan :pending simpul yang datanya dapat terus dilengkapi.',
+                'regions' => 'Simpul',
+                'active' => 'Aktif',
+                'members' => 'Anggota',
+                'collective_mandate' => 'Mandat Kolektif',
+                'humanitarian_pooling' => 'Pooling Fund Kemanusiaan',
+                'member_data_soon' => 'Data anggota menyusul',
+                'youtube_video' => 'YouTube video',
+                'latest_video' => 'Latest Video',
+                'new_article' => 'New Article',
+                'news_intro' => 'Ikuti cerita, aktivitas, dan pembelajaran dari simpul lokal. Ruang ini menampilkan dokumentasi video dan narasi kerja bersama dalam ekosistem Pooling Fund - KSO.',
+                'no_active_news' => 'Belum ada berita aktif untuk halaman ini.',
+                'map_label' => 'Peta Simpul',
+                'map_title' => 'Jelajahi simpul dan anggota melalui peta interaktif.',
+                'search_province' => 'Search Province',
+                'province_placeholder' => 'Enter province name...',
+                'back' => 'Kembali',
+                'search' => 'Search',
+                'all_hubs' => 'Semua Simpul',
+                'open_page' => 'Buka halaman',
+                'learn' => 'Pelajari',
+                'read_more' => 'Baca selengkapnya',
+            ],
+            'en' => [
+                'search_placeholder' => 'Search news, releases, and references...',
+                'search_content_placeholder' => 'Search Pooling Fund - KSO content...',
+                'view_hubs' => 'view hubs',
+                'open_menu' => 'Open menu',
+                'close_menu' => 'Close menu',
+                'mobile_menu' => 'Mobile menu',
+                'footer_description' => 'A collective mandate platform among CSOs to pool and channel humanitarian funds based on community needs and local leadership.',
+                'read_mandate' => 'Read Mandate',
+                'see_hubs' => 'View Hubs',
+                'menu' => 'Menu',
+                'public_channels' => 'Public Channels',
+                'contact' => 'Contact',
+                'donate_qris' => 'Donate via QRIS',
+                'donation_title' => 'Donate to Pooling Fund - KSO',
+                'donation_body' => 'Your support helps strengthen community-based humanitarian response and local leadership.',
+                'qris_placeholder' => 'Donation QRIS<br>coming soon',
+                'donation_note' => 'Place the official QRIS image here when it is available. Please verify the recipient name and amount before completing a transaction.',
+                'close_donation' => 'Close donation modal',
+                'summary' => 'Overview',
+                'summary_prefix' => 'Overview of',
+                'diagram_relation' => 'Relationship Diagram',
+                'members_heading' => 'PF KSO Hubs & Members',
+                'members_description' => 'Each hub works autonomously according to its regional context, with :active active hubs and :pending hubs whose data can continue to be completed.',
+                'regions' => 'Hubs',
+                'active' => 'Active',
+                'members' => 'Members',
+                'collective_mandate' => 'Collective Mandate',
+                'humanitarian_pooling' => 'Humanitarian Pooling Fund',
+                'member_data_soon' => 'Member data coming soon',
+                'youtube_video' => 'YouTube video',
+                'latest_video' => 'Latest Video',
+                'new_article' => 'New Article',
+                'news_intro' => 'Follow stories, activities, and learning from local hubs. This space features video documentation and narratives of collective work within the Pooling Fund - KSO ecosystem.',
+                'no_active_news' => 'No active news is available for this page yet.',
+                'map_label' => 'Hub Map',
+                'map_title' => 'Explore hubs and members through the interactive map.',
+                'search_province' => 'Search Province',
+                'province_placeholder' => 'Enter province name...',
+                'back' => 'Back',
+                'search' => 'Search',
+                'all_hubs' => 'All Hubs',
+                'open_page' => 'Open page',
+                'learn' => 'Learn',
+                'read_more' => 'Read more',
+            ],
+        ];
+
+        return $text[$locale] ?? $text['id'];
+    }
+
+    private function translateNavigation(array $items, string $locale): array
+    {
+        if ($locale !== 'en') {
+            return $items;
+        }
+
+        $labels = [
+            'beranda' => 'HOME',
+            'profil' => 'ABOUT KSO',
+            'riwayat' => 'KSO Profile',
+            'mandat-visi-nilai' => 'Mandate, Vision, Mission',
+            'tujuan-prinsip' => 'Goals & Principles',
+            'struktur-gerak' => 'Mandate Architecture',
+            'sumber-daya' => 'Resource Governance',
+            'kontak' => 'Contact',
+            'regio' => 'REGIONAL HUBS',
+            'simpul' => 'Hub Distribution',
+            'anggota' => 'Members',
+        ];
+
+        return collect($items)
+            ->map(function (array $item) use ($labels, $locale) {
+                if (isset($labels[$item['key']])) {
+                    $item['label'] = $labels[$item['key']];
+                }
+
+                if (! empty($item['children'])) {
+                    $item['children'] = $this->translateNavigation($item['children'], $locale);
+                }
+
+                return $item;
+            })
+            ->all();
     }
 
     private function findSection(string $key): ?array
@@ -514,17 +683,29 @@ class SiteController extends Controller
     private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null, ?string $contentKey = null): View
     {
         $contentKey ??= $item['key'] ?? '';
+        $locale = $this->currentLocale();
         $pageContent = $this->pageContent($section, $item);
         $dbContent = $this->adminContent($section, $item, $contentKey);
+        $fromDatabase = $dbContent['_from_database'];
         $content = $dbContent['_from_database']
             ? array_merge($pageContent, array_filter($dbContent, fn ($value, $key) => $key !== '_from_database' && filled($value), ARRAY_FILTER_USE_BOTH))
             : $pageContent;
+        $content = $this->localizeStaticContent($content, $section['key'], $contentKey);
+        $content = $fromDatabase ? $this->localizeAdminContent($content) : $content;
+        $content = $this->localizeRegioGeneratedContent($content, $section['key'], $contentKey);
+
+        $localizedSection = $this->translateNavigation([$section], $locale)[0] ?? $section;
+        $localizedItem = $item ? ($this->translateNavigation([$item], $locale)[0] ?? $item) : null;
+        $siblingItems = $siblings ? collect($siblings)->values() : collect($section['children'] ?? [])->values();
+        $siblingItems = $siblingItems
+            ->map(fn ($sibling) => $this->translateNavigation([$sibling], $locale)[0] ?? $sibling)
+            ->values();
 
         return view('pages.public', $this->shared([
-            'section' => $section,
-            'item' => $item,
+            'section' => $localizedSection,
+            'item' => $localizedItem,
             'content' => $content,
-            'siblings' => $siblings ? collect($siblings)->values() : collect($section['children'] ?? [])->values(),
+            'siblings' => $siblingItems,
             'updates' => $this->publicUpdates($section['key'], $contentKey),
         ]));
     }
@@ -589,6 +770,174 @@ class SiteController extends Controller
         }
     }
 
+    private function localizeAdminContent(array $content): array
+    {
+        if ($this->currentLocale() !== 'en') {
+            return $content;
+        }
+
+        $meta = (array) ($content['meta'] ?? []);
+
+        foreach (['eyebrow', 'title', 'subtitle', 'body', 'source_href'] as $field) {
+            $translated = $meta[$field.'_en'] ?? null;
+
+            if (filled($translated)) {
+                $content[$field] = $translated;
+            }
+        }
+
+        return $content;
+    }
+
+    private function localizeStaticContent(array $content, string $sectionKey, string $contentKey): array
+    {
+        if ($this->currentLocale() !== 'en') {
+            return $content;
+        }
+
+        $key = $contentKey === '' ? '_section' : $contentKey;
+        $translation = data_get($this->staticContentTranslations(), "{$sectionKey}.{$key}", []);
+
+        return empty($translation) ? $content : array_merge($content, $translation);
+    }
+
+    private function localizeRegioGeneratedContent(array $content, string $sectionKey, string $contentKey): array
+    {
+        if ($this->currentLocale() !== 'en' || $sectionKey !== 'regio' || ! str_starts_with($contentKey, 'simpul/')) {
+            return $content;
+        }
+
+        $segments = explode('/', $contentKey);
+        $region = $this->regionByKey($segments[1] ?? '');
+
+        if (! $region) {
+            return $content;
+        }
+
+        if (count($segments) === 2) {
+            $members = $region['members'] ?? [];
+            $memberLines = empty($members)
+                ? 'Member data for this regional hub will be completed later.'
+                : "Members:\n".implode("\n", array_map(fn ($member) => "- {$member}", $members));
+
+            return array_merge($content, [
+                'eyebrow' => 'Hub Distribution',
+                'title' => $region['label'],
+                'subtitle' => 'KSO-Pooling Fund regional hub.',
+                'body' => "{$region['label']} is a regional hub within the KSO-Pooling Fund ecosystem.\n\n{$memberLines}",
+                'cards' => empty($members) ? ['Member data coming soon'] : $members,
+            ]);
+        }
+
+        if (count($segments) === 3) {
+            $member = collect($region['members'] ?? [])->first(fn ($name) => $this->memberSlug($name) === $segments[2]);
+
+            if (! $member) {
+                return $content;
+            }
+
+            return array_merge($content, [
+                'eyebrow' => $region['shortLabel'],
+                'title' => $member,
+                'subtitle' => "Member of {$region['label']}.",
+                'body' => "{$member} is a member of {$region['label']} within the KSO-Pooling Fund ecosystem.",
+                'cards' => [$region['shortLabel'], 'Hub Member', 'KSO-Pooling Fund'],
+            ]);
+        }
+
+        return $content;
+    }
+
+    private function staticContentTranslations(): array
+    {
+        return [
+            'profil' => [
+                '_section' => [
+                    'eyebrow' => 'KSO-Pooling Fund Profile',
+                    'title' => 'Pooling Fund - KSO',
+                    'subtitle' => 'A collective mandate platform among CSOs to pool and channel humanitarian funds together.',
+                    'body' => "Large-scale change does not grow from one institution alone, but from a connected ecosystem.\n\nPooling Fund - KSO is a collective mandate platform among CSOs to pool and channel humanitarian funds together, based on community needs and local leadership, without creating a new legal entity.\n\nTagline: Strengthening local action, expanding impact.",
+                    'cards' => ['Collective Mandate', 'Local Leadership', 'Humanitarian Response', 'Transparency', 'Accountability'],
+                ],
+                'riwayat' => [
+                    'eyebrow' => 'KSO-Pooling Fund Profile',
+                    'title' => 'Pooling Fund - KSO Profile',
+                    'subtitle' => 'An operational cooperation platform connecting civil society strengths across Indonesia.',
+                    'body' => "Pooling Fund - KSO is not a single hierarchical entity, but a shared infrastructure that connects civil society strengths across Indonesia.\n\nAs an operational cooperation platform, this structure is designed to protect the sovereignty of each member organization while strengthening collective bargaining power in humanitarian resource governance.\n\nKSO moves through seven autonomous and independent regional hubs that remain bound by one shared vision: just local leadership.",
+                    'cards' => ['No New Legal Entity', 'Community-Based', 'Local Leadership', 'Seven Regional Hubs'],
+                ],
+                'mandat-visi-nilai' => [
+                    'eyebrow' => 'Mandate, Vision, Mission',
+                    'title' => 'Mandate, Vision, Mission of KSO-Pooling Fund',
+                    'subtitle' => 'One collective mandate for local leadership and a just humanitarian response.',
+                    'body' => "The PF-KSO mandate is to strengthen local leadership, build a social collaboration ecosystem, and promote humanitarian responses that are just, inclusive, and rooted in communities.\n\nVision: one collective mandate for local leadership and a just humanitarian response.\n\nMission: strengthen local leadership and community roles in social and humanitarian response; build an inclusive, equal, and trust-based multi-stakeholder collaboration ecosystem; develop pooling fund approaches and transparent, accountable shared resource governance; encourage knowledge exchange, capacity strengthening, and collective learning; and ensure social development and humanitarian response are more just, participatory, and aligned with vulnerable groups.\n\nKSO-Pooling Fund was formed to pool and manage humanitarian funds quickly, transparently, and accountably; share operational risk, responsibility, and governance collectively; strengthen local leadership in disaster and humanitarian response; reduce response fragmentation; become a trusted communication gateway to donors and the public; and serve as a transition model toward a more established pooling fund institution.",
+                    'cards' => ['Collective Mandate', 'Just Vision', 'Collaborative Mission', 'Formation Goals', 'Local First'],
+                ],
+                'tujuan-prinsip' => [
+                    'eyebrow' => 'Goals & Principles',
+                    'title' => 'Goals, Principles, and Character of KSO-Pooling Fund',
+                    'subtitle' => 'The foundation for fast, transparent, accountable, community-rooted humanitarian response.',
+                    'body' => "KSO-Pooling Fund was established to pool and manage humanitarian funds quickly, transparently, and accountably.\n\nThis platform shares operational risk, responsibility, and governance collectively; strengthens local leadership in humanitarian disaster response; reduces response fragmentation; becomes a trusted communication gateway to donors and the public; and serves as a transition model toward a more established pooling fund institution.\n\nIts principles include equality among members, one CSO one vote, community-needs-based work, speed as a core value, transparency as a strategic asset, collective accountability, and local leadership with a local first approach.",
+                    'cards' => ['Fast and Accountable', 'Shared Risk', 'Local Leadership', 'Trust Building', 'One CSO One Vote', 'Local First'],
+                ],
+                'struktur-gerak' => [
+                    'eyebrow' => 'Mandate Architecture',
+                    'title' => 'Collective Mandate Architecture',
+                    'subtitle' => 'Seven autonomous and independent regional hubs connected by one vision of local leadership.',
+                    'body' => "Pooling Fund KSO is not a single hierarchical entity, but a shared infrastructure connecting civil society strengths across Indonesia.\n\nThis architecture protects each member organization's sovereignty while strengthening collective bargaining power in humanitarian resource governance. Each regional hub works autonomously and independently while staying connected to the same vision.\n\nThe movement is grounded in a collective mandate through the Member Forum with a one organization, one vote principle; a separation between strategic roles and operational administration; and ecosystem resilience through learning exchange, shared risk, and shared responsibility among regional hubs.",
+                    'cards' => ['Member Forum', 'Committee', 'Administrator', 'Regional Hubs', 'One Organization One Vote'],
+                ],
+                'sumber-daya' => [
+                    'eyebrow' => 'Governance',
+                    'title' => 'Resource Governance',
+                    'subtitle' => 'Resources are treated as a collective mandate to strengthen the humanitarian ecosystem and local leadership.',
+                    'body' => "KSO treats resources not as institutional assets, but as a collective mandate to strengthen the humanitarian ecosystem and local leadership.\n\nDecisions are made by those closest to the crisis, so funds are governed transparently for community sovereignty and resilience in each region.\n\nThis approach strengthens response speed, collective accountability, and donor and public trust in locally led humanitarian work.",
+                    'cards' => ['Collective Mandate', 'Transparency', 'Accountability', 'Community Sovereignty', 'Regional Resilience'],
+                ],
+                'kontak' => [
+                    'eyebrow' => 'Contact',
+                    'title' => 'Contact Us',
+                    'subtitle' => 'Pooling Fund - KSO Secretariat in Bantul, DI Yogyakarta.',
+                    'body' => "Pooling Fund - KSO Secretariat\nJl. Patih Singoranu No. 155\nTamanan, Banguntapan, Bantul\nDI Yogyakarta\n\nEmail: sekretariat@simpulpfb.id",
+                    'cards' => ['Secretariat', 'Email', 'Collaboration', 'Public Information'],
+                ],
+            ],
+            'regio' => [
+                '_section' => [
+                    'eyebrow' => 'Regional Hubs',
+                    'title' => 'Pooling Fund - KSO Regional Hubs',
+                    'subtitle' => 'A working map of regional hubs and member organizations in the Pooling Fund - KSO ecosystem.',
+                    'body' => 'Regional hubs are spaces for consolidating local CSOs, community organizations, forums, individuals, and community groups within the Pooling Fund - KSO network. Each hub works according to its regional context while remaining connected nationally.',
+                    'cards' => ['Hubs', 'Members', 'Focal Point', 'Working Area'],
+                ],
+                'simpul' => [
+                    'eyebrow' => 'Regional Hubs',
+                    'title' => 'KSO-Pooling Fund Hub Distribution',
+                    'subtitle' => 'Regional hubs and KSO-Pooling Fund members across Indonesia.',
+                    'body' => 'The KSO-Pooling Fund ecosystem is organized through regional hubs across Sumatra, Papua, Kalimantan, Java, Sulawesi, and Bali Nusra. Each hub coordinates member organizations based on local context and collective mandate.',
+                    'cards' => ['Sumbagsel Tangguh', 'Sumbagsel Pulih dan Lestari', 'Tanah Papua', 'Solidaritas Kemanusiaan Borneo', 'Java', 'Sulawesi', 'Bali Nusra'],
+                ],
+                'anggota' => [
+                    'eyebrow' => 'Regional Hubs',
+                    'title' => 'Members',
+                    'subtitle' => 'Directory of member organizations and hub relationships.',
+                    'body' => 'Pooling Fund - KSO members include civil society organizations, communities, forums, and actors working across development and humanitarian sectors. This member directory can be expanded through the admin panel.',
+                    'cards' => ['Organizations', 'Communities', 'Forums', 'Networks'],
+                ],
+            ],
+        ];
+    }
+
+    private function regionByKey(string $key): ?array
+    {
+        return collect(config('cea.simpul_regions', []))->firstWhere('key', $key);
+    }
+
+    private function memberSlug(string $member): string
+    {
+        return strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $member), '-'));
+    }
+
     private function homepageSection(): array
     {
         return $this->findSection('beranda') ?: [
@@ -609,13 +958,20 @@ class SiteController extends Controller
             'source_href' => '/',
             'status' => 'active',
             'meta' => [
+                'title_en' => 'Strengthening local action, expanding impact.',
+                'subtitle_en' => 'Strengthening Local Action, Expanding Impact',
+                'body_en' => 'Large-scale change does not grow from one institution alone, but from a connected ecosystem. Pooling Fund - KSO pools and channels humanitarian funds collectively, based on community needs and local leadership, without creating a new legal entity.',
                 'primary_label' => 'Baca Mandat',
+                'primary_label_en' => 'Read Mandate',
                 'primary_href' => '/profil/mandat-visi-nilai',
                 'secondary_label' => 'Lihat Simpul',
+                'secondary_label_en' => 'View Hubs',
                 'secondary_href' => '/regio/simpul',
                 'panel_label' => 'Ekosistem KSO',
+                'panel_label_en' => 'KSO Ecosystem',
                 'panel_value' => '7',
                 'panel_description' => 'Simpul regional otonom yang terhubung dalam satu mandat kolektif.',
+                'panel_description_en' => 'Autonomous regional hubs connected through one collective mandate.',
             ],
         ];
     }
@@ -646,20 +1002,38 @@ class SiteController extends Controller
         }
 
         $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
+        $title = $content['title'] ?: $this->homepageDefaults()['title'];
+        $subtitle = $content['subtitle'] ?: $this->homepageDefaults()['subtitle'];
+        $body = $content['body'] ?: $this->homepageDefaults()['body'];
+
+        if ($this->currentLocale() === 'en') {
+            $title = filled($meta['title_en'] ?? null) ? $meta['title_en'] : $title;
+            $subtitle = filled($meta['subtitle_en'] ?? null) ? $meta['subtitle_en'] : $subtitle;
+            $body = filled($meta['body_en'] ?? null) ? $meta['body_en'] : $body;
+        }
 
         return [
-            'eyebrow' => $content['subtitle'] ?: $this->homepageDefaults()['subtitle'],
-            'title' => $content['title'] ?: $this->homepageDefaults()['title'],
-            'description' => $content['body'] ?: $this->homepageDefaults()['body'],
+            'eyebrow' => $subtitle,
+            'title' => $title,
+            'description' => $body,
             'video_path' => $content['image_path'] ?: $this->homepageDefaults()['image_path'],
-            'primary_label' => $meta['primary_label'] ?? '',
+            'primary_label' => $this->localizedMetaLabel($meta, 'primary_label'),
             'primary_href' => $meta['primary_href'] ?? '',
-            'secondary_label' => $meta['secondary_label'] ?? '',
+            'secondary_label' => $this->localizedMetaLabel($meta, 'secondary_label'),
             'secondary_href' => $meta['secondary_href'] ?? '',
-            'panel_label' => $meta['panel_label'] ?? '',
+            'panel_label' => $this->localizedMetaLabel($meta, 'panel_label'),
             'panel_value' => $meta['panel_value'] ?? '',
-            'panel_description' => $meta['panel_description'] ?? '',
+            'panel_description' => $this->localizedMetaLabel($meta, 'panel_description'),
         ];
+    }
+
+    private function localizedMetaLabel(array $meta, string $key): string
+    {
+        if ($this->currentLocale() === 'en' && filled($meta[$key.'_en'] ?? null)) {
+            return $meta[$key.'_en'];
+        }
+
+        return $meta[$key] ?? '';
     }
 
     private function saveAdminContent(Request $request, array $section, ?array $item = null, ?string $contentKey = null): RedirectResponse
@@ -675,7 +1049,7 @@ class SiteController extends Controller
             'source_href' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,active,archived'],
             'meta' => ['nullable', 'array'],
-            'meta.*' => ['nullable', 'string', 'max:500'],
+            'meta.*' => ['nullable', 'string', 'max:10000'],
         ]);
         $validated['meta'] = collect($request->input('meta', []))
             ->map(fn ($value) => is_string($value) ? trim($value) : $value)
@@ -854,15 +1228,40 @@ class SiteController extends Controller
             ->orderBy('sort_order')
             ->orderBy('title')
             ->get();
+        $label = $this->localizedPageLabel($page);
+        $description = $this->localizedModelValue($page, 'subtitle') ?: $this->localizedModelValue($page, 'title');
 
         return [
             'key' => 'page-'.$page->slug,
-            'label' => $page->menu_label ?: $page->title,
+            'label' => $label,
             'href' => route('dynamic.page', $page->slug),
             'publicHref' => route('dynamic.page', $page->slug),
-            'description' => $page->subtitle ?: $page->title,
+            'description' => $description,
             'children' => $children->map(fn (AdminPage $child) => $this->adminPageNavigationItem($child))->values()->all(),
         ];
+    }
+
+    private function localizedPageLabel(AdminPage $page): string
+    {
+        if ($this->currentLocale() === 'en') {
+            return $page->menu_label_en ?: $page->title_en ?: $page->menu_label ?: $page->title;
+        }
+
+        return $page->menu_label ?: $page->title;
+    }
+
+    private function localizedModelValue(object $model, string $field): string
+    {
+        if ($this->currentLocale() === 'en') {
+            $translatedField = $field.'_en';
+            $translated = $model->{$translatedField} ?? null;
+
+            if (filled($translated)) {
+                return $translated;
+            }
+        }
+
+        return (string) ($model->{$field} ?? '');
     }
 
     private function validateAdminPage(Request $request, ?AdminPage $page = null): array
@@ -870,10 +1269,14 @@ class SiteController extends Controller
         $validated = $request->validate([
             'parent_id' => ['nullable', 'integer', 'exists:admin_pages,id'],
             'title' => ['required', 'string', 'max:255'],
+            'title_en' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:120'],
             'menu_label' => ['nullable', 'string', 'max:255'],
+            'menu_label_en' => ['nullable', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
+            'subtitle_en' => ['nullable', 'string', 'max:255'],
             'body' => ['nullable', 'string'],
+            'body_en' => ['nullable', 'string'],
             'image_path' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,active,archived'],
             'show_in_navigation' => ['nullable', 'boolean'],
@@ -906,10 +1309,14 @@ class SiteController extends Controller
         $rules = [
             'target' => ['nullable', 'string'],
             'title' => ['required', 'string', 'max:255'],
+            'title_en' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:150'],
             'category' => ['required', 'string', 'max:80'],
+            'category_en' => ['nullable', 'string', 'max:80'],
             'excerpt' => ['nullable', 'string', 'max:255'],
+            'excerpt_en' => ['nullable', 'string', 'max:255'],
             'body' => ['nullable', 'string'],
+            'body_en' => ['nullable', 'string'],
             'image_path' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,active,archived'],
             'published_at' => ['nullable', 'date'],

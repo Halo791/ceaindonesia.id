@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="{{ $currentLocale ?? 'id' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -220,7 +220,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-6 order-2 order-lg-0">
                         <div class="header__top-search">
                             <form action="{{ route('blog.index') }}">
-                                <input type="text" name="q" placeholder="Cari kabar, rilis, dan referensi...">
+                                <input type="text" name="q" placeholder="{{ $ui['search_placeholder'] ?? 'Cari kabar, rilis, dan referensi...' }}">
                             </form>
                         </div>
                     </div>
@@ -234,13 +234,13 @@
                     <div class="col-lg-4 col-md-3 col-sm-6 order-3 d-none d-sm-block">
                         <div class="header__top-right">
                             <ul class="list-wrap">
-                                <li class="news-btn"><a href="/regio/simpul" class="btn"><span class="btn-text">lihat simpul</span></a></li>
+                                <li class="news-btn"><a href="/regio/simpul" class="btn"><span class="btn-text">{{ $ui['view_hubs'] ?? 'lihat simpul' }}</span></a></li>
                                 <li class="lang">
                                     <div class="dropdown">
-                                        <button class="dropdown-toggle" type="button">ID</button>
+                                        <button class="dropdown-toggle" type="button">{{ strtoupper($currentLocale ?? 'id') }}</button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">EN</a></li>
-                                            <li><a class="dropdown-item" href="#">ID</a></li>
+                                            <li><a class="dropdown-item {{ ($currentLocale ?? 'id') === 'en' ? 'active' : '' }}" href="{{ route('language.switch', 'en') }}">EN</a></li>
+                                            <li><a class="dropdown-item {{ ($currentLocale ?? 'id') === 'id' ? 'active' : '' }}" href="{{ route('language.switch', 'id') }}">ID</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -276,16 +276,16 @@
                                             <a href="#"><i class="far fa-search"></i></a>
                                             <div class="header-search-form">
                                                 <form action="{{ route('blog.index') }}">
-                                                    <input type="text" name="q" placeholder="Cari konten Pooling Fund - KSO...">
+                                                    <input type="text" name="q" placeholder="{{ $ui['search_content_placeholder'] ?? 'Cari konten Pooling Fund - KSO...' }}">
                                                 </form>
                                             </div>
                                         </li>
                                     </ul>
                                 </div>
                             </nav>
-                            <button class="mobile-nav-toggler" type="button" aria-label="Buka menu" aria-controls="mobile-menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+                            <button class="mobile-nav-toggler" type="button" aria-label="{{ $ui['open_menu'] ?? 'Buka menu' }}" aria-controls="mobile-menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
                         </div>
-                        <nav class="cea-mobile-menu d-lg-none" id="mobile-menu" aria-label="Menu mobile">
+                        <nav class="cea-mobile-menu d-lg-none" id="mobile-menu" aria-label="{{ $ui['mobile_menu'] ?? 'Menu mobile' }}">
                             <ul>
                                 @include('layouts.nav-items', ['items' => $navigation])
                             </ul>
@@ -374,6 +374,8 @@
             var desktopMenu = document.querySelector('.tgmenu__navbar-wrap .navigation');
             var mobileToggle = document.querySelector('.mobile-nav-toggler');
             var mobileMenu = document.querySelector('.cea-mobile-menu');
+            var openMenuLabel = @json($ui['open_menu'] ?? 'Buka menu');
+            var closeMenuLabel = @json($ui['close_menu'] ?? 'Tutup menu');
 
             function closeDropdowns(scope) {
                 (scope || document).querySelectorAll('.menu-item-has-children.is-open').forEach(function (item) {
@@ -425,7 +427,7 @@
                 mobileToggle.addEventListener('click', function () {
                     var isOpen = mobileMenu.classList.toggle('is-open');
                     mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                    mobileToggle.setAttribute('aria-label', isOpen ? 'Tutup menu' : 'Buka menu');
+                    mobileToggle.setAttribute('aria-label', isOpen ? closeMenuLabel : openMenuLabel);
                 });
             }
 
@@ -442,7 +444,7 @@
                         mobileMenu.classList.remove('is-open');
                         if (mobileToggle) {
                             mobileToggle.setAttribute('aria-expanded', 'false');
-                            mobileToggle.setAttribute('aria-label', 'Buka menu');
+                            mobileToggle.setAttribute('aria-label', openMenuLabel);
                         }
                     }
                 }

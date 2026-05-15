@@ -13,10 +13,14 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('parent_id')->nullable()->constrained('admin_pages')->nullOnDelete();
                 $table->string('title');
+                $table->string('title_en')->nullable();
                 $table->string('slug', 120)->unique();
                 $table->string('menu_label')->nullable();
+                $table->string('menu_label_en')->nullable();
                 $table->string('subtitle')->nullable();
+                $table->string('subtitle_en')->nullable();
                 $table->longText('body')->nullable();
+                $table->longText('body_en')->nullable();
                 $table->string('image_path')->nullable();
                 $table->string('status', 30)->default('draft');
                 $table->boolean('show_in_navigation')->default(false);

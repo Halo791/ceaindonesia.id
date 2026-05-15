@@ -27,7 +27,7 @@
         <div class="admin-stat-strip">
             <div class="admin-stat"><span>Tipe</span><strong>{{ empty($section['children']) ? 'Menu' : 'Dropdown' }}</strong></div>
             <div class="admin-stat"><span>Subhalaman</span><strong>{{ count($section['children'] ?? []) ?: 1 }}</strong></div>
-            <div class="admin-stat"><span>Bahasa</span><strong>ID</strong></div>
+            <div class="admin-stat"><span>Bahasa</span><strong>ID / EN</strong></div>
             <div class="admin-stat"><span>Status</span><strong>Aktif</strong></div>
         </div>
 
@@ -57,6 +57,20 @@
                     <label>{{ $isHomepage ? 'Deskripsi hero beranda' : 'Isi tulisan' }}</label>
                     <textarea name="body">{{ old('body', $content['body']) }}</textarea>
                 </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>{{ $isHomepage ? 'Hero title EN' : 'Judul menu EN' }}</label>
+                        <input name="meta[title_en]" value="{{ $metaValue('title_en') }}" placeholder="English title">
+                    </div>
+                    <div class="admin-field">
+                        <label>{{ $isHomepage ? 'Hero eyebrow EN' : 'Subtitle / ringkasan EN' }}</label>
+                        <input name="meta[subtitle_en]" value="{{ $metaValue('subtitle_en') }}" placeholder="English subtitle">
+                    </div>
+                </div>
+                <div class="admin-field">
+                    <label>{{ $isHomepage ? 'Deskripsi hero EN' : 'Isi tulisan EN' }}</label>
+                    <textarea name="meta[body_en]" placeholder="English content">{{ $metaValue('body_en') }}</textarea>
+                </div>
                 <div class="admin-field">
                     <label>{{ $isHomepage ? 'Path video background' : 'URL / path gambar' }}</label>
                     @php
@@ -80,12 +94,20 @@
                             <input name="meta[primary_label]" value="{{ $metaValue('primary_label') }}">
                         </div>
                         <div class="admin-field">
+                            <label>Label tombol utama EN</label>
+                            <input name="meta[primary_label_en]" value="{{ $metaValue('primary_label_en') }}">
+                        </div>
+                        <div class="admin-field">
                             <label>URL tombol utama</label>
                             <input name="meta[primary_href]" value="{{ $metaValue('primary_href') }}">
                         </div>
                         <div class="admin-field">
                             <label>Label tombol kedua</label>
                             <input name="meta[secondary_label]" value="{{ $metaValue('secondary_label') }}">
+                        </div>
+                        <div class="admin-field">
+                            <label>Label tombol kedua EN</label>
+                            <input name="meta[secondary_label_en]" value="{{ $metaValue('secondary_label_en') }}">
                         </div>
                         <div class="admin-field">
                             <label>URL tombol kedua</label>
@@ -96,6 +118,10 @@
                             <input name="meta[panel_label]" value="{{ $metaValue('panel_label') }}">
                         </div>
                         <div class="admin-field">
+                            <label>Label panel angka EN</label>
+                            <input name="meta[panel_label_en]" value="{{ $metaValue('panel_label_en') }}">
+                        </div>
+                        <div class="admin-field">
                             <label>Angka panel</label>
                             <input name="meta[panel_value]" value="{{ $metaValue('panel_value') }}">
                         </div>
@@ -104,10 +130,18 @@
                         <label>Deskripsi panel angka</label>
                         <input name="meta[panel_description]" value="{{ $metaValue('panel_description') }}">
                     </div>
+                    <div class="admin-field">
+                        <label>Deskripsi panel angka EN</label>
+                        <input name="meta[panel_description_en]" value="{{ $metaValue('panel_description_en') }}">
+                    </div>
                 @else
                     <div class="admin-field">
                         <label>URL sumber</label>
                         <input name="source_href" value="{{ old('source_href', $content['source_href']) }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>URL sumber EN (opsional)</label>
+                        <input name="meta[source_href_en]" value="{{ $metaValue('source_href_en') }}">
                     </div>
                 @endif
                 <div class="admin-field">

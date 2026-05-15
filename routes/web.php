@@ -5,6 +5,9 @@ use App\Http\Controllers\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/language/{locale}', [SiteController::class, 'switchLanguage'])
+    ->whereIn('locale', ['id', 'en'])
+    ->name('language.switch');
 Route::get('/profil/riwayat', [SiteController::class, 'riwayat'])->name('profil.riwayat');
 Route::get('/blog', [SiteController::class, 'blog'])->name('blog.index');
 Route::get('/blog/{id}', [SiteController::class, 'blogShow'])->name('blog.show');

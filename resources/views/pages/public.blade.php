@@ -372,6 +372,7 @@
 @endpush
 
 @php
+    $ui = $ui ?? [];
     $contentImagePath = $content['image_path'] ?? '';
     $fallbackImages = [
         asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
@@ -416,7 +417,7 @@
     <div class="container public-layout">
         <article>
             <div class="public-section__head">
-                <span>{{ $item ? $section['label'] : 'Ringkasan' }}</span>
+                <span>{{ $item ? $section['label'] : ($ui['summary'] ?? 'Ringkasan') }}</span>
                 <h2>{{ $content['title'] }}</h2>
             </div>
             <div class="public-body">
@@ -431,34 +432,35 @@
                 <div class="member-network" aria-label="Diagram simpul dan anggota Pooling Fund KSO">
                     <div class="member-network__overview">
                         <div class="member-network__hub">
-                            <span>Diagram Relasi</span>
-                            <strong>Simpul & Anggota PF KSO</strong>
-                            <p>Setiap simpul bekerja otonom sesuai konteks wilayah, dengan {{ $activeRegions }} simpul aktif dan {{ $pendingRegions }} simpul yang datanya dapat terus dilengkapi.</p>
+                            <span>{{ $ui['diagram_relation'] ?? 'Diagram Relasi' }}</span>
+                            <strong>{{ $ui['members_heading'] ?? 'Simpul & Anggota PF KSO' }}</strong>
+                            <p>{{ str_replace([':active', ':pending'], [$activeRegions, $pendingRegions], $ui['members_description'] ?? 'Setiap simpul bekerja otonom sesuai konteks wilayah, dengan :active simpul aktif dan :pending simpul yang datanya dapat terus dilengkapi.') }}</p>
                         </div>
                         <div class="member-network__stat">
-                            <span>Simpul</span>
+                            <span>{{ $ui['regions'] ?? 'Simpul' }}</span>
                             <strong>{{ $simpulRegions->count() }}</strong>
                         </div>
                         <div class="member-network__stat">
-                            <span>Aktif</span>
+                            <span>{{ $ui['active'] ?? 'Aktif' }}</span>
                             <strong>{{ $activeRegions }}</strong>
                         </div>
                         <div class="member-network__stat">
-                            <span>Anggota</span>
+                            <span>{{ $ui['members'] ?? 'Anggota' }}</span>
                             <strong>{{ $totalMembers }}</strong>
                         </div>
                     </div>
 
                     <div class="member-network__map">
                         <div class="member-network__center">
-                            <span>Mandat Kolektif</span>
-                            <strong>Pooling Fund Kemanusiaan</strong>
+                            <span>{{ $ui['collective_mandate'] ?? 'Mandat Kolektif' }}</span>
+                            <strong>{{ $ui['humanitarian_pooling'] ?? 'Pooling Fund Kemanusiaan' }}</strong>
                         </div>
                         <div class="member-network__regions">
                             @foreach ($simpulRegions as $region)
                                 @php
                                     $members = $region['members'] ?? [];
                                     $memberCount = count($members);
+                                    $regionDescription = ($currentLocale ?? 'id') === 'en' ? 'KSO-Pooling Fund regional hub.' : $region['description'];
                                 @endphp
                                 <article class="region-node {{ $memberCount === 0 ? 'region-node--pending' : '' }}">
                                     <div class="region-node__top">
@@ -468,12 +470,12 @@
                                             <h3>{{ $region['label'] }}</h3>
                                         </div>
                                     </div>
-                                    <p>{{ $region['description'] }}</p>
+                                    <p>{{ $regionDescription }}</p>
                                     <div class="region-node__members">
                                         @forelse ($members as $member)
                                             <span class="region-node__member">{{ $member }}</span>
                                         @empty
-                                            <span class="region-node__member">Data anggota menyusul</span>
+                                            <span class="region-node__member">{{ $ui['member_data_soon'] ?? 'Data anggota menyusul' }}</span>
                                         @endforelse
                                     </div>
                                 </article>
@@ -499,7 +501,7 @@
         <aside class="public-sidebar">
             <h2>{{ $section['label'] }}</h2>
             <ul>
-                <li><a href="{{ $section['publicHref'] ?? '#' }}">Ringkasan {{ $section['label'] }}</a></li>
+                <li><a href="{{ $section['publicHref'] ?? '#' }}">{{ $ui['summary_prefix'] ?? 'Ringkasan' }} {{ $section['label'] }}</a></li>
                 @include('layouts.public-sidebar-items', ['items' => $siblings])
             </ul>
         </aside>

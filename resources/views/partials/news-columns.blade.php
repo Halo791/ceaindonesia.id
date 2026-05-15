@@ -109,6 +109,8 @@
 
 @php
     $newsArticles = collect($newsArticles ?? []);
+    $locale = $currentLocale ?? 'id';
+    $ui = $ui ?? [];
     $newsFallbackImages = $newsFallbackImages ?? [
         asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
         asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg'),
@@ -121,35 +123,39 @@
     <div class="container">
         <div class="cea-news-columns__grid">
             <div>
-                <span class="cea-news-columns__label">YouTube video</span>
-                <h2>Latest Video</h2>
+                <span class="cea-news-columns__label">{{ $ui['youtube_video'] ?? 'YouTube video' }}</span>
+                <h2>{{ $ui['latest_video'] ?? 'Latest Video' }}</h2>
                 <div class="cea-news-video">
                     <video controls muted preload="metadata">
                         <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
                     </video>
                 </div>
-                <p>Ikuti cerita, aktivitas, dan pembelajaran dari simpul lokal. Ruang ini menampilkan dokumentasi video dan narasi kerja bersama dalam ekosistem Pooling Fund - KSO.</p>
+                <p>{{ $ui['news_intro'] ?? 'Ikuti cerita, aktivitas, dan pembelajaran dari simpul lokal. Ruang ini menampilkan dokumentasi video dan narasi kerja bersama dalam ekosistem Pooling Fund - KSO.' }}</p>
             </div>
 
             <div>
-                <h2>New Article</h2>
+                <h2>{{ $ui['new_article'] ?? 'New Article' }}</h2>
                 <div class="cea-news-list">
                     @forelse ($newsArticles->take(4) as $article)
                         @php
-                            $articleImage = $article->image_path ?: $newsFallbackImages[abs(crc32($article->title)) % count($newsFallbackImages)];
+                            $articleTitle = $locale === 'en' && filled($article->title_en) ? $article->title_en : $article->title;
+                            $articleExcerpt = $locale === 'en' && filled($article->excerpt_en) ? $article->excerpt_en : $article->excerpt;
+                            $articleBody = $locale === 'en' && filled($article->body_en) ? $article->body_en : $article->body;
+                            $articleCategory = $locale === 'en' && filled($article->category_en) ? $article->category_en : $article->category;
+                            $articleImage = $article->image_path ?: $newsFallbackImages[abs(crc32($articleTitle)) % count($newsFallbackImages)];
                         @endphp
                         <a class="cea-news-item" href="{{ route('public.update', $article->slug) }}">
-                            <img src="{{ $articleImage }}" alt="{{ $article->title }}">
+                            <img src="{{ $articleImage }}" alt="{{ $articleTitle }}">
                             <span>
-                                <strong>{{ $article->title }}</strong>
-                                {{ $article->excerpt ?: str($article->body)->limit(82) }}
-                                <small>{{ optional($article->published_at)->format('l, j F Y') ?: $article->category }}</small>
+                                <strong>{{ $articleTitle }}</strong>
+                                {{ $articleExcerpt ?: str($articleBody)->limit(82) }}
+                                <small>{{ optional($article->published_at)->format('l, j F Y') ?: $articleCategory }}</small>
                             </span>
                         </a>
                     @empty
                         <div class="cea-news-empty">
-                            <h2>New Article</h2>
-                            <p>Belum ada berita aktif untuk halaman ini.</p>
+                            <h2>{{ $ui['new_article'] ?? 'New Article' }}</h2>
+                            <p>{{ $ui['no_active_news'] ?? 'Belum ada berita aktif untuk halaman ini.' }}</p>
                         </div>
                     @endforelse
                 </div>

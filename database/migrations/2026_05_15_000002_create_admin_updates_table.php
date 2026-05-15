@@ -14,10 +14,14 @@ return new class extends Migration
                 $table->string('owner_section_key', 100);
                 $table->string('owner_item_key', 150)->default('');
                 $table->string('title');
+                $table->string('title_en')->nullable();
                 $table->string('slug', 150)->unique();
                 $table->string('category', 80)->default('Berita');
+                $table->string('category_en', 80)->nullable();
                 $table->string('excerpt')->nullable();
+                $table->string('excerpt_en')->nullable();
                 $table->longText('body')->nullable();
+                $table->longText('body_en')->nullable();
                 $table->string('image_path')->nullable();
                 $table->string('status', 30)->default('draft');
                 $table->timestamp('published_at')->nullable();

@@ -4,6 +4,36 @@
 
 @php
     $homeContent = $homeContent ?? [];
+    $locale = $currentLocale ?? 'id';
+    $homeText = [
+        'platform_label' => 'Platform Mandat Kolektif',
+        'platform_title' => 'Ekosistem yang menghubungkan sumber daya, komunitas, dan respon kemanusiaan.',
+        'principles_label' => 'Prinsip & Karakter',
+        'principles_title' => 'Kepercayaan dibangun lewat kesetaraan, transparansi, dan akuntabilitas kolektif.',
+        'governance_label' => 'Struktur & Tata Kelola',
+        'governance_title' => 'Gerak kolektif ditopang oleh arsitektur mandat dan tata kelola sumber daya.',
+        'stories_label' => 'Cerita Lapangan',
+        'stories_title' => 'Foto, narasi, dan respon lokal dari simpul Pooling Fund - KSO.',
+        'learn' => $ui['learn'] ?? 'Pelajari',
+        'read_more' => $ui['read_more'] ?? 'Baca selengkapnya',
+        'hub_type' => 'Simpul',
+        'member_type' => 'Anggota',
+    ];
+
+    if ($locale === 'en') {
+        $homeText = array_merge($homeText, [
+            'platform_label' => 'Collective Mandate Platform',
+            'platform_title' => 'An ecosystem connecting resources, communities, and humanitarian response.',
+            'principles_label' => 'Principles & Character',
+            'principles_title' => 'Trust is built through equality, transparency, and collective accountability.',
+            'governance_label' => 'Structure & Governance',
+            'governance_title' => 'Collective movement is supported by mandate architecture and resource governance.',
+            'stories_label' => 'Field Stories',
+            'stories_title' => 'Photos, narratives, and local responses from Pooling Fund - KSO hubs.',
+            'hub_type' => 'Hub',
+            'member_type' => 'Member',
+        ]);
+    }
     $heroVideoPath = (string) ($homeContent['video_path'] ?? '/assets/img/cea/video.mp4');
     $heroVideoSrc = preg_match('/^https?:\/\//', $heroVideoPath) ? $heroVideoPath : asset(ltrim($heroVideoPath, '/'));
     $disasterImages = [
@@ -60,6 +90,57 @@
         ],
     ];
     $principles = ['Satu CSO satu suara', 'Berbasis kebutuhan komunitas', 'Kecepatan sebagai nilai utama', 'Transparansi sebagai aset strategis', 'Akuntabilitas kolektif', 'Local leadership & local first'];
+
+    if ($locale === 'en') {
+        $focusAreas = [
+            ['title' => 'Collective Mandate', 'description' => 'One shared mandate to strengthen local leadership and a just humanitarian response.', 'image' => $disasterImages['logistics'], 'href' => '/profil/mandat-visi-nilai'],
+            ['title' => 'No New Legal Entity', 'description' => 'An operational cooperation platform among CSOs that protects the sovereignty of member organizations.', 'image' => $disasterImages['children'], 'href' => '/profil/riwayat'],
+            ['title' => 'Local First', 'description' => 'Decisions and resources are placed as close as possible to communities facing crisis.', 'image' => $disasterImages['waterTwo'], 'href' => '/profil/tujuan-prinsip'],
+        ];
+        $governanceItems = [
+            ['label' => 'Mandate Architecture', 'title' => 'Autonomous regional hubs connected through one vision of local leadership.', 'description' => 'The Member Forum holds a collective mandate through one organization, one vote, while strategic and operational functions are separated to maintain accountability.', 'image' => $disasterImages['logistics'], 'href' => '/profil/struktur-gerak'],
+            ['label' => 'Resource Governance', 'title' => 'Funds are managed as a collective mandate, not as institutional assets.', 'description' => 'Decisions are made by those closest to crisis so responses are fast, transparent, and relevant to community needs.', 'image' => $disasterImages['waterOne'], 'href' => '/profil/sumber-daya'],
+        ];
+        $stats = [
+            ['value' => '1', 'label' => 'Collective mandate'],
+            ['value' => '7', 'label' => 'Regional hubs'],
+            ['value' => '33', 'label' => 'Recorded members'],
+        ];
+        $fieldStories = [
+            [
+                'title' => 'A Safe Recovery Space for Child Survivors',
+                'label' => 'PKBI Aceh',
+                'image' => $disasterImages['psychosocial'],
+                'description' => 'In a post-disaster situation that still carries trauma, child survivors in Aceh slowly learn to smile, play, and feel safe again through psychosocial support services.',
+            ],
+            [
+                'title' => 'Hope Growing from Children\'s Drawings',
+                'label' => 'PKBI Aceh',
+                'image' => $disasterImages['children'],
+                'description' => 'Through drawing, play, and shared learning activities, children are invited to express their feelings after passing through fear and loss.',
+            ],
+            [
+                'title' => 'Clean Water Access for Affected Communities',
+                'label' => 'WALHI Sumut',
+                'image' => $disasterImages['waterOne'],
+                'description' => 'Installing water tanks is part of a rapid response to ensure basic needs remain met in areas affected by crisis and disrupted services.',
+            ],
+            [
+                'title' => 'Working Together to Prepare Water Facilities',
+                'label' => 'WALHI Sumut',
+                'image' => $disasterImages['waterTwo'],
+                'description' => 'Residents and volunteers work together to prepare clean water facilities. Humanitarian response is stronger when communities are directly involved in recovery.',
+            ],
+            [
+                'title' => 'Logistics Distribution for Disaster Survivors',
+                'label' => 'WALHI Sumbar',
+                'image' => $disasterImages['logistics'],
+                'description' => 'Logistics support is distributed through collective work with volunteers and local hubs so urgent survivor needs can be addressed quickly, transparently, and accurately.',
+            ],
+        ];
+        $principles = ['One CSO one vote', 'Based on community needs', 'Speed as a core value', 'Transparency as a strategic asset', 'Collective accountability', 'Local leadership & local first'];
+    }
+
     $locationCoordinates = [
         'sumbagsel-tangguh' => [3.35, 98.67],
         'yayasan-peduli-kemandirian-masyarakat-yapemmas-medan' => [3.58, 98.67],
@@ -116,7 +197,8 @@
             'lng' => $regionCoordinate[1],
         ];
         $mapPoints[] = [
-            'type' => 'Simpul',
+            'kind' => 'region',
+            'type' => $homeText['hub_type'],
             'region_key' => $region['key'],
             'key' => $region['key'],
             'title' => $region['shortLabel'],
@@ -130,7 +212,8 @@
             $memberKey = $slugify($member);
             $memberCoordinate = $locationCoordinates[$memberKey] ?? $regionCoordinate;
             $mapPoints[] = [
-                'type' => 'Anggota',
+                'kind' => 'member',
+                'type' => $homeText['member_type'],
                 'region_key' => $region['key'],
                 'key' => $memberKey,
                 'title' => $member,
@@ -278,8 +361,8 @@
 <section class="cea-section">
     <div class="container">
         <div class="cea-section__head">
-            <span>Platform Mandat Kolektif</span>
-            <h2>Ekosistem yang menghubungkan sumber daya, komunitas, dan respon kemanusiaan.</h2>
+            <span>{{ $homeText['platform_label'] }}</span>
+            <h2>{{ $homeText['platform_title'] }}</h2>
         </div>
         <div class="cea-focus-grid">
             @foreach ($focusAreas as $item)
@@ -290,7 +373,7 @@
                     <div class="cea-focus-card__body">
                         <h3>{{ $item['title'] }}</h3>
                         <p>{{ $item['description'] }}</p>
-                        <a href="{{ $item['href'] }}">Pelajari</a>
+                        <a href="{{ $item['href'] }}">{{ $homeText['learn'] }}</a>
                     </div>
                 </article>
             @endforeach
@@ -301,25 +384,25 @@
 <section class="cea-map-section" id="simpul-map-section">
     <div class="container">
         <div class="cea-section__head">
-            <span>Peta Simpul</span>
-            <h2>Jelajahi simpul dan anggota melalui peta interaktif.</h2>
+            <span>{{ $ui['map_label'] ?? 'Peta Simpul' }}</span>
+            <h2>{{ $ui['map_title'] ?? 'Jelajahi simpul dan anggota melalui peta interaktif.' }}</h2>
         </div>
         <div class="cea-map-toolbar">
             <div></div>
             <form class="cea-map-search" id="simpul-map-search">
-                <label for="simpul-province-search">Search Province</label>
-                <input id="simpul-province-search" type="search" placeholder="Enter province name...">
+                <label for="simpul-province-search">{{ $ui['search_province'] ?? 'Search Province' }}</label>
+                <input id="simpul-province-search" type="search" placeholder="{{ $ui['province_placeholder'] ?? 'Enter province name...' }}">
                 <div class="cea-map-search__actions">
-                    <button type="button" data-map-reset>Kembali</button>
-                    <button type="submit">Search</button>
+                    <button type="button" data-map-reset>{{ $ui['back'] ?? 'Kembali' }}</button>
+                    <button type="submit">{{ $ui['search'] ?? 'Search' }}</button>
                 </div>
             </form>
         </div>
         <div class="cea-map-shell">
             <div id="simpul-map" data-points='@json($mapPoints)'></div>
         </div>
-        <div class="cea-map-filter" aria-label="Filter simpul">
-            <button type="button" class="is-active" data-map-reset data-region-all>Semua Simpul</button>
+        <div class="cea-map-filter" aria-label="{{ $ui['map_label'] ?? 'Peta Simpul' }}">
+            <button type="button" class="is-active" data-map-reset data-region-all>{{ $ui['all_hubs'] ?? 'Semua Simpul' }}</button>
             @foreach ($regionButtons as $regionButton)
                 <button type="button" data-region="{{ $regionButton['key'] }}" data-lat="{{ $regionButton['lat'] }}" data-lng="{{ $regionButton['lng'] }}">{{ $regionButton['label'] }}</button>
             @endforeach
@@ -342,8 +425,8 @@
 <section class="cea-principles">
     <div class="container">
         <div class="cea-section__head">
-            <span>Prinsip & Karakter</span>
-            <h2>Kepercayaan dibangun lewat kesetaraan, transparansi, dan akuntabilitas kolektif.</h2>
+            <span>{{ $homeText['principles_label'] }}</span>
+            <h2>{{ $homeText['principles_title'] }}</h2>
         </div>
         <div class="cea-principles__grid">
             @foreach ($principles as $principle)
@@ -356,8 +439,8 @@
 <section class="cea-section cea-section--soft">
     <div class="container">
         <div class="cea-section__head">
-            <span>Struktur & Tata Kelola</span>
-            <h2>Gerak kolektif ditopang oleh arsitektur mandat dan tata kelola sumber daya.</h2>
+            <span>{{ $homeText['governance_label'] }}</span>
+            <h2>{{ $homeText['governance_title'] }}</h2>
         </div>
         <div class="cea-governance-grid">
             @foreach ($governanceItems as $item)
@@ -369,7 +452,7 @@
                         <span>{{ $item['label'] }}</span>
                         <h3>{{ $item['title'] }}</h3>
                         <p>{{ $item['description'] }}</p>
-                        <a href="{{ $item['href'] }}">Baca selengkapnya</a>
+                        <a href="{{ $item['href'] }}">{{ $homeText['read_more'] }}</a>
                     </div>
                 </article>
             @endforeach
@@ -380,8 +463,8 @@
 <section class="cea-field-stories">
     <div class="container">
         <div class="cea-section__head">
-            <span>Cerita Lapangan</span>
-            <h2>Foto, narasi, dan respon lokal dari simpul Pooling Fund - KSO.</h2>
+            <span>{{ $homeText['stories_label'] }}</span>
+            <h2>{{ $homeText['stories_title'] }}</h2>
         </div>
         <div class="cea-field-stories__grid">
             @foreach ($fieldStories as $story)
@@ -441,21 +524,22 @@
 
         var bounds = [];
         var markers = [];
+        var openPageLabel = @json($ui['open_page'] ?? 'Buka halaman');
 
         points.forEach(function (point) {
-            var markerClass = point.type === 'Simpul' ? 'simpul-map-marker--region' : 'simpul-map-marker--member';
+            var markerClass = point.kind === 'region' ? 'simpul-map-marker--region' : 'simpul-map-marker--member';
             var icon = L.divIcon({
                 className: '',
                 html: '<span class="simpul-map-marker ' + markerClass + '"></span>',
-                iconSize: point.type === 'Simpul' ? [22, 22] : [16, 16],
-                iconAnchor: point.type === 'Simpul' ? [11, 11] : [8, 8]
+                iconSize: point.kind === 'region' ? [22, 22] : [16, 16],
+                iconAnchor: point.kind === 'region' ? [11, 11] : [8, 8]
             });
             var latLng = [point.lat, point.lng];
             var popup = '<div class="simpul-map-popup">'
                 + '<span>' + escapeHtml(point.type) + '</span>'
                 + '<strong>' + escapeHtml(point.title) + '</strong>'
                 + '<p>' + escapeHtml(point.description) + '</p>'
-                + '<a href="' + escapeHtml(point.url) + '">Buka halaman</a>'
+                + '<a href="' + escapeHtml(point.url) + '">' + escapeHtml(openPageLabel) + '</a>'
                 + '</div>';
 
             var marker = L.marker(latLng, { icon: icon, title: point.title })

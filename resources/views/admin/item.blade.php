@@ -2,6 +2,13 @@
 
 @section('title', 'Admin '.$item['label'])
 
+@php
+    $contentMeta = $content['meta'] ?? [];
+    $metaValue = function (string $key, string $fallback = '') use ($contentMeta) {
+        return old("meta.{$key}", $contentMeta[$key] ?? $fallback);
+    };
+@endphp
+
 @section('content')
 <section class="cea-admin-panel">
     <div class="admin-shell">
@@ -42,6 +49,20 @@
                     <label>Isi tulisan</label>
                     <textarea name="body">{{ old('body', $content['body']) }}</textarea>
                 </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>Judul halaman EN</label>
+                        <input name="meta[title_en]" value="{{ $metaValue('title_en') }}" placeholder="English title">
+                    </div>
+                    <div class="admin-field">
+                        <label>Subtitle / ringkasan EN</label>
+                        <input name="meta[subtitle_en]" value="{{ $metaValue('subtitle_en') }}" placeholder="English subtitle">
+                    </div>
+                </div>
+                <div class="admin-field">
+                    <label>Isi tulisan EN</label>
+                    <textarea name="meta[body_en]" placeholder="English content">{{ $metaValue('body_en') }}</textarea>
+                </div>
                 <div class="admin-field">
                     <label>URL / path gambar</label>
                     @php
@@ -57,6 +78,10 @@
                 <div class="admin-field">
                     <label>URL sumber</label>
                     <input name="source_href" value="{{ old('source_href', $content['source_href']) }}">
+                </div>
+                <div class="admin-field">
+                    <label>URL sumber EN (opsional)</label>
+                    <input name="meta[source_href_en]" value="{{ $metaValue('source_href_en') }}">
                 </div>
                 <div class="admin-field">
                     <label>Status publikasi</label>

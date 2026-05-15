@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
             @endif
             @if ($errors->any())
                 <div class="alert alert-danger">{{ $errors->first() }}</div>
@@ -36,6 +36,11 @@
                     </div>
 
                     <div class="admin-field">
+                        <label>Judul halaman EN</label>
+                        <input name="title_en" value="{{ old('title_en', $page->title_en) }}" placeholder="English title">
+                    </div>
+
+                    <div class="admin-field">
                         <label>Slug URL</label>
                         <input name="slug" value="{{ old('slug', $page->slug) }}" placeholder="contoh: tentang-kami">
                         <small>Kosongkan untuk membuat slug otomatis dari judul. URL publik: <code>/halaman/slug</code></small>
@@ -44,6 +49,11 @@
                     <div class="admin-field">
                         <label>Label menu</label>
                         <input name="menu_label" value="{{ old('menu_label', $page->menu_label) }}" placeholder="Kosongkan jika sama dengan judul">
+                    </div>
+
+                    <div class="admin-field">
+                        <label>Label menu EN</label>
+                        <input name="menu_label_en" value="{{ old('menu_label_en', $page->menu_label_en) }}" placeholder="Kosongkan jika sama dengan judul EN">
                     </div>
 
                     <div class="admin-field">
@@ -62,8 +72,18 @@
                     </div>
 
                     <div class="admin-field">
+                        <label>Subtitle / Ringkasan EN</label>
+                        <input name="subtitle_en" value="{{ old('subtitle_en', $page->subtitle_en) }}">
+                    </div>
+
+                    <div class="admin-field">
                         <label>Isi tulisan</label>
                         <textarea name="body">{{ old('body', $page->body) }}</textarea>
+                    </div>
+
+                    <div class="admin-field">
+                        <label>Isi tulisan EN</label>
+                        <textarea name="body_en">{{ old('body_en', $page->body_en) }}</textarea>
                     </div>
 
                     <div class="admin-field">
