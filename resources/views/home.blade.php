@@ -141,13 +141,15 @@
 @push('styles')
 <style>
     @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
-    .cea-landing-hero { align-items: center; background: #063d2a; color: #fff; display: flex; min-height: clamp(560px, 76vh, 760px); overflow: hidden; padding: 96px 0 72px; position: relative; }
-    .cea-landing-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.68) 44%, rgba(6,61,42,.16) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
+    .cea-landing-hero { align-items: center; background: #063d2a; color: #fff; display: flex; min-height: clamp(520px, 68vh, 680px); overflow: hidden; padding: 88px 0 66px; position: relative; }
+    .cea-landing-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
     .cea-landing-hero__video-bg { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
-    .cea-landing-hero__grid { align-items: end; display: grid; gap: 48px; grid-template-columns: minmax(0, .9fr) minmax(280px, .55fr); min-height: 440px; position: relative; z-index: 2; }
-    .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 13px; font-weight: 900; margin-bottom: 18px; text-transform: uppercase; }
-    .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(54px, 8vw, 118px); font-weight: 900; letter-spacing: 0; line-height: .9; margin-bottom: 22px; max-width: 900px; text-transform: uppercase; text-wrap: balance; }
-    .cea-landing-hero p { color: rgba(255,255,255,.82); font-size: 18px; line-height: 1.75; margin-bottom: 30px; max-width: 640px; }
+    .cea-landing-hero__grid { align-items: end; display: grid; gap: 48px; grid-template-columns: minmax(0, .86fr) minmax(250px, .5fr); min-height: 390px; position: relative; z-index: 2; }
+    .cea-landing-hero__content { max-width: 760px; }
+    .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
+    .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 760px; text-transform: none; text-wrap: balance; }
+    .cea-landing-hero h1 span { background: rgba(242,201,76,.92); box-decoration-break: clone; -webkit-box-decoration-break: clone; color: #063d2a; line-height: 1.22; padding: 0 .14em; }
+    .cea-landing-hero p { color: rgba(255,255,255,.86); font-size: 16px; line-height: 1.75; margin-bottom: 28px; max-width: 620px; }
     .cea-landing-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .cea-landing-hero__panel { align-self: end; background: rgba(246,249,232,.92); border: 1px solid rgba(255,255,255,.42); border-radius: 8px; color: #063d2a; padding: 24px; }
     .cea-landing-hero__panel strong { display: block; font-size: 44px; font-weight: 900; line-height: 1; }
@@ -203,7 +205,7 @@
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
         .cea-focus-grid, .cea-menu-grid, .cea-stats__grid, .cea-principles__grid, .cea-field-stories__grid { grid-template-columns: 1fr; }
         .cea-story-card, .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: auto; }
-        .cea-landing-hero { min-height: 620px; }
+        .cea-landing-hero { min-height: 560px; }
         .cea-landing-hero__panel { display: none; }
     }
 </style>
@@ -218,7 +220,7 @@
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">
                 <span class="cea-landing-hero__eyebrow">Menguatkan Lokal, Memperluas Dampak</span>
-                <h1 class="cea-scramble-title">Menguatkan Lokal, Memperluas Dampak.</h1>
+                <h1 class="cea-scramble-title"><span>Menguatkan lokal, memperluas dampak.</span></h1>
                 <p>Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.</p>
                 <div class="cea-landing-hero__actions">
                     <a class="cea-btn" href="/profil/mandat-visi-nilai">Baca Mandat</a>
