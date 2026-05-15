@@ -14,7 +14,9 @@ class SiteController extends Controller
 {
     public function home(): View
     {
-        return view('home', $this->shared());
+        return view('home', $this->shared([
+            'latestUpdates' => $this->latestPublicUpdates(),
+        ]));
     }
 
     public function riwayat(): View
@@ -910,6 +912,20 @@ class SiteController extends Controller
                 ->latest('published_at')
                 ->latest()
                 ->limit(6)
+                ->get();
+        } catch (\Throwable) {
+            return collect();
+        }
+    }
+
+    private function latestPublicUpdates(int $limit = 4)
+    {
+        try {
+            return AdminUpdate::query()
+                ->where('status', 'active')
+                ->latest('published_at')
+                ->latest()
+                ->limit($limit)
                 ->get();
         } catch (\Throwable) {
             return collect();

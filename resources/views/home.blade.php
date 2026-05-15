@@ -109,11 +109,20 @@
     ];
     $slugify = fn (string $value): string => strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $value), '-'));
     $mapPoints = [];
+    $regionButtons = [];
 
     foreach (config('cea.simpul_regions', []) as $region) {
         $regionCoordinate = $locationCoordinates[$region['key']] ?? [-2.5, 118.0];
+        $regionButtons[] = [
+            'key' => $region['key'],
+            'label' => $region['shortLabel'],
+            'province' => $region['label'],
+            'lat' => $regionCoordinate[0],
+            'lng' => $regionCoordinate[1],
+        ];
         $mapPoints[] = [
             'type' => 'Simpul',
+            'region_key' => $region['key'],
             'key' => $region['key'],
             'title' => $region['shortLabel'],
             'description' => $region['label'],
@@ -127,6 +136,7 @@
             $memberCoordinate = $locationCoordinates[$memberKey] ?? $regionCoordinate;
             $mapPoints[] = [
                 'type' => 'Anggota',
+                'region_key' => $region['key'],
                 'key' => $memberKey,
                 'title' => $member,
                 'description' => $region['shortLabel'],
@@ -141,9 +151,6 @@
 @push('styles')
 <style>
     @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
-    .cea-landing-hero { align-items: center; background: #063d2a; color: #fff; display: flex; min-height: clamp(520px, 68vh, 680px); overflow: hidden; padding: 88px 0 66px; position: relative; }
-    .cea-landing-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
-    .cea-landing-hero__video-bg { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
     .cea-landing-hero__grid { align-items: end; display: grid; gap: 48px; grid-template-columns: minmax(0, .86fr) minmax(250px, .5fr); min-height: 390px; position: relative; z-index: 2; }
     .cea-landing-hero__content { max-width: 760px; }
     .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
@@ -195,6 +202,17 @@
     .cea-map-section .cea-section__head h2 { color: #fff; }
     .cea-map-shell { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 8px; overflow: hidden; }
     #simpul-map { background: #0c5266; height: min(72vh, 620px); min-height: 460px; width: 100%; }
+    .cea-map-toolbar { align-items: start; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 16px; }
+    .cea-map-search { background: #1681a4; border-radius: 8px; padding: 14px; width: min(100%, 260px); }
+    .cea-map-search label { color: #fff; display: block; font-size: 12px; font-weight: 900; margin-bottom: 8px; }
+    .cea-map-search input { border: 0; border-radius: 4px; min-height: 36px; padding: 8px 10px; width: 100%; }
+    .cea-map-search__actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; margin-top: 8px; }
+    .cea-map-search button, .cea-map-filter button { background: #1c4f78; border: 0; border-radius: 4px; color: #fff; font-size: 11px; font-weight: 900; min-height: 34px; padding: 8px 10px; }
+    .cea-map-search button:first-child { background: #7b8893; }
+    .cea-map-filter { background: rgba(22,129,164,.6); border-radius: 8px; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); margin: 0 auto; max-width: 880px; padding: 10px; transform: translateY(-50%); }
+    .cea-map-filter button { background: #204c78; text-align: left; }
+    .cea-map-filter button::before { color: #f2c94c; content: "•"; margin-right: 8px; }
+    .cea-map-filter button.is-active { background: #99ead9; color: #063d2a; }
     .simpul-map-marker { align-items: center; border: 3px solid #fff; border-radius: 999px; box-shadow: 0 12px 24px rgba(0,0,0,.25); display: flex; height: 22px; justify-content: center; width: 22px; }
     .simpul-map-marker--region { background: #f2c94c; }
     .simpul-map-marker--member { background: #ff3ab7; height: 16px; width: 16px; }
@@ -207,13 +225,16 @@
         .cea-story-card, .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: auto; }
         .cea-landing-hero { min-height: 560px; }
         .cea-landing-hero__panel { display: none; }
+        .cea-map-toolbar { display: block; }
+        .cea-map-search { margin-bottom: 14px; width: 100%; }
+        .cea-map-filter { transform: none; }
     }
 </style>
 @endpush
 
 @section('content')
-<section class="cea-landing-hero">
-    <video class="cea-landing-hero__video-bg" autoplay muted loop playsinline preload="metadata">
+<section class="cea-video-hero cea-landing-hero">
+    <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
         <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
     </video>
     <div class="container">
@@ -265,11 +286,29 @@
             <span>Peta Simpul</span>
             <h2>Jelajahi simpul dan anggota melalui peta interaktif.</h2>
         </div>
+        <div class="cea-map-toolbar">
+            <div></div>
+            <form class="cea-map-search" id="simpul-map-search">
+                <label for="simpul-province-search">Search Province</label>
+                <input id="simpul-province-search" type="search" placeholder="Enter province name...">
+                <div class="cea-map-search__actions">
+                    <button type="button" data-map-reset>Kembali</button>
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+        </div>
         <div class="cea-map-shell">
             <div id="simpul-map" data-points='@json($mapPoints)'></div>
         </div>
+        <div class="cea-map-filter" aria-label="Filter simpul">
+            @foreach ($regionButtons as $regionButton)
+                <button type="button" data-region="{{ $regionButton['key'] }}" data-lat="{{ $regionButton['lat'] }}" data-lng="{{ $regionButton['lng'] }}">{{ $regionButton['label'] }}</button>
+            @endforeach
+        </div>
     </div>
 </section>
+
+@include('partials.news-columns', ['newsArticles' => $latestUpdates ?? collect(), 'newsFallbackImages' => array_values($disasterImages)])
 
 <section class="cea-stats">
     <div class="container">
@@ -409,6 +448,7 @@
         }).addTo(map);
 
         var bounds = [];
+        var markers = [];
 
         points.forEach(function (point) {
             var markerClass = point.type === 'Simpul' ? 'simpul-map-marker--region' : 'simpul-map-marker--member';
@@ -426,18 +466,77 @@
                 + '<a href="' + escapeHtml(point.url) + '">Buka halaman</a>'
                 + '</div>';
 
-            L.marker(latLng, { icon: icon, title: point.title })
+            var marker = L.marker(latLng, { icon: icon, title: point.title })
                 .addTo(map)
                 .bindPopup(popup)
                 .on('click', function () {
                     window.location.href = point.url;
                 });
 
+            markers.push({ marker: marker, point: point, latLng: latLng });
             bounds.push(latLng);
         });
 
         if (bounds.length > 1) {
             map.fitBounds(bounds, { padding: [34, 34] });
+        }
+
+        function fitMarkerSet(items) {
+            if (!items.length) return;
+
+            if (items.length === 1) {
+                map.setView(items[0].latLng, 8);
+                items[0].marker.openPopup();
+                return;
+            }
+
+            map.fitBounds(items.map(function (item) { return item.latLng; }), { padding: [42, 42] });
+        }
+
+        document.querySelectorAll('[data-region]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('[data-region]').forEach(function (item) {
+                    item.classList.remove('is-active');
+                });
+                button.classList.add('is-active');
+
+                var regionItems = markers.filter(function (item) {
+                    return item.point.region_key === button.dataset.region;
+                });
+
+                fitMarkerSet(regionItems);
+            });
+        });
+
+        var searchForm = document.getElementById('simpul-map-search');
+        var searchInput = document.getElementById('simpul-province-search');
+        var resetButton = document.querySelector('[data-map-reset]');
+
+        if (searchForm && searchInput) {
+            searchForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var query = searchInput.value.trim().toLowerCase();
+                if (!query) return;
+
+                var result = markers.filter(function (item) {
+                    return [item.point.title, item.point.description, item.point.key, item.point.region_key]
+                        .join(' ')
+                        .toLowerCase()
+                        .indexOf(query) !== -1;
+                });
+
+                fitMarkerSet(result);
+            });
+        }
+
+        if (resetButton) {
+            resetButton.addEventListener('click', function () {
+                document.querySelectorAll('[data-region]').forEach(function (item) {
+                    item.classList.remove('is-active');
+                });
+                if (searchInput) searchInput.value = '';
+                if (bounds.length > 1) map.fitBounds(bounds, { padding: [34, 34] });
+            });
         }
     });
 </script>

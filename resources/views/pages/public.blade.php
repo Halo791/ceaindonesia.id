@@ -4,13 +4,7 @@
 
 @push('styles')
 <style>
-    .public-hero {
-        background:
-            radial-gradient(circle at 82% 12%, rgba(242, 201, 76, .24), transparent 30%),
-            linear-gradient(135deg, #063d2a 0%, #0f5d3e 58%, #1f7a43 100%);
-        color: #fff;
-        padding: 82px 0 88px;
-    }
+    .public-hero {}
     .public-hero__grid {
         align-items: center;
         display: grid;
@@ -42,20 +36,7 @@
         margin-bottom: 28px;
         max-width: 720px;
     }
-    .public-hero__visual {
-        background: #f6f9e8;
-        border-radius: 8px;
-        box-shadow: 0 34px 80px rgba(6,61,42,.28);
-        overflow: hidden;
-        padding: 20px;
-    }
-    .public-hero__visual img {
-        border-radius: 6px;
-        display: block;
-        max-height: 420px;
-        object-fit: cover;
-        width: 100%;
-    }
+    .public-hero__visual { display: none; }
     .public-section {
         background: #fff;
         padding: 76px 0;
@@ -400,21 +381,21 @@
 @endphp
 
 @section('content')
-<section class="public-hero">
+<section class="public-hero cea-video-hero">
+    <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
+        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
+    </video>
     <div class="container">
         <div class="public-hero__grid">
-            <div>
-                <span class="public-hero__eyebrow">{{ $content['eyebrow'] ?? $section['label'] }}</span>
-                <h1 class="cea-scramble-title">{{ $content['title'] }}</h1>
+            <div class="cea-video-hero__content">
+                <span class="public-hero__eyebrow cea-video-hero__eyebrow">{{ $content['eyebrow'] ?? $section['label'] }}</span>
+                <h1 class="cea-scramble-title"><span>{{ $content['title'] }}</span></h1>
                 <p>{{ $content['subtitle'] }}</p>
                 <!-- <div class="cea-footer-actions">
                     @if (! empty($content['source_href']))
                         <a href="{{ $content['source_href'] }}" target="_blank" rel="noreferrer">Sumber Resmi</a>
                     @endif
                 </div> -->
-            </div>
-            <div class="public-hero__visual">
-                <img src="{{ $heroImagePath }}" alt="{{ $content['title'] }}">
             </div>
         </div>
     </div>
@@ -502,30 +483,6 @@
                 </div>
             @endif
 
-            @if (($updates ?? collect())->isNotEmpty())
-                <div class="public-section__head" style="margin-top:42px;">
-                    <span>Informasi Terkini</span>
-                    <h2>Update dari {{ $item['label'] ?? $section['label'] }}</h2>
-                </div>
-                <div class="public-update-grid">
-                    @foreach ($updates as $update)
-                        @php
-                            $updateImage = $update->image_path ?: $fallbackImages[abs(crc32($update->title)) % count($fallbackImages)];
-                        @endphp
-                        <article class="public-update-card">
-                            <a class="public-update-card__image" href="{{ route('public.update', $update->slug) }}" aria-label="Baca update {{ $update->title }}">
-                                <img src="{{ $updateImage }}" alt="{{ $update->title }}">
-                            </a>
-                            <div class="public-update-card__body">
-                                <span>{{ $update->category }} · {{ optional($update->published_at)->format('d M Y') ?: 'Draft' }}</span>
-                                <h3>{{ $update->title }}</h3>
-                                <p>{{ $update->excerpt ?: str($update->body)->limit(120) }}</p>
-                                <a href="{{ route('public.update', $update->slug) }}">Baca update</a>
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            @endif
         </article>
 
         <aside class="public-sidebar">
@@ -537,4 +494,6 @@
         </aside>
     </div>
 </section>
+
+@include('partials.news-columns', ['newsArticles' => $updates ?? collect(), 'newsFallbackImages' => $fallbackImages])
 @endsection

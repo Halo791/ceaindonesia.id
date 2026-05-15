@@ -64,6 +64,15 @@
         .cea-mobile-menu a { color: var(--cea-dark); font-weight: 800; }
         .cea-btn { align-items: center; background: var(--cea-gold); border: 1px solid var(--cea-gold); border-radius: 8px; color: var(--cea-dark); display: inline-flex; font-weight: 900; min-height: 46px; padding: 0 18px; }
         .cea-btn.secondary { background: transparent; color: #fff; }
+        .cea-video-hero { align-items: center; background: #063d2a; color: #fff; display: flex; min-height: clamp(500px, 66vh, 680px); overflow: hidden; padding: 90px 0 70px; position: relative; }
+        .cea-video-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
+        .cea-video-hero__video { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
+        .cea-video-hero__content { max-width: 780px; position: relative; z-index: 2; }
+        .cea-video-hero__eyebrow { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
+        .cea-video-hero h1 { color: #fff; font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 780px; text-wrap: balance; }
+        .cea-video-hero h1 span { background: rgba(242,201,76,.92); box-decoration-break: clone; -webkit-box-decoration-break: clone; color: #063d2a; line-height: 1.22; padding: 0 .14em; }
+        .cea-video-hero p { color: rgba(255,255,255,.86); font-size: 16px; line-height: 1.75; margin-bottom: 28px; max-width: 660px; }
+        .cea-video-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
         .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
         .kso-wordmark .kso-wordmark__image { display: block; height: auto; max-height: 100%; object-fit: contain; width: 100%; }
         .kso-wordmark--header { height: 54px; width: 178px; }
