@@ -13,7 +13,7 @@
     $donationBody = $donation['qris_body'] ?? '';
     $donationNote = $donation['qris_note'] ?? '';
     $donationRecipient = $donation['qris_recipient'] ?? '';
-    $qrisImageAlt = $donation['qris_image_alt'] ?: ($donationRecipient ? 'QRIS '.$donationRecipient : ($ui['donate_qris'] ?? 'Donasi via QRIS'));
+    $qrisImageAlt = ($donation['qris_image_alt'] ?? '') ?: ($donationRecipient ? 'QRIS '.$donationRecipient : ($ui['donate_qris'] ?? 'Donasi via QRIS'));
 @endphp
 
 <footer class="cea-landing-footer">
