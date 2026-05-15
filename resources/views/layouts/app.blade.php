@@ -136,6 +136,11 @@
         .cea-donation-modal__close { align-items: center; background: #f6f9e8; border: 0; border-radius: 999px; color: #063d2a; cursor: pointer; display: inline-flex; font-size: 24px; height: 38px; justify-content: center; line-height: 1; position: absolute; right: 14px; top: 14px; width: 38px; }
         .cea-donation-modal__dialog h2 { color: #063d2a; font-size: 25px; line-height: 1.2; margin: 0 42px 10px 0; }
         .cea-donation-modal__dialog p { color: #4f6759; margin-bottom: 16px; }
+        .cea-donation-modal__recipient { background: #f6f9e8; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; margin: 0 0 14px; padding: 11px 12px; }
+        .cea-donation-modal__recipient span { color: #617468; display: block; font-size: 12px; font-weight: 800; margin-bottom: 2px; text-transform: uppercase; }
+        .cea-donation-modal__recipient strong { color: #063d2a; display: block; font-size: 16px; line-height: 1.35; }
+        .cea-qris-image-wrap { background: #f6f9e8; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; margin-bottom: 14px; padding: 12px; }
+        .cea-qris-image { aspect-ratio: 1 / 1; background: #fff; border-radius: 6px; display: block; object-fit: contain; width: 100%; }
         .cea-qris-placeholder { align-items: center; aspect-ratio: 1 / 1; background: repeating-linear-gradient(45deg, #f6f9e8 0 12px, #fff 12px 24px); border: 1px dashed #9ebc91; border-radius: 8px; color: #1f7a43; display: flex; font-weight: 900; justify-content: center; margin-bottom: 14px; text-align: center; }
         .cea-donation-modal__note { background: #f6f9e8; border-radius: 8px; color: #405d4a; font-size: 13px; line-height: 1.55; padding: 12px; }
         .cea-section { padding: 86px 0; }
@@ -468,7 +473,7 @@
             });
 
             var donationModal = document.querySelector('[data-donation-modal]');
-            var donationOpen = document.querySelector('[data-donation-open]');
+            var donationOpenButtons = document.querySelectorAll('[data-donation-open]');
             var donationClose = document.querySelector('[data-donation-close]');
 
             function closeDonationModal() {
@@ -477,11 +482,13 @@
                 donationModal.setAttribute('aria-hidden', 'true');
             }
 
-            if (donationModal && donationOpen) {
-                donationOpen.addEventListener('click', function () {
-                    donationModal.classList.add('is-open');
-                    donationModal.setAttribute('aria-hidden', 'false');
-                    if (donationClose) donationClose.focus();
+            if (donationModal && donationOpenButtons.length) {
+                donationOpenButtons.forEach(function (donationOpen) {
+                    donationOpen.addEventListener('click', function () {
+                        donationModal.classList.add('is-open');
+                        donationModal.setAttribute('aria-hidden', 'false');
+                        if (donationClose) donationClose.focus();
+                    });
                 });
 
                 donationModal.addEventListener('click', function (event) {

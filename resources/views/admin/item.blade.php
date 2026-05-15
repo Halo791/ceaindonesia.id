@@ -81,6 +81,46 @@
                         <input name="meta[social_threads]" value="{{ $metaValue('social_threads') }}" placeholder="https://threads.net/@...">
                     </div>
                 </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>Gambar QRIS donasi</label>
+                        <input name="meta[qris_image_path]" value="{{ $metaValue('qris_image_path') }}" placeholder="/assets/img/qris/nama-anggota.png atau https://...">
+                    </div>
+                    <div class="admin-field">
+                        <label>Nama penerima QRIS</label>
+                        <input name="meta[qris_recipient]" value="{{ $metaValue('qris_recipient') }}" placeholder="Nama lembaga / anggota">
+                    </div>
+                    <div class="admin-field">
+                        <label>Judul modal donasi</label>
+                        <input name="meta[qris_title]" value="{{ $metaValue('qris_title') }}" placeholder="Donasi untuk ...">
+                    </div>
+                    <div class="admin-field">
+                        <label>Judul modal donasi EN</label>
+                        <input name="meta[qris_title_en]" value="{{ $metaValue('qris_title_en') }}" placeholder="Donate to ...">
+                    </div>
+                </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>Deskripsi modal donasi</label>
+                        <textarea name="meta[qris_body]" placeholder="Ajakan singkat untuk donasi">{{ $metaValue('qris_body') }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Deskripsi modal donasi EN</label>
+                        <textarea name="meta[qris_body_en]" placeholder="Short donation message">{{ $metaValue('qris_body_en') }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Catatan QRIS</label>
+                        <textarea name="meta[qris_note]" placeholder="Instruksi cek penerima / nominal">{{ $metaValue('qris_note') }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Catatan QRIS EN</label>
+                        <textarea name="meta[qris_note_en]" placeholder="Recipient / amount instruction">{{ $metaValue('qris_note_en') }}</textarea>
+                    </div>
+                </div>
+                <div class="admin-field">
+                    <label>Alt text gambar QRIS</label>
+                    <input name="meta[qris_image_alt]" value="{{ $metaValue('qris_image_alt') }}" placeholder="QRIS donasi nama anggota">
+                </div>
                 <div class="admin-field">
                     <label>URL / path gambar</label>
                     @php

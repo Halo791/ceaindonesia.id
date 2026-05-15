@@ -17,6 +17,7 @@ class SiteController extends Controller
         return view('home', $this->shared([
             'homeContent' => $this->homepageContent(),
             'socialLinks' => $this->homepageSocialLinks(),
+            'donationSettings' => $this->homepageDonationSettings(),
             'latestUpdates' => $this->latestPublicUpdates(),
         ]));
     }
@@ -189,6 +190,7 @@ class SiteController extends Controller
             'relatedUpdates' => $this->latestPublicUpdates(5)->where('id', '!=', $update->id)->take(4)->values(),
             'siblings' => collect(),
             'updates' => collect(),
+            'donationSettings' => $this->donationSettingsForOwner($update->owner_section_key, $update->owner_item_key),
         ]));
     }
 
@@ -536,6 +538,7 @@ class SiteController extends Controller
             'currentLocale' => $locale,
             'ui' => $this->uiText($locale),
             'adminUser' => $this->adminUser(),
+            'donationSettings' => $data['donationSettings'] ?? $this->homepageDonationSettings(),
         ];
     }
 
@@ -567,6 +570,7 @@ class SiteController extends Controller
                 'donation_body' => 'Dukungan Anda membantu memperkuat respon kemanusiaan berbasis komunitas dan kepemimpinan lokal.',
                 'qris_placeholder' => 'QRIS Donasi<br>segera tersedia',
                 'donation_note' => 'Tempatkan gambar QRIS resmi di area ini saat sudah tersedia. Pastikan nama penerima dan nominal dicek sebelum transaksi.',
+                'donation_recipient' => 'Penerima donasi',
                 'close_donation' => 'Tutup modal donasi',
                 'summary' => 'Ringkasan',
                 'summary_prefix' => 'Ringkasan',
@@ -613,6 +617,7 @@ class SiteController extends Controller
                 'donation_body' => 'Your support helps strengthen community-based humanitarian response and local leadership.',
                 'qris_placeholder' => 'Donation QRIS<br>coming soon',
                 'donation_note' => 'Place the official QRIS image here when it is available. Please verify the recipient name and amount before completing a transaction.',
+                'donation_recipient' => 'Donation recipient',
                 'close_donation' => 'Close donation modal',
                 'summary' => 'Overview',
                 'summary_prefix' => 'Overview of',
@@ -713,6 +718,7 @@ class SiteController extends Controller
             'content' => $content,
             'siblings' => $siblingItems,
             'socialLinks' => $this->contentSocialLinks($content),
+            'donationSettings' => $this->contentDonationSettings($content),
             'updates' => $this->publicUpdates($section['key'], $contentKey),
         ]));
     }
@@ -972,6 +978,12 @@ class SiteController extends Controller
                 'social_facebook' => '',
                 'social_youtube' => '',
                 'social_threads' => '',
+                'qris_image_path' => '',
+                'qris_recipient' => '',
+                'qris_title' => '',
+                'qris_body' => '',
+                'qris_note' => '',
+                'qris_image_alt' => '',
                 'primary_label' => 'Baca Mandat',
                 'primary_label_en' => 'Read Mandate',
                 'primary_href' => '/profil/mandat-visi-nilai',
@@ -1046,9 +1058,52 @@ class SiteController extends Controller
         return $this->socialLinksFromMeta($meta);
     }
 
+    private function homepageDonationSettings(): array
+    {
+        $content = $this->homepageAdminContent();
+        $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
+
+        return $this->donationSettingsFromMeta($meta);
+    }
+
     private function contentSocialLinks(array $content): array
     {
         return $this->socialLinksFromMeta((array) ($content['meta'] ?? []));
+    }
+
+    private function contentDonationSettings(array $content): array
+    {
+        return $this->donationSettingsFromMeta((array) ($content['meta'] ?? []));
+    }
+
+    private function donationSettingsForOwner(?string $sectionKey, ?string $itemKey): array
+    {
+        try {
+            $content = AdminContent::query()
+                ->where('section_key', $sectionKey ?? '')
+                ->where('item_key', $itemKey ?? '')
+                ->first();
+
+            if ($content) {
+                return $this->donationSettingsFromMeta((array) $content->meta);
+            }
+        } catch (\Throwable) {
+            //
+        }
+
+        return $this->homepageDonationSettings();
+    }
+
+    private function donationSettingsFromMeta(array $meta): array
+    {
+        return [
+            'qris_image_path' => trim((string) ($meta['qris_image_path'] ?? '')),
+            'qris_recipient' => trim((string) ($meta['qris_recipient'] ?? '')),
+            'qris_title' => trim((string) ($this->localizedMetaLabel($meta, 'qris_title') ?: '')),
+            'qris_body' => trim((string) ($this->localizedMetaLabel($meta, 'qris_body') ?: '')),
+            'qris_note' => trim((string) ($this->localizedMetaLabel($meta, 'qris_note') ?: '')),
+            'qris_image_alt' => trim((string) ($this->localizedMetaLabel($meta, 'qris_image_alt') ?: '')),
+        ];
     }
 
     private function socialLinksFromMeta(array $meta): array
