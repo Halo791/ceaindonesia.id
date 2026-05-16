@@ -23,7 +23,7 @@
                 @include('layouts.kso-wordmark', ['variant' => 'footer', 'compact' => true])
                 <p>{{ $ui['footer_description'] ?? 'Platform mandat kolektif antar CSO untuk menghimpun dan menyalurkan dana kemanusiaan berbasis kebutuhan komunitas dan kepemimpinan lokal.' }}</p>
                 <div class="mt-3">
-                    @include('layouts.social-links', ['links' => $socialLinks ?? [], 'variant' => 'footer'])
+                    <button class="cea-donation-link" type="button" data-donation-open>{{ $ui['donate_qris'] ?? 'Donasi via QRIS' }}</button>
                 </div>
             </div>
             <div>
@@ -46,7 +46,9 @@
                 <h3>{{ $ui['contact'] ?? 'Kontak' }}</h3>
                 <p>Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.</p>
                 <p>sekretariat@simpulpfb.id</p>
-                <button class="cea-donation-link mt-2" type="button" data-donation-open>{{ $ui['donate_qris'] ?? 'Donasi via QRIS' }}</button>
+                <div class="mt-3">
+                    @include('layouts.social-links', ['links' => $socialLinks ?? [], 'variant' => 'footer'])
+                </div>
             </div>
         </div>
         <div class="cea-footer-bottom"><span>2026 SIMPULPFB</span></div>
