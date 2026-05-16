@@ -49,19 +49,27 @@
         }
         .cea-news-list {
             display: grid;
-            gap: 12px;
+            gap: 14px;
         }
         .cea-news-item {
-            background: #f7f4ee;
+            align-items: end;
+            aspect-ratio: 16 / 9;
+            background: #063d2a;
             border-radius: 8px;
-            color: #10261d;
-            display: grid;
-            gap: 12px;
-            grid-template-columns: 108px minmax(0, 1fr);
+            color: #fff;
+            display: flex;
             min-height: 0;
             overflow: hidden;
-            padding: 8px;
+            padding: 0;
+            position: relative;
             transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .cea-news-item::after {
+            background: linear-gradient(180deg, rgba(6,61,42,0) 22%, rgba(6,61,42,.58) 58%, rgba(6,61,42,.94) 100%);
+            content: "";
+            inset: 0;
+            position: absolute;
+            z-index: 1;
         }
         .cea-news-item:hover {
             box-shadow: 0 14px 28px rgba(0,0,0,.14);
@@ -69,40 +77,53 @@
         }
         .cea-news-item img {
             display: block;
-            height: 92px;
+            height: 100%;
+            inset: 0;
             object-fit: cover;
-            position: static;
-            width: 108px;
-            border-radius: 6px;
+            position: absolute;
+            transform: scale(1.01);
+            transition: transform .22s ease;
+            width: 100%;
+            z-index: 0;
         }
-        .cea-news-item span {
-            background: transparent;
-            color: #10261d;
+        .cea-news-item:hover img {
+            transform: scale(1.045);
+        }
+        .cea-news-item__body {
             display: block;
             min-height: 0;
-            padding: 4px 2px 2px;
+            padding: 22px 24px;
+            position: relative;
+            z-index: 2;
         }
         .cea-news-item strong {
-            color: #0f7a4a;
+            color: #fff;
             display: -webkit-box;
-            font-size: 16px;
+            font-size: 22px;
             font-weight: 900;
-            line-height: 1.18;
-            margin-bottom: 6px;
+            line-height: 1.16;
+            margin-bottom: 10px;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            text-shadow: 0 8px 22px rgba(0,0,0,.36);
+        }
+        .cea-news-item__excerpt {
+            color: rgba(255,255,255,.9);
+            display: -webkit-box;
+            font-size: 14px;
+            line-height: 1.55;
+            margin: 0;
             overflow: hidden;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
         }
-        .cea-news-item span {
-            font-size: 13px;
-            line-height: 1.45;
-        }
         .cea-news-item small {
-            color: #7b8077;
+            color: #f2c94c;
             display: block;
             font-size: 11px;
             font-weight: 800;
-            margin-top: 8px;
+            margin-bottom: 8px;
             text-transform: uppercase;
         }
         .cea-news-empty {
@@ -115,9 +136,11 @@
             .cea-news-columns__grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 575px) {
-            .cea-news-item { grid-template-columns: 88px minmax(0, 1fr); }
-            .cea-news-item img { height: 76px; width: 88px; }
-            .cea-news-item strong { font-size: 14px; }
+            .cea-news-list { gap: 12px; }
+            .cea-news-item { aspect-ratio: 4 / 3; }
+            .cea-news-item__body { padding: 18px; }
+            .cea-news-item strong { font-size: 18px; }
+            .cea-news-item__excerpt { font-size: 13px; -webkit-line-clamp: 2; }
         }
     </style>
     @endpush
@@ -163,10 +186,10 @@
                         @endphp
                         <a class="cea-news-item" href="{{ route('public.update', $article->slug) }}">
                             <img src="{{ $articleImage }}" alt="{{ $articleTitle }}">
-                            <span>
+                            <span class="cea-news-item__body">
+                                <small>{{ $articleCategory }}</small>
                                 <strong>{{ $articleTitle }}</strong>
-                                {{ $articleExcerpt ?: str($articleBody)->limit(82) }}
-                                <small>{{ optional($article->published_at)->format('l, j F Y') ?: $articleCategory }}</small>
+                                <span class="cea-news-item__excerpt">{{ $articleExcerpt ?: str($articleBody)->limit(112) }}</span>
                             </span>
                         </a>
                     @empty
