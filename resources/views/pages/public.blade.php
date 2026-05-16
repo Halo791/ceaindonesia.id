@@ -86,24 +86,47 @@
         margin-top: 36px;
     }
     .public-update-card {
-        background: #fff;
-        border: 1px solid #dfe9c9;
+        align-items: end;
+        aspect-ratio: 16 / 10;
+        background: #063d2a;
+        border: 1px solid rgba(31,122,67,.16);
         border-radius: 8px;
         box-shadow: 0 18px 44px rgba(6,61,42,.08);
+        display: flex;
+        min-height: 320px;
         overflow: hidden;
+        position: relative;
+    }
+    .public-update-card::after {
+        background: linear-gradient(180deg, rgba(6,61,42,0) 18%, rgba(6,61,42,.58) 58%, rgba(6,61,42,.96) 100%);
+        content: "";
+        inset: 0;
+        position: absolute;
+        z-index: 1;
     }
     .public-update-card__image {
         display: block;
+        inset: 0;
+        position: absolute;
+        z-index: 0;
     }
     .public-update-card img {
-        aspect-ratio: 16 / 9;
         display: block;
+        height: 100%;
         object-fit: cover;
+        transform: scale(1.01);
+        transition: transform .22s ease;
         width: 100%;
     }
-    .public-update-card__body { padding: 18px; }
+    .public-update-card:hover img { transform: scale(1.045); }
+    .public-update-card__body {
+        color: #fff;
+        padding: 84px 22px 22px;
+        position: relative;
+        z-index: 2;
+    }
     .public-update-card__body span {
-        color: #1f7a43;
+        color: #f2c94c;
         display: block;
         font-size: 12px;
         font-weight: 900;
@@ -111,19 +134,24 @@
         text-transform: uppercase;
     }
     .public-update-card__body h3 {
-        color: #063d2a;
+        color: #fff;
         font-size: 19px;
         line-height: 1.25;
         margin-bottom: 10px;
+        text-shadow: 0 8px 22px rgba(0,0,0,.34);
     }
     .public-update-card__body p {
-        color: #4f6759;
+        color: rgba(255,255,255,.88);
+        display: -webkit-box;
         font-size: 14px;
         line-height: 1.65;
         margin-bottom: 14px;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
     }
     .public-update-card__body a {
-        color: #b85f14;
+        color: #f2c94c;
         font-weight: 900;
     }
     .public-sidebar {
@@ -365,6 +393,7 @@
         .public-hero p { font-size: 14px; line-height: 1.65; margin-bottom: 20px; }
         .member-network__overview,
         .member-network__regions { grid-template-columns: 1fr; }
+        .public-update-card { aspect-ratio: 4 / 3; min-height: 300px; }
         .member-network__map { padding: 18px; }
         .member-network__map::before { inset: 22px; }
     }
