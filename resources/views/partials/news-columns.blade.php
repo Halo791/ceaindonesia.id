@@ -166,7 +166,7 @@
                 <h2>{{ $ui['latest_video'] ?? 'Latest Video' }}</h2>
                 <div class="cea-news-video">
                     <video controls muted preload="metadata">
-                        <source src="{{ asset('assets/img/cea/') }}" type="video/mp4">
+                        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
                     </video>
                 </div>
                 <p>{{ $ui['news_intro'] ?? 'Ikuti cerita, aktivitas, dan pembelajaran dari simpul lokal. Ruang ini menampilkan dokumentasi video dan narasi kerja bersama dalam ekosistem Pooling Fund - KSO.' }}</p>
