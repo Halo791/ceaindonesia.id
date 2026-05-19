@@ -246,16 +246,24 @@
     .cea-section__head span { color: #1f7a43; margin-bottom: 9px; }
     .cea-section__head h2 { color: #063d2a; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.12; margin: 0; }
     .cea-focus-grid, .cea-menu-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .cea-focus-grid { gap: 28px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cea-focus-card, .cea-governance-card, .cea-menu-card { align-items: end; aspect-ratio: 16 / 10; background: #063d2a; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; box-shadow: 0 18px 44px rgba(6,61,42,.08); display: flex; min-height: 360px; overflow: hidden; position: relative; }
+    .cea-focus-card { border: 0; box-shadow: 0 24px 58px rgba(6,61,42,.12); min-height: clamp(310px, 28vw, 360px); transition: box-shadow .22s ease, transform .22s ease; }
     .cea-focus-card:hover, .cea-governance-card:hover, .cea-menu-card:hover { border-color: rgba(31,122,67,.32); box-shadow: 0 24px 58px rgba(6,61,42,.13); }
+    .cea-focus-card:hover { box-shadow: 0 28px 68px rgba(6,61,42,.18); transform: translateY(-4px); }
     .cea-focus-card::after, .cea-governance-card::after, .cea-menu-card::after { background: linear-gradient(180deg, rgba(6,61,42,0) 18%, rgba(6,61,42,.55) 55%, rgba(6,61,42,.96) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
+    .cea-focus-card::after { background: linear-gradient(180deg, rgba(6,61,42,.08) 0%, rgba(6,61,42,.32) 44%, rgba(6,61,42,.94) 100%); }
     .cea-focus-card__image, .cea-menu-card__image, .cea-governance-card__media { background: #f6f9e8; inset: 0; overflow: hidden; position: absolute; z-index: 0; }
     .cea-focus-card__image img, .cea-menu-card__image img, .cea-governance-card__media img { display: block; height: 100%; object-fit: cover; transform: scale(1.01); transition: transform .22s ease; width: 100%; }
     .cea-focus-card:hover img, .cea-governance-card:hover img, .cea-menu-card:hover img { transform: scale(1.045); }
     .cea-focus-card__body, .cea-menu-card__body, .cea-governance-card__body { color: #fff; padding: 88px 24px 24px; position: relative; z-index: 2; }
+    .cea-focus-card__body { padding: 112px 22px 24px; width: 100%; }
     .cea-focus-card h3, .cea-governance-card h3, .cea-menu-card h3 { color: #fff; font-size: 24px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; text-shadow: 0 8px 22px rgba(0,0,0,.34); }
+    .cea-focus-card h3 { font-size: clamp(20px, 2vw, 24px); margin-bottom: 10px; }
     .cea-focus-card p, .cea-governance-card p, .cea-menu-card p { color: rgba(255,255,255,.88); display: -webkit-box; font-size: 15px; line-height: 1.7; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-    .cea-focus-card__body a { color: #f2c94c; display: inline-flex; font-weight: 900; margin-top: 16px; }
+    .cea-focus-card p { font-size: 14px; line-height: 1.65; -webkit-line-clamp: 2; }
+    .cea-focus-card__body a { align-items: center; background: rgba(242,201,76,.14); border: 1px solid rgba(242,201,76,.34); border-radius: 999px; color: #f2c94c; display: inline-flex; font-size: 13px; font-weight: 900; margin-top: 16px; min-height: 34px; padding: 8px 13px; }
+    .cea-focus-card__body a:hover { background: #f2c94c; color: #063d2a; }
     .cea-principles { background: #fff; padding: 72px 0; }
     .cea-principles__grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cea-principle { background: #f6f9e8; border: 1px solid #dfe9c9; border-radius: 8px; color: #063d2a; font-weight: 900; padding: 18px; }
@@ -305,6 +313,7 @@
     .simpul-map-popup a:hover { background: #063d2a; color: #fff; }
     @media (max-width: 1199px) {
         .cea-landing-hero__panel { display: none; }
+        .cea-focus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 991px) {
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
