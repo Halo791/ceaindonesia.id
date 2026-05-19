@@ -62,7 +62,7 @@ Prinsip gerak kami mencakup mandat kolektif melalui Forum Anggota dengan prinsip
 Pengambilan keputusan dilakukan oleh mereka yang paling dekat dengan krisis, sehingga dana dikelola secara transparan demi kedaulatan serta ketangguhan komunitas di setiap wilayah.
 
 Pendekatan ini memperkuat kecepatan respon, akuntabilitas kolektif, serta kepercayaan donor dan publik terhadap kerja kemanusiaan yang dipimpin dari lokal.', '/assets/img/cea/tatakelola.png', 'https://ceaindonesia.id/tata-kelola-sumber-daya-cea/', 'active', NOW(), NOW()),
-('regio', 'simpul', 'Sebaran Region Simpul KSO-Pooling Fund', 'Daftar simpul regional dan anggota KSO-Pooling Fund di berbagai wilayah Indonesia.', '1. KSO-Pooling Fund SUMBAGSEL (Sumatera Bagian Selatan) "Tangguh"
+('regio', 'simpul', 'Sebaran Region Simpul KSO-Pooling Fund', 'Daftar simpul regional dan anggota KSO-Pooling Fund di berbagai wilayah Indonesia.', '1. SUMBAGUT
 Anggota:
 1. Yayasan Peduli Kemandirian Masyarakat (YAPEMMAS) Medan
 2. Yayasan Fajar Sejahtera Indonesia (YAFSI)-Medan
