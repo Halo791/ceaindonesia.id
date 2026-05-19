@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\AdminContent;
 use App\Models\AdminPage;
 use App\Models\AdminUpdate;
+use App\Models\AdminUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -221,6 +223,75 @@ class SiteController extends Controller
             'navigationParents' => $this->navigationParentOptions(),
             'dbReady' => $this->adminPagesReady(),
         ]));
+    }
+
+    public function adminKsos(): View
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat meregistrasi KSO.');
+
+        return view('admin.ksos.index', $this->shared([
+            'ksos' => $this->registeredKsoAccounts(),
+            'regions' => collect(config('cea.simpul_regions', []))->keyBy('key'),
+            'dbReady' => $this->adminUsersReady(),
+        ]));
+    }
+
+    public function createAdminKso(): View
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat meregistrasi KSO.');
+
+        return view('admin.ksos.form', $this->shared([
+            'regions' => config('cea.simpul_regions', []),
+            'dbReady' => $this->adminUsersReady(),
+        ]));
+    }
+
+    public function storeAdminKso(Request $request): RedirectResponse
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat meregistrasi KSO.');
+
+        if (! $this->adminUsersReady()) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_users belum siap. Jalankan migration atau import database/sql/admin_users.sql terlebih dulu.']);
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'region_key' => ['required', 'string', 'max:100'],
+            'username' => ['nullable', 'string', 'max:100'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        $validRegionKeys = collect(config('cea.simpul_regions', []))->pluck('key')->all();
+
+        if (! in_array($validated['region_key'], $validRegionKeys, true)) {
+            return back()
+                ->withInput()
+                ->withErrors(['region_key' => 'Region simpul tidak valid.']);
+        }
+
+        $memberSlug = $this->uniqueKsoSlug($validated['region_key'], $this->ksoSlugBase($validated['name']));
+        $username = $this->uniqueKsoUsername(Str::slug($validated['username'] ?: $validated['name']) ?: $memberSlug);
+
+        try {
+            AdminUser::create([
+                'name' => $validated['name'],
+                'username' => $username,
+                'password_hash' => Hash::make($validated['password']),
+                'role' => 'member',
+                'section_key' => 'regio',
+                'item_key' => "simpul/{$validated['region_key']}/{$memberSlug}",
+                'is_active' => $request->boolean('is_active', true),
+            ]);
+        } catch (\Throwable) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'KSO belum dapat disimpan. Pastikan tabel admin_users tersedia dan username belum dipakai.']);
+        }
+
+        return redirect()->route('admin.ksos.index')->with('status', "KSO berhasil diregistrasi. Username: {$username}");
     }
 
     public function adminUpdates(): View
@@ -692,7 +763,7 @@ class SiteController extends Controller
 
     private function findSection(string $key): ?array
     {
-        return collect(config('cea.navigation'))->firstWhere('key', $key);
+        return collect($this->navigationWithRegisteredKsos(config('cea.navigation')))->firstWhere('key', $key);
     }
 
     private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null, ?string $contentKey = null): View
@@ -1209,7 +1280,7 @@ class SiteController extends Controller
 
     private function adminNavigation(): array
     {
-        $navigation = config('cea.navigation');
+        $navigation = $this->navigationWithRegisteredKsos(config('cea.navigation'));
         $adminUser = $this->adminUser();
 
         if (($adminUser['role'] ?? 'super_admin') !== 'member') {
@@ -1306,7 +1377,7 @@ class SiteController extends Controller
 
     private function publicNavigation(): array
     {
-        $navigation = config('cea.navigation');
+        $navigation = $this->navigationWithRegisteredKsos(config('cea.navigation'));
 
         try {
             $hasNavigationParentKey = Schema::hasColumn('admin_pages', 'navigation_parent_key');
@@ -1367,6 +1438,158 @@ class SiteController extends Controller
                 return $item;
             })
             ->all();
+    }
+
+    private function navigationWithRegisteredKsos(array $navigation): array
+    {
+        $accountsByRegion = $this->registeredKsoAccounts(true)
+            ->groupBy(fn (AdminUser $user) => $this->ksoRegionKey($user));
+
+        if ($accountsByRegion->isEmpty()) {
+            return $navigation;
+        }
+
+        return collect($navigation)
+            ->map(function (array $section) use ($accountsByRegion) {
+                if (($section['key'] ?? '') !== 'regio') {
+                    return $section;
+                }
+
+                $section['children'] = collect($section['children'] ?? [])
+                    ->map(function (array $item) use ($accountsByRegion) {
+                        if (($item['key'] ?? '') !== 'simpul') {
+                            return $item;
+                        }
+
+                        $item['children'] = collect($item['children'] ?? [])
+                            ->map(function (array $region) use ($accountsByRegion) {
+                                $registeredAccounts = $accountsByRegion->get($region['key'], collect());
+
+                                if ($registeredAccounts->isEmpty()) {
+                                    return $region;
+                                }
+
+                                $existingKeys = collect($region['children'] ?? [])->pluck('key')->all();
+                                $registeredChildren = $registeredAccounts
+                                    ->map(fn (AdminUser $user) => $this->registeredKsoNavigationItem($user, $region))
+                                    ->reject(fn (?array $item) => ! $item || in_array($item['key'], $existingKeys, true))
+                                    ->values()
+                                    ->all();
+
+                                $region['children'] = array_values(array_merge($region['children'] ?? [], $registeredChildren));
+
+                                if (! empty($registeredChildren)) {
+                                    $region['cards'] = collect($region['children'])->pluck('label')->values()->all();
+                                }
+
+                                return $region;
+                            })
+                            ->values()
+                            ->all();
+
+                        return $item;
+                    })
+                    ->values()
+                    ->all();
+
+                return $section;
+            })
+            ->all();
+    }
+
+    private function registeredKsoAccounts(bool $activeOnly = false)
+    {
+        if (! $this->adminUsersReady()) {
+            return collect();
+        }
+
+        try {
+            return AdminUser::query()
+                ->where('role', 'member')
+                ->where('section_key', 'regio')
+                ->where('item_key', 'like', 'simpul/%/%')
+                ->when($activeOnly, fn ($query) => $query->where('is_active', true))
+                ->orderBy('name')
+                ->get();
+        } catch (\Throwable) {
+            return collect();
+        }
+    }
+
+    private function registeredKsoNavigationItem(AdminUser $user, array $region): ?array
+    {
+        $slug = $this->ksoMemberSlug($user);
+
+        if (! $slug) {
+            return null;
+        }
+
+        return [
+            'key' => $slug,
+            'label' => $user->name,
+            'href' => "/admin/regio/simpul/{$region['key']}/{$slug}",
+            'publicHref' => "/regio/simpul/{$region['key']}/{$slug}",
+            'description' => "Anggota {$region['shortLabel']}: {$user->name}.",
+            'eyebrow' => $region['shortLabel'],
+            'title' => $user->name,
+            'subtitle' => "Anggota {$region['label']}.",
+            'body' => "{$user->name} merupakan anggota {$region['label']} dalam ekosistem KSO-Pooling Fund.",
+            'image_path' => '/assets/img/cea/campur.png',
+            'cards' => [$region['shortLabel'], 'Anggota Simpul', 'KSO-Pooling Fund'],
+            'admin_username' => $user->username,
+        ];
+    }
+
+    private function ksoRegionKey(AdminUser $user): ?string
+    {
+        return explode('/', (string) $user->item_key)[1] ?? null;
+    }
+
+    private function ksoMemberSlug(AdminUser $user): ?string
+    {
+        return explode('/', (string) $user->item_key)[2] ?? null;
+    }
+
+    private function uniqueKsoSlug(string $regionKey, string $slug): string
+    {
+        $baseSlug = $slug;
+        $counter = 2;
+
+        while (AdminUser::query()->where('section_key', 'regio')->where('item_key', "simpul/{$regionKey}/{$slug}")->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    private function ksoSlugBase(string $name): string
+    {
+        $slug = Str::slug($name) ?: 'kso';
+
+        return substr($slug, 0, 96) ?: 'kso';
+    }
+
+    private function uniqueKsoUsername(string $username): string
+    {
+        $baseUsername = $username;
+        $counter = 2;
+
+        while (AdminUser::query()->where('username', $username)->exists()) {
+            $username = "{$baseUsername}-{$counter}";
+            $counter++;
+        }
+
+        return $username;
+    }
+
+    private function adminUsersReady(): bool
+    {
+        try {
+            return Schema::hasTable('admin_users');
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function adminPageNavigationItem(AdminPage $page): array
@@ -1545,7 +1768,7 @@ class SiteController extends Controller
             ]];
         }
 
-        return collect($this->flattenAdminItems(config('cea.navigation')))
+        return collect($this->flattenAdminItems($this->navigationWithRegisteredKsos(config('cea.navigation'))))
             ->map(fn ($item) => [
                 'value' => $item['section_key'].'|'.$item['item_key'],
                 'label' => $item['section_label'].' / '.str_repeat('- ', max($item['depth'] - 1, 0)).$item['label'],
