@@ -246,27 +246,26 @@
     .cea-section__head span { color: #1f7a43; margin-bottom: 9px; }
     .cea-section__head h2 { color: #063d2a; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.12; margin: 0; }
     .cea-focus-grid, .cea-menu-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .cea-focus-grid { gap: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); isolation: isolate; margin: 0 auto; max-width: 1040px; padding: 6px 0 12px; }
+    .cea-focus-grid { gap: 28px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 auto; max-width: 1060px; padding: 4px 0 12px; }
     .cea-focus-card, .cea-governance-card, .cea-menu-card { align-items: end; aspect-ratio: 16 / 10; background: #063d2a; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; box-shadow: 0 18px 44px rgba(6,61,42,.08); display: flex; min-height: 360px; overflow: hidden; position: relative; }
-    .cea-focus-card { border: 0; border-radius: 0; box-shadow: 0 18px 44px rgba(6,61,42,.11); clip-path: polygon(0 0, calc(100% - 30px) 0, calc(100% - 30px) 28%, 100% 28%, 100% 72%, calc(100% - 30px) 72%, calc(100% - 30px) 100%, 0 100%); margin-right: -18px; min-height: clamp(250px, 22vw, 300px); overflow: visible; transition: box-shadow .22s ease, transform .22s ease; z-index: 1; }
-    .cea-focus-card:nth-child(2) { clip-path: polygon(0 0, 100% 0, 100% 100%, 30px 100%, 30px 72%, 0 72%, 0 28%, 30px 28%, 30px 0); margin-top: 18px; z-index: 2; }
-    .cea-focus-card:nth-child(3) { clip-path: polygon(0 0, 100% 0, 100% 100%, 30px 100%, 30px 72%, 0 72%, 0 28%, 30px 28%, 30px 0); margin-right: 0; z-index: 1; }
+    .cea-focus-card { aspect-ratio: 1; border: 7px solid #fff; border-radius: 999px; box-shadow: 0 20px 48px rgba(6,61,42,.12); min-height: 0; overflow: hidden; transition: box-shadow .22s ease, transform .22s ease; }
+    .cea-focus-card:nth-child(2) { transform: translateY(22px); }
+    .cea-focus-card:nth-child(2):hover { transform: translateY(18px); }
     .cea-focus-card:hover, .cea-governance-card:hover, .cea-menu-card:hover { border-color: rgba(31,122,67,.32); box-shadow: 0 24px 58px rgba(6,61,42,.13); }
-    .cea-focus-card:hover { box-shadow: 0 22px 56px rgba(6,61,42,.16); transform: translateY(-3px); }
-    .cea-focus-card::before { border: 6px solid #fff; content: ""; inset: 0; pointer-events: none; position: absolute; z-index: 3; }
+    .cea-focus-card:hover { box-shadow: 0 24px 58px rgba(6,61,42,.18); transform: translateY(-5px); }
     .cea-focus-card::after, .cea-governance-card::after, .cea-menu-card::after { background: linear-gradient(180deg, rgba(6,61,42,0) 18%, rgba(6,61,42,.55) 55%, rgba(6,61,42,.96) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
-    .cea-focus-card::after { background: linear-gradient(180deg, rgba(6,61,42,.08) 0%, rgba(6,61,42,.32) 44%, rgba(6,61,42,.94) 100%); }
+    .cea-focus-card::after { background: linear-gradient(180deg, rgba(6,61,42,.04) 0%, rgba(6,61,42,.18) 36%, rgba(6,61,42,.92) 100%); border-radius: inherit; }
     .cea-focus-card__image, .cea-menu-card__image, .cea-governance-card__media { background: #f6f9e8; inset: 0; overflow: hidden; position: absolute; z-index: 0; }
     .cea-focus-card__image { border-radius: inherit; }
     .cea-focus-card__image img, .cea-menu-card__image img, .cea-governance-card__media img { display: block; height: 100%; object-fit: cover; transform: scale(1.01); transition: transform .22s ease; width: 100%; }
     .cea-focus-card:hover img, .cea-governance-card:hover img, .cea-menu-card:hover img { transform: scale(1.045); }
     .cea-focus-card__body, .cea-menu-card__body, .cea-governance-card__body { color: #fff; padding: 88px 24px 24px; position: relative; z-index: 2; }
-    .cea-focus-card__body { padding: 92px 20px 21px; width: 100%; }
+    .cea-focus-card__body { padding: 40% 28px 34px; text-align: center; width: 100%; }
     .cea-focus-card h3, .cea-governance-card h3, .cea-menu-card h3 { color: #fff; font-size: 24px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; text-shadow: 0 8px 22px rgba(0,0,0,.34); }
-    .cea-focus-card h3 { font-size: clamp(18px, 1.7vw, 22px); margin-bottom: 9px; }
+    .cea-focus-card h3 { font-size: clamp(18px, 1.7vw, 22px); margin-bottom: 8px; }
     .cea-focus-card p, .cea-governance-card p, .cea-menu-card p { color: rgba(255,255,255,.88); display: -webkit-box; font-size: 15px; line-height: 1.7; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-    .cea-focus-card p { font-size: 13px; line-height: 1.6; -webkit-line-clamp: 2; }
-    .cea-focus-card__body a { align-items: center; background: rgba(242,201,76,.14); border: 1px solid rgba(242,201,76,.34); border-radius: 999px; color: #f2c94c; display: inline-flex; font-size: 12px; font-weight: 900; margin-top: 14px; min-height: 31px; padding: 7px 12px; }
+    .cea-focus-card p { font-size: 13px; line-height: 1.55; -webkit-line-clamp: 2; }
+    .cea-focus-card__body a { align-items: center; background: rgba(242,201,76,.14); border: 1px solid rgba(242,201,76,.34); border-radius: 999px; color: #f2c94c; display: inline-flex; font-size: 12px; font-weight: 900; justify-content: center; margin-top: 13px; min-height: 31px; padding: 7px 12px; }
     .cea-focus-card__body a:hover { background: #f2c94c; color: #063d2a; }
     .cea-principles { background: #fff; padding: 72px 0; }
     .cea-principles__grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -317,16 +316,16 @@
     .simpul-map-popup a:hover { background: #063d2a; color: #fff; }
     @media (max-width: 1199px) {
         .cea-landing-hero__panel { display: none; }
-        .cea-focus-grid { gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
-        .cea-focus-card, .cea-focus-card:nth-child(2), .cea-focus-card:nth-child(3) { border-radius: 8px; clip-path: none; margin: 0; overflow: hidden; }
-        .cea-focus-card::before { border-width: 0; }
+        .cea-focus-grid { gap: 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
+        .cea-focus-card:nth-child(2), .cea-focus-card:nth-child(2):hover { transform: none; }
     }
     @media (max-width: 991px) {
         .cea-landing-hero__grid, .cea-governance-grid { grid-template-columns: 1fr; }
         .cea-focus-grid, .cea-menu-grid, .cea-stats__grid, .cea-principles__grid, .cea-field-stories__grid { grid-template-columns: 1fr; }
         .cea-story-card, .cea-story-card:first-child, .cea-story-card:nth-child(2) { grid-column: auto; }
         .cea-story-card { min-height: 320px; }
-        .cea-focus-card, .cea-governance-card, .cea-menu-card { aspect-ratio: 4 / 3; min-height: 320px; }
+        .cea-focus-card { aspect-ratio: 1; margin: 0 auto; max-width: 360px; width: 100%; }
+        .cea-governance-card, .cea-menu-card { aspect-ratio: 4 / 3; min-height: 320px; }
         .cea-landing-hero { min-height: 100svh; }
         .cea-map-toolbar { display: block; }
         .cea-map-search { margin-bottom: 14px; width: 100%; }
