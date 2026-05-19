@@ -5,8 +5,8 @@ $baseUrl = 'https://simpulpfb.id';
 $simpulRegions = [
     [
         'key' => 'sumbagsel-tangguh',
-        'label' => 'SUMBAGUT',
-        'shortLabel' => 'SUMBAGSEL "Tangguh"',
+        'label' => 'SUMBAGUT "Tangguh"',
+        'shortLabel' => 'SUMBAGUT "Tangguh"',
         'description' => 'Simpul KSO-Pooling Fund wilayah Sumatera dengan tagline Tangguh.',
         'members' => [
             'Yayasan Peduli Kemandirian Masyarakat (YAPEMMAS) Medan',
