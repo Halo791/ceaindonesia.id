@@ -35,6 +35,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/pages/{page}/edit', [SiteController::class, 'editAdminPage'])->name('pages.edit');
         Route::put('/pages/{page}', [SiteController::class, 'updateAdminPage'])->name('pages.update');
         Route::delete('/pages/{page}', [SiteController::class, 'destroyAdminPage'])->name('pages.destroy');
+        Route::get('/menu-labels', [SiteController::class, 'editAdminMenuLabels'])->name('menu-labels.edit');
+        Route::post('/menu-labels', [SiteController::class, 'updateAdminMenuLabels'])->name('menu-labels.update');
         Route::get('/ksos', [SiteController::class, 'adminKsos'])->name('ksos.index');
         Route::get('/ksos/create', [SiteController::class, 'createAdminKso'])->name('ksos.create');
         Route::post('/ksos', [SiteController::class, 'storeAdminKso'])->name('ksos.store');

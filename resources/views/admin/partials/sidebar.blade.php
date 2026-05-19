@@ -24,6 +24,7 @@
         @if (($adminUser['role'] ?? 'super_admin') !== 'member')
             <a href="{{ route('admin.index') }}" class="{{ ! $activeSection && ! $activeCustom ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('admin.pages.index') }}" class="{{ $activeCustom === 'pages' ? 'active' : '' }}">Halaman Dinamis</a>
+            <a href="{{ route('admin.menu-labels.edit') }}" class="{{ $activeCustom === 'menu-labels' ? 'active' : '' }}">Nama Menu</a>
             <a href="{{ route('admin.ksos.index') }}" class="{{ $activeCustom === 'ksos' ? 'active' : '' }}">Register KSO</a>
         @endif
         <a href="{{ route('admin.updates.index') }}" class="{{ $activeCustom === 'updates' ? 'active' : '' }}">Update Berita</a>

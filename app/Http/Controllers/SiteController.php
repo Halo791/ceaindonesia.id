@@ -21,6 +21,7 @@ class SiteController extends Controller
             'homeContent' => $this->homepageContent(),
             'socialLinks' => $this->homepageSocialLinks(),
             'donationSettings' => $this->homepageDonationSettings(),
+            'contactSettings' => $this->homepageContactSettings(),
             'latestUpdates' => $this->latestPublicUpdates(),
         ]));
     }
@@ -194,6 +195,7 @@ class SiteController extends Controller
             'siblings' => collect(),
             'updates' => collect(),
             'donationSettings' => $this->donationSettingsForOwner($update->owner_section_key, $update->owner_item_key),
+            'contactSettings' => $this->contactSettingsForOwner($update->owner_section_key, $update->owner_item_key),
         ]));
     }
 
@@ -223,6 +225,91 @@ class SiteController extends Controller
             'navigationParents' => $this->navigationParentOptions(),
             'dbReady' => $this->adminPagesReady(),
         ]));
+    }
+
+    public function editAdminMenuLabels(): View
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengubah nama menu.');
+
+        return view('admin.menu-labels.form', $this->shared([
+            'menuItems' => $this->editableMenuItems(),
+            'dbReady' => $this->databaseReady(),
+        ]));
+    }
+
+    public function updateAdminMenuLabels(Request $request): RedirectResponse
+    {
+        abort_if($this->adminIsRestricted(), 403, 'Hanya super admin yang dapat mengubah nama menu.');
+
+        if (! $this->databaseReady()) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Tabel admin_contents belum siap. Import database/sql/admin_contents.sql terlebih dulu.']);
+        }
+
+        $validated = $request->validate([
+            'items' => ['nullable', 'array'],
+            'items.*.section_key' => ['required', 'string', 'max:100'],
+            'items.*.item_key' => ['nullable', 'string', 'max:150'],
+            'items.*.fallback_label' => ['required', 'string', 'max:255'],
+            'items.*.fallback_description' => ['nullable', 'string', 'max:255'],
+            'items.*.menu_label' => ['nullable', 'string', 'max:255'],
+            'items.*.menu_label_en' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        foreach ($validated['items'] ?? [] as $item) {
+            $menuLabel = trim((string) ($item['menu_label'] ?? ''));
+            $menuLabelEn = trim((string) ($item['menu_label_en'] ?? ''));
+            $sectionKey = $item['section_key'];
+            $itemKey = $item['item_key'] ?? '';
+
+            try {
+                $content = AdminContent::query()
+                    ->where('section_key', $sectionKey)
+                    ->where('item_key', $itemKey)
+                    ->first();
+
+                if (! $content && $menuLabel === '' && $menuLabelEn === '') {
+                    continue;
+                }
+
+                $meta = (array) ($content?->meta ?? []);
+
+                if ($menuLabel === '') {
+                    unset($meta['menu_label']);
+                } else {
+                    $meta['menu_label'] = $menuLabel;
+                }
+
+                if ($menuLabelEn === '') {
+                    unset($meta['menu_label_en']);
+                } else {
+                    $meta['menu_label_en'] = $menuLabelEn;
+                }
+
+                AdminContent::updateOrCreate(
+                    [
+                        'section_key' => $sectionKey,
+                        'item_key' => $itemKey,
+                    ],
+                    [
+                        'title' => $content?->title ?: $item['fallback_label'],
+                        'subtitle' => $content?->subtitle ?: ($item['fallback_description'] ?? null),
+                        'body' => $content?->body ?: ($item['fallback_description'] ?? null),
+                        'image_path' => $content?->image_path,
+                        'source_href' => $content?->source_href,
+                        'status' => $content?->status ?: 'draft',
+                        'meta' => empty($meta) ? null : $meta,
+                    ]
+                );
+            } catch (\Throwable) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['database' => 'Nama menu belum dapat disimpan. Pastikan tabel admin_contents tersedia dan kolom item_key cukup panjang.']);
+            }
+        }
+
+        return redirect()->route('admin.menu-labels.edit')->with('status', 'Nama menu dan submenu berhasil diperbarui.');
     }
 
     public function adminKsos(): View
@@ -614,6 +701,7 @@ class SiteController extends Controller
             'ui' => $this->uiText($locale),
             'adminUser' => $this->adminUser(),
             'donationSettings' => $data['donationSettings'] ?? $this->homepageDonationSettings(),
+            'contactSettings' => $data['contactSettings'] ?? $this->homepageContactSettings(),
         ];
     }
 
@@ -748,7 +836,7 @@ class SiteController extends Controller
 
         return collect($items)
             ->map(function (array $item) use ($labels, $locale) {
-                if (isset($labels[$item['key']])) {
+                if (empty($item['_label_overridden']) && isset($labels[$item['key']])) {
                     $item['label'] = $labels[$item['key']];
                 }
 
@@ -763,7 +851,7 @@ class SiteController extends Controller
 
     private function findSection(string $key): ?array
     {
-        return collect($this->navigationWithRegisteredKsos(config('cea.navigation')))->firstWhere('key', $key);
+        return collect($this->navigationWithMenuOverrides($this->navigationWithRegisteredKsos(config('cea.navigation'))))->firstWhere('key', $key);
     }
 
     private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null, ?string $contentKey = null): View
@@ -794,6 +882,7 @@ class SiteController extends Controller
             'siblings' => $siblingItems,
             'socialLinks' => $this->contentSocialLinks($content),
             'donationSettings' => $this->contentDonationSettings($content),
+            'contactSettings' => $this->contentContactSettings($content),
             'updates' => $this->publicUpdates($section['key'], $contentKey),
         ]));
     }
@@ -1059,6 +1148,10 @@ class SiteController extends Controller
                 'qris_body' => '',
                 'qris_note' => '',
                 'qris_image_alt' => '',
+                'contact_address' => 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.',
+                'contact_address_en' => 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.',
+                'contact_email' => 'sekretariat@simpulpfb.id',
+                'contact_phone' => '',
                 'primary_label' => 'Baca Mandat',
                 'primary_label_en' => 'Read Mandate',
                 'primary_href' => '/profil/mandat-visi-nilai',
@@ -1141,6 +1234,14 @@ class SiteController extends Controller
         return $this->donationSettingsFromMeta($meta);
     }
 
+    private function homepageContactSettings(): array
+    {
+        $content = $this->homepageAdminContent();
+        $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
+
+        return $this->contactSettingsFromMeta($meta);
+    }
+
     private function contentSocialLinks(array $content): array
     {
         return $this->socialLinksFromMeta((array) ($content['meta'] ?? []));
@@ -1149,6 +1250,11 @@ class SiteController extends Controller
     private function contentDonationSettings(array $content): array
     {
         return $this->donationSettingsFromMeta((array) ($content['meta'] ?? []));
+    }
+
+    private function contentContactSettings(array $content): array
+    {
+        return $this->contactSettingsFromMeta((array) ($content['meta'] ?? []));
     }
 
     private function donationSettingsForOwner(?string $sectionKey, ?string $itemKey): array
@@ -1169,6 +1275,24 @@ class SiteController extends Controller
         return $this->homepageDonationSettings();
     }
 
+    private function contactSettingsForOwner(?string $sectionKey, ?string $itemKey): array
+    {
+        try {
+            $content = AdminContent::query()
+                ->where('section_key', $sectionKey ?? '')
+                ->where('item_key', $itemKey ?? '')
+                ->first();
+
+            if ($content) {
+                return $this->contactSettingsFromMeta((array) $content->meta);
+            }
+        } catch (\Throwable) {
+            //
+        }
+
+        return $this->homepageContactSettings();
+    }
+
     private function donationSettingsFromMeta(array $meta): array
     {
         return [
@@ -1178,6 +1302,19 @@ class SiteController extends Controller
             'qris_body' => trim((string) ($this->localizedMetaLabel($meta, 'qris_body') ?: '')),
             'qris_note' => trim((string) ($this->localizedMetaLabel($meta, 'qris_note') ?: '')),
             'qris_image_alt' => trim((string) ($this->localizedMetaLabel($meta, 'qris_image_alt') ?: '')),
+        ];
+    }
+
+    private function contactSettingsFromMeta(array $meta): array
+    {
+        $defaults = $this->homepageDefaults()['meta'] ?? [];
+        $address = $this->localizedMetaLabel($meta, 'contact_address');
+        $defaultAddress = $this->localizedMetaLabel($defaults, 'contact_address');
+
+        return [
+            'address' => trim((string) (filled($address) ? $address : $defaultAddress)),
+            'email' => trim((string) (filled($meta['contact_email'] ?? null) ? $meta['contact_email'] : ($defaults['contact_email'] ?? ''))),
+            'phone' => trim((string) (filled($meta['contact_phone'] ?? null) ? $meta['contact_phone'] : ($defaults['contact_phone'] ?? ''))),
         ];
     }
 
@@ -1280,7 +1417,7 @@ class SiteController extends Controller
 
     private function adminNavigation(): array
     {
-        $navigation = $this->navigationWithRegisteredKsos(config('cea.navigation'));
+        $navigation = $this->navigationWithMenuOverrides($this->navigationWithRegisteredKsos(config('cea.navigation')));
         $adminUser = $this->adminUser();
 
         if (($adminUser['role'] ?? 'super_admin') !== 'member') {
@@ -1377,7 +1514,7 @@ class SiteController extends Controller
 
     private function publicNavigation(): array
     {
-        $navigation = $this->navigationWithRegisteredKsos(config('cea.navigation'));
+        $navigation = $this->navigationWithMenuOverrides($this->navigationWithRegisteredKsos(config('cea.navigation')));
 
         try {
             $hasNavigationParentKey = Schema::hasColumn('admin_pages', 'navigation_parent_key');
@@ -1495,6 +1632,106 @@ class SiteController extends Controller
                 return $section;
             })
             ->all();
+    }
+
+    private function navigationWithMenuOverrides(array $navigation): array
+    {
+        $overrides = $this->menuLabelOverrides();
+
+        if ($overrides->isEmpty()) {
+            return $navigation;
+        }
+
+        return $this->applyMenuLabelOverrides($navigation, $overrides);
+    }
+
+    private function applyMenuLabelOverrides(array $items, $overrides, ?string $sectionKey = null, array $path = []): array
+    {
+        return collect($items)
+            ->map(function (array $item) use ($overrides, $sectionKey, $path) {
+                $currentSection = $sectionKey ?? $item['key'];
+                $currentPath = $sectionKey ? array_merge($path, [$item['key']]) : [];
+                $itemKey = implode('/', $currentPath);
+                $override = $overrides->get($this->menuOverrideKey($currentSection, $itemKey));
+
+                if (filled($override)) {
+                    $item['label'] = $override;
+                    $item['_label_overridden'] = true;
+                }
+
+                if (! empty($item['children'])) {
+                    $item['children'] = $this->applyMenuLabelOverrides($item['children'], $overrides, $currentSection, $currentPath);
+                }
+
+                return $item;
+            })
+            ->all();
+    }
+
+    private function menuLabelOverrides()
+    {
+        if (! $this->databaseReady()) {
+            return collect();
+        }
+
+        try {
+            return AdminContent::query()
+                ->whereNotNull('meta')
+                ->get(['section_key', 'item_key', 'meta'])
+                ->mapWithKeys(function (AdminContent $content) {
+                    $meta = (array) $content->meta;
+                    $label = $this->currentLocale() === 'en' && filled($meta['menu_label_en'] ?? null)
+                        ? $meta['menu_label_en']
+                        : ($meta['menu_label'] ?? null);
+
+                    return filled($label)
+                        ? [$this->menuOverrideKey($content->section_key, $content->item_key) => $label]
+                        : [];
+                });
+        } catch (\Throwable) {
+            return collect();
+        }
+    }
+
+    private function menuOverrideKey(string $sectionKey, string $itemKey = ''): string
+    {
+        return $sectionKey.'|'.$itemKey;
+    }
+
+    private function editableMenuItems(): array
+    {
+        return collect($this->flattenEditableMenuItems($this->navigationWithRegisteredKsos(config('cea.navigation'))))
+            ->values()
+            ->all();
+    }
+
+    private function flattenEditableMenuItems(array $items, ?string $sectionKey = null, array $path = [], int $depth = 0): array
+    {
+        $rows = [];
+
+        foreach ($items as $item) {
+            $currentSection = $sectionKey ?? $item['key'];
+            $currentPath = $sectionKey ? array_merge($path, [$item['key']]) : [];
+            $itemKey = implode('/', $currentPath);
+            $content = $this->adminContent(['key' => $currentSection, 'label' => $item['label'], 'description' => $item['description'] ?? ''], $itemKey === '' ? null : $item, $itemKey);
+            $meta = (array) ($content['meta'] ?? []);
+
+            $rows[] = [
+                'section_key' => $currentSection,
+                'item_key' => $itemKey,
+                'label' => $item['label'],
+                'description' => $item['description'] ?? '',
+                'depth' => $depth,
+                'menu_label' => $meta['menu_label'] ?? '',
+                'menu_label_en' => $meta['menu_label_en'] ?? '',
+            ];
+
+            if (! empty($item['children'])) {
+                $rows = array_merge($rows, $this->flattenEditableMenuItems($item['children'], $currentSection, $currentPath, $depth + 1));
+            }
+        }
+
+        return $rows;
     }
 
     private function registeredKsoAccounts(bool $activeOnly = false)

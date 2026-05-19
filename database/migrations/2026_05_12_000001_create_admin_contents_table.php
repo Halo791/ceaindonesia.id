@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('admin_contents', function (Blueprint $table) {
             $table->id();
             $table->string('section_key', 100);
-            $table->string('item_key', 100)->default('');
+            $table->string('item_key', 150)->default('');
             $table->string('title');
             $table->string('subtitle')->nullable();
             $table->longText('body')->nullable();

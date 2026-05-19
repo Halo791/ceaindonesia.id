@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `admin_contents` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `section_key` varchar(100) NOT NULL,
-  `item_key` varchar(100) NOT NULL DEFAULT '',
+  `item_key` varchar(150) NOT NULL DEFAULT '',
   `title` varchar(255) NOT NULL,
   `subtitle` varchar(255) DEFAULT NULL,
   `body` longtext,

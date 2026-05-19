@@ -129,6 +129,24 @@
                     <label>Alt text gambar QRIS</label>
                     <input name="meta[qris_image_alt]" value="{{ $metaValue('qris_image_alt') }}" placeholder="QRIS donasi nama simpul">
                 </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>Alamat kontak footer</label>
+                        <textarea name="meta[contact_address]" placeholder="Alamat sekretariat / simpul">{{ $metaValue('contact_address') }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Alamat kontak footer EN</label>
+                        <textarea name="meta[contact_address_en]" placeholder="Address for English page">{{ $metaValue('contact_address_en') }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Email kontak footer</label>
+                        <input name="meta[contact_email]" value="{{ $metaValue('contact_email') }}" placeholder="email@domain.org">
+                    </div>
+                    <div class="admin-field">
+                        <label>Telepon / WhatsApp footer</label>
+                        <input name="meta[contact_phone]" value="{{ $metaValue('contact_phone') }}" placeholder="+62...">
+                    </div>
+                </div>
                 <div class="admin-field">
                     <label>{{ $isHomepage ? 'Path video background' : 'URL / path gambar' }}</label>
                     @php

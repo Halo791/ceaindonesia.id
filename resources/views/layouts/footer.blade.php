@@ -14,6 +14,10 @@
     $donationNote = $donation['qris_note'] ?? '';
     $donationRecipient = $donation['qris_recipient'] ?? '';
     $qrisImageAlt = ($donation['qris_image_alt'] ?? '') ?: ($donationRecipient ? 'QRIS '.$donationRecipient : ($ui['donate_qris'] ?? 'Donasi via QRIS'));
+    $contact = $contactSettings ?? [];
+    $contactAddress = trim((string) ($contact['address'] ?? 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.'));
+    $contactEmail = trim((string) ($contact['email'] ?? 'sekretariat@simpulpfb.id'));
+    $contactPhone = trim((string) ($contact['phone'] ?? ''));
 @endphp
 
 <footer class="cea-landing-footer">
@@ -44,8 +48,15 @@
             </div>
             <div>
                 <h3>{{ $ui['contact'] ?? 'Kontak' }}</h3>
-                <p>Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.</p>
-                <p>sekretariat@simpulpfb.id</p>
+                @if ($contactAddress)
+                    <p>{{ $contactAddress }}</p>
+                @endif
+                @if ($contactEmail)
+                    <p>{{ $contactEmail }}</p>
+                @endif
+                @if ($contactPhone)
+                    <p>{{ $contactPhone }}</p>
+                @endif
                 <div class="mt-3">
                     @include('layouts.social-links', ['links' => $socialLinks ?? [], 'variant' => 'footer'])
                 </div>
