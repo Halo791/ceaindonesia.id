@@ -115,6 +115,8 @@
         .kso-wordmark--compact { height: 48px; width: 158px; }
         .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
         .kso-wordmark--footer, .kso-wordmark--login { height: 86px; width: 190px; }
+        .kso-wordmark--footer.kso-wordmark--compact { aspect-ratio: 1 / 1; border-radius: 999px; height: 92px; padding: 9px; width: 92px; }
+        .kso-wordmark--footer.kso-wordmark--compact .kso-wordmark__image { height: 100%; width: 100%; }
         .kso-wordmark--hero { background: #fff; box-shadow: inset 0 0 0 1px rgba(31,122,67,.1); height: 100%; min-height: 330px; padding: 24px; width: 100%; }
         .kso-wordmark--panel { min-height: inherit; width: 100%; }
         .kso-wordmark--hero .kso-wordmark__image { max-height: 460px; }
