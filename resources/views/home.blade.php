@@ -342,13 +342,13 @@
                 <p>{{ $homeContent['description'] ?? 'Perubahan besar tidak lahir dari satu lembaga, tapi dari ekosistem yang terhubung. Pooling Fund - KSO menghimpun dan menyalurkan dana kemanusiaan secara bersama, berbasis kebutuhan komunitas dan kepemimpinan lokal, tanpa membentuk badan hukum baru.' }}</p>
                 @include('layouts.social-links', ['links' => $socialLinks ?? [], 'variant' => 'hero'])
             </div>
-            @if (! empty($homeContent['panel_value']))
+            <!-- @if (! empty($homeContent['panel_value']))
                 <div class="cea-landing-hero__panel">
                     <span>{{ $homeContent['panel_label'] ?? 'Ekosistem KSO' }}</span>
                     <strong>{{ $homeContent['panel_value'] }}</strong>
                     <p>{{ $homeContent['panel_description'] ?? 'Simpul regional otonom yang terhubung dalam satu mandat kolektif.' }}</p>
                 </div>
-            @endif
+            @endif -->
         </div>
     </div>
 </section>
