@@ -171,8 +171,16 @@
             .admin-sidebar__nav a, .admin-sidebar__nav-label { border-radius: 8px; color: rgba(255,255,255,.78); display: block; font-size: 13px; font-weight: 700; line-height: 1.25; padding: 10px 12px; text-transform: uppercase; }
             .admin-sidebar__nav-label { color: rgba(255,255,255,.54); cursor: default; }
             .admin-sidebar__nav a:hover, .admin-sidebar__nav a.active, .admin-sidebar__nav-label.active { background: #f3aa3d; color: #102f22; }
+            .admin-sidebar__row { align-items: stretch; display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr) auto; }
+            .admin-sidebar__row > a, .admin-sidebar__row > .admin-sidebar__nav-label { min-width: 0; }
+            .admin-sidebar__toggle { align-items: center; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; color: rgba(255,255,255,.78); display: inline-flex; justify-content: center; min-height: 38px; padding: 0; width: 38px; }
+            .admin-sidebar__toggle:hover { background: rgba(243,170,61,.2); border-color: rgba(243,170,61,.35); color: #fff; }
+            .admin-sidebar__toggle span[aria-hidden="true"] { border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; display: block; height: 8px; transform: rotate(45deg) translateY(-2px); transition: transform .18s ease; width: 8px; }
+            .admin-sidebar__group.is-open > .admin-sidebar__row .admin-sidebar__toggle span[aria-hidden="true"] { transform: rotate(225deg) translateY(-2px); }
             .admin-sidebar__children { border-left: 1px solid rgba(255,255,255,.12); display: grid; gap: 2px; margin: 2px 0 8px 12px; padding-left: 8px; }
+            .admin-sidebar__children[hidden] { display: none; }
             .admin-sidebar__children a, .admin-sidebar__children .admin-sidebar__nav-label { font-size: 12px; font-weight: 600; text-transform: none; }
+            .sr-only { border: 0; clip: rect(0,0,0,0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
             .admin-workspace { min-width: 0; }
             .admin-hero { align-items: flex-start; background: #fff; border: 1px solid #dfe7df; border-radius: 8px; box-shadow: 0 14px 36px rgba(16,47,34,.06); color: #102f22; display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding: 28px; }
             .admin-hero h1 { color: #102f22; font-size: 32px; line-height: 1.12; margin-bottom: 10px; }
@@ -638,6 +646,30 @@
             });
         });
     </script>
+    @if (request()->is('admin*'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-admin-sidebar-toggle]').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var panelId = button.getAttribute('aria-controls');
+                        var panel = panelId ? document.getElementById(panelId) : null;
+                        var group = button.closest('.admin-sidebar__group');
+                        var isOpen = button.getAttribute('aria-expanded') === 'true';
+
+                        button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+                        if (panel) {
+                            panel.hidden = isOpen;
+                        }
+
+                        if (group) {
+                            group.classList.toggle('is-open', !isOpen);
+                        }
+                    });
+                });
+            });
+        </script>
+    @endif
     @stack('scripts')
 </body>
 </html>

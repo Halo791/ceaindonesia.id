@@ -27,17 +27,40 @@
             && $currentItemKey !== ''
             && $activeItemKey
             && str_starts_with($activeItemKey.'/', $currentItemKey.'/');
+        $hasChildren = ! empty($nav['children']);
+        $isOpen = $hasChildren && (
+            $isActive
+            || $isAncestor
+            || ($activeSection === $currentSection && $currentItemKey === '')
+            || ($activeSection === $currentSection && $activeItemKey && str_starts_with($activeItemKey.'/', $currentItemKey === '' ? '' : $currentItemKey.'/'))
+        );
+        $panelId = 'admin-sidebar-'.md5($currentSection.'|'.$currentItemKey.'|'.$nav['key']);
     @endphp
 
-    <div class="admin-sidebar__group">
-        @if ($href)
-            <a href="{{ $href }}" class="{{ $isActive || $isAncestor ? 'active' : '' }}">{{ $nav['label'] }}</a>
-        @else
-            <span class="admin-sidebar__nav-label {{ $isActive || $isAncestor ? 'active' : '' }}">{{ $nav['label'] }}</span>
-        @endif
+    <div class="admin-sidebar__group {{ $hasChildren ? 'has-children' : '' }} {{ $isOpen ? 'is-open' : '' }}">
+        <div class="admin-sidebar__row">
+            @if ($href)
+                <a href="{{ $href }}" class="{{ $isActive || $isAncestor ? 'active' : '' }}">{{ $nav['label'] }}</a>
+            @else
+                <span class="admin-sidebar__nav-label {{ $isActive || $isAncestor ? 'active' : '' }}">{{ $nav['label'] }}</span>
+            @endif
 
-        @if (! empty($nav['children']))
-            <div class="admin-sidebar__children">
+            @if ($hasChildren)
+                <button
+                    class="admin-sidebar__toggle"
+                    type="button"
+                    aria-expanded="{{ $isOpen ? 'true' : 'false' }}"
+                    aria-controls="{{ $panelId }}"
+                    data-admin-sidebar-toggle
+                >
+                    <span aria-hidden="true"></span>
+                    <span class="sr-only">{{ $isOpen ? 'Tutup submenu' : 'Buka submenu' }}</span>
+                </button>
+            @endif
+        </div>
+
+        @if ($hasChildren)
+            <div class="admin-sidebar__children" id="{{ $panelId }}" @unless($isOpen) hidden @endunless>
                 @include('admin.partials.sidebar-items', [
                     'items' => $nav['children'],
                     'activeSection' => $activeSection,
