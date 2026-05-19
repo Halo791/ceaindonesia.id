@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
             @endif
             @if ($errors->any())
                 <div class="alert alert-danger">{{ $errors->first() }}</div>
@@ -64,6 +64,18 @@
                                 <option value="{{ $parent->id }}" @selected((string) old('parent_id', $page->parent_id) === (string) $parent->id)>{{ $parent->title }}</option>
                             @endforeach
                         </select>
+                        <small>Gunakan ini untuk membuat submenu di bawah halaman dinamis lain.</small>
+                    </div>
+
+                    <div class="admin-field">
+                        <label>Tempatkan di menu/submenu website</label>
+                        <select name="navigation_parent_key">
+                            <option value="">Tidak ada - tampil sebagai menu utama jika tidak punya parent dinamis</option>
+                            @foreach ($navigationParents as $parent)
+                                <option value="{{ $parent['key'] }}" @selected((string) old('navigation_parent_key', $page->navigation_parent_key) === (string) $parent['key'])>{{ $parent['label'] }}</option>
+                            @endforeach
+                        </select>
+                        <small>Jika dipilih, halaman ini akan muncul sebagai submenu pada menu/submenu tersebut.</small>
                     </div>
 
                     <div class="admin-field">

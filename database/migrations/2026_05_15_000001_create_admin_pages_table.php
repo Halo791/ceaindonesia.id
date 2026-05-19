@@ -12,6 +12,7 @@ return new class extends Migration
             Schema::create('admin_pages', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('parent_id')->nullable()->constrained('admin_pages')->nullOnDelete();
+                $table->string('navigation_parent_key', 190)->nullable()->index();
                 $table->string('title');
                 $table->string('title_en')->nullable();
                 $table->string('slug', 120)->unique();

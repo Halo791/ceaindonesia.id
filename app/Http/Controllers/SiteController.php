@@ -7,6 +7,7 @@ use App\Models\AdminPage;
 use App\Models\AdminUpdate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -217,6 +218,7 @@ class SiteController extends Controller
             'pages' => $this->adminPagesReady()
                 ? AdminPage::query()->with('parent')->orderBy('parent_id')->orderBy('sort_order')->orderBy('title')->get()
                 : collect(),
+            'navigationParents' => $this->navigationParentOptions(),
             'dbReady' => $this->adminPagesReady(),
         ]));
     }
@@ -314,6 +316,7 @@ class SiteController extends Controller
         return view('admin.pages.form', $this->shared([
             'page' => new AdminPage(['status' => 'draft', 'show_in_navigation' => true, 'sort_order' => 0]),
             'parentPages' => $this->parentPageOptions(),
+            'navigationParents' => $this->navigationParentOptions(),
             'formAction' => route('admin.pages.store'),
             'method' => 'POST',
             'title' => 'Tambah Halaman',
@@ -350,6 +353,7 @@ class SiteController extends Controller
         return view('admin.pages.form', $this->shared([
             'page' => $page,
             'parentPages' => $this->parentPageOptions($page),
+            'navigationParents' => $this->navigationParentOptions(),
             'formAction' => route('admin.pages.update', $page),
             'method' => 'PUT',
             'title' => 'Edit Halaman',
@@ -1305,8 +1309,27 @@ class SiteController extends Controller
         $navigation = config('cea.navigation');
 
         try {
+            $hasNavigationParentKey = Schema::hasColumn('admin_pages', 'navigation_parent_key');
+
+            if ($hasNavigationParentKey) {
+                $submenuPages = AdminPage::query()
+                    ->whereNotNull('navigation_parent_key')
+                    ->where('navigation_parent_key', '!=', '')
+                    ->where('status', 'active')
+                    ->where('show_in_navigation', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('title')
+                    ->get();
+
+                $navigation = $this->attachAdminPagesToNavigation($navigation, $submenuPages);
+            }
+
             $pages = AdminPage::query()
                 ->whereNull('parent_id')
+                ->when($hasNavigationParentKey, fn ($query) => $query->where(function ($query) {
+                    $query->whereNull('navigation_parent_key')
+                        ->orWhere('navigation_parent_key', '');
+                }))
                 ->where('status', 'active')
                 ->where('show_in_navigation', true)
                 ->orderBy('sort_order')
@@ -1321,6 +1344,29 @@ class SiteController extends Controller
         }
 
         return $navigation;
+    }
+
+    private function attachAdminPagesToNavigation(array $navigation, $pages, string $parentPath = ''): array
+    {
+        return collect($navigation)
+            ->map(function (array $item) use ($pages, $parentPath) {
+                $path = $parentPath === '' ? $item['key'] : "{$parentPath}/{$item['key']}";
+                $children = $item['children'] ?? [];
+                $attachedPages = collect($pages)
+                    ->where('navigation_parent_key', $path)
+                    ->map(fn (AdminPage $page) => $this->adminPageNavigationItem($page))
+                    ->values()
+                    ->all();
+
+                if (! empty($children)) {
+                    $children = $this->attachAdminPagesToNavigation($children, $pages, $path);
+                }
+
+                $item['children'] = array_values(array_merge($children, $attachedPages));
+
+                return $item;
+            })
+            ->all();
     }
 
     private function adminPageNavigationItem(AdminPage $page): array
@@ -1371,6 +1417,7 @@ class SiteController extends Controller
     {
         $validated = $request->validate([
             'parent_id' => ['nullable', 'integer', 'exists:admin_pages,id'],
+            'navigation_parent_key' => ['nullable', 'string', 'max:190'],
             'title' => ['required', 'string', 'max:255'],
             'title_en' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:120'],
@@ -1390,8 +1437,21 @@ class SiteController extends Controller
         $validated['show_in_navigation'] = $request->boolean('show_in_navigation');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $validated['parent_id'] = $validated['parent_id'] ?: null;
+        $validated['navigation_parent_key'] = $validated['navigation_parent_key'] ?? null;
 
         if ($page && $validated['parent_id'] === $page->id) {
+            $validated['parent_id'] = null;
+        }
+
+        if (! Schema::hasColumn('admin_pages', 'navigation_parent_key')) {
+            unset($validated['navigation_parent_key']);
+        } elseif ($validated['navigation_parent_key']) {
+            $validNavigationParents = collect($this->navigationParentOptions())->pluck('key')->all();
+
+            if (! in_array($validated['navigation_parent_key'], $validNavigationParents, true)) {
+                $validated['navigation_parent_key'] = null;
+            }
+
             $validated['parent_id'] = null;
         }
 
@@ -1551,6 +1611,35 @@ class SiteController extends Controller
         }
     }
 
+    private function navigationParentOptions(): array
+    {
+        return $this->flattenNavigationParentOptions(config('cea.navigation'));
+    }
+
+    private function flattenNavigationParentOptions(array $items, string $parentPath = '', string $labelPrefix = ''): array
+    {
+        return collect($items)
+            ->flatMap(function (array $item) use ($parentPath, $labelPrefix) {
+                $path = $parentPath === '' ? $item['key'] : "{$parentPath}/{$item['key']}";
+                $label = trim($labelPrefix.($item['label'] ?? $item['key']));
+                $options = [[
+                    'key' => $path,
+                    'label' => $label,
+                ]];
+
+                if (! empty($item['children'])) {
+                    $options = array_merge(
+                        $options,
+                        $this->flattenNavigationParentOptions($item['children'], $path, "{$label} / ")
+                    );
+                }
+
+                return $options;
+            })
+            ->values()
+            ->all();
+    }
+
     private function descendantPageIds(AdminPage $page): array
     {
         $ids = [];
@@ -1566,6 +1655,12 @@ class SiteController extends Controller
     private function adminPagesReady(): bool
     {
         try {
+            foreach (['navigation_parent_key', 'title_en', 'menu_label_en', 'subtitle_en', 'body_en'] as $column) {
+                if (! Schema::hasColumn('admin_pages', $column)) {
+                    return false;
+                }
+            }
+
             AdminPage::query()->limit(1)->exists();
 
             return true;

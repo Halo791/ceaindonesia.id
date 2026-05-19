@@ -1,4 +1,5 @@
 ALTER TABLE `admin_pages`
+  ADD COLUMN IF NOT EXISTS `navigation_parent_key` varchar(190) DEFAULT NULL AFTER `parent_id`,
   ADD COLUMN IF NOT EXISTS `title_en` varchar(255) DEFAULT NULL AFTER `title`,
   ADD COLUMN IF NOT EXISTS `menu_label_en` varchar(255) DEFAULT NULL AFTER `menu_label`,
   ADD COLUMN IF NOT EXISTS `subtitle_en` varchar(255) DEFAULT NULL AFTER `subtitle`,

@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
             @endif
             @if (session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>
@@ -25,6 +25,9 @@
 
             <div class="admin-table-card">
                 <h2>Daftar Halaman</h2>
+                @php
+                    $navigationParentLabels = collect($navigationParents ?? [])->pluck('label', 'key');
+                @endphp
                 <div class="table-responsive">
                     <table class="admin-table">
                         <thead>
@@ -42,7 +45,13 @@
                                 <tr>
                                     <td><strong>{{ $page->title }}</strong><br><small>{{ $page->menu_label ?: 'Label mengikuti judul' }}</small></td>
                                     <td><a href="{{ route('dynamic.page', $page->slug) }}" target="_blank" rel="noreferrer">/halaman/{{ $page->slug }}</a></td>
-                                    <td>{{ $page->parent?->title ?: 'Menu utama' }}</td>
+                                    <td>
+                                        @if ($page->navigation_parent_key)
+                                            Submenu: {{ $navigationParentLabels[$page->navigation_parent_key] ?? $page->navigation_parent_key }}
+                                        @else
+                                            {{ $page->parent?->title ?: 'Menu utama' }}
+                                        @endif
+                                    </td>
                                     <td><span class="admin-status">{{ $page->show_in_navigation ? 'Tampil' : 'Sembunyi' }}</span></td>
                                     <td>{{ ucfirst($page->status) }}</td>
                                     <td>

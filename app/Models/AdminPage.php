@@ -10,6 +10,7 @@ class AdminPage extends Model
 {
     protected $fillable = [
         'parent_id',
+        'navigation_parent_key',
         'title',
         'title_en',
         'slug',
