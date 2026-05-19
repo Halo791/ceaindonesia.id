@@ -1524,18 +1524,21 @@ class SiteController extends Controller
             return null;
         }
 
+        $regionLabel = $region['label'] ?? 'Simpul Region';
+        $regionShortLabel = $region['shortLabel'] ?? $regionLabel;
+
         return [
             'key' => $slug,
             'label' => $user->name,
             'href' => "/admin/regio/simpul/{$region['key']}/{$slug}",
             'publicHref' => "/regio/simpul/{$region['key']}/{$slug}",
-            'description' => "Anggota {$region['shortLabel']}: {$user->name}.",
-            'eyebrow' => $region['shortLabel'],
+            'description' => "Anggota {$regionShortLabel}: {$user->name}.",
+            'eyebrow' => $regionShortLabel,
             'title' => $user->name,
-            'subtitle' => "Anggota {$region['label']}.",
-            'body' => "{$user->name} merupakan anggota {$region['label']} dalam ekosistem KSO-Pooling Fund.",
+            'subtitle' => "Anggota {$regionLabel}.",
+            'body' => "{$user->name} merupakan anggota {$regionLabel} dalam ekosistem KSO-Pooling Fund.",
             'image_path' => '/assets/img/cea/campur.png',
-            'cards' => [$region['shortLabel'], 'Anggota Simpul', 'KSO-Pooling Fund'],
+            'cards' => [$regionShortLabel, 'Anggota Simpul', 'KSO-Pooling Fund'],
             'admin_username' => $user->username,
         ];
     }
