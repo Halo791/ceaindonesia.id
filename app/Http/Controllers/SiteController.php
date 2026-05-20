@@ -94,10 +94,24 @@ class SiteController extends Controller
         return $this->renderPublicPage($sectionData, $item, collect($group['children'] ?? [])->values(), "{$slug}/{$child}/{$leaf}");
     }
 
-    public function blog(): View
+    public function blog(Request $request): View|RedirectResponse
     {
+        $searchQuery = trim((string) $request->query('q', ''));
+        $searchResults = collect();
+
+        if ($searchQuery !== '') {
+            $searchResults = $this->siteSearchResults($searchQuery);
+            $exactResult = $searchResults->firstWhere('exact', true);
+
+            if ($exactResult && ! empty($exactResult['href'])) {
+                return redirect($exactResult['href']);
+            }
+        }
+
         return view('blog.index', $this->shared([
             'posts' => config('cea.blog'),
+            'searchQuery' => $searchQuery,
+            'searchResults' => $searchResults,
         ]));
     }
 
@@ -2031,6 +2045,134 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return collect();
         }
+    }
+
+    private function siteSearchResults(string $query)
+    {
+        $needle = $this->normalizeSearchTerm($query);
+
+        if ($needle === '') {
+            return collect();
+        }
+
+        $results = collect($this->publicSearchItems($this->publicNavigation()))
+            ->concat($this->staticPageSearchItems())
+            ->filter(fn (array $item) => str_contains($item['search_text'], $needle))
+            ->map(function (array $item) use ($needle) {
+                $item['exact'] = in_array($needle, $item['exact_terms'], true);
+
+                return $item;
+            })
+            ->values();
+
+        try {
+            $like = '%'.addcslashes($query, '%_\\').'%';
+            $updates = AdminUpdate::query()
+                ->where('status', 'active')
+                ->where(function ($query) use ($like) {
+                    foreach (['title', 'title_en', 'category', 'category_en', 'excerpt', 'excerpt_en', 'body', 'body_en'] as $field) {
+                        $query->orWhere($field, 'like', $like);
+                    }
+                })
+                ->latest('published_at')
+                ->latest()
+                ->limit(8)
+                ->get()
+                ->map(fn (AdminUpdate $update) => [
+                    'type' => $this->currentLocale() === 'en' ? 'Article' : 'Artikel',
+                    'title' => $this->localizedModelValue($update, 'title'),
+                    'description' => $this->localizedModelValue($update, 'excerpt') ?: Str::limit(strip_tags($this->localizedModelValue($update, 'body')), 160),
+                    'href' => route('public.update', $update->slug),
+                    'exact' => false,
+                ]);
+
+            $results = $results->concat($updates);
+        } catch (\Throwable) {
+            // Search should still work for navigation even when the updates table is not ready.
+        }
+
+        return $results
+            ->unique('href')
+            ->values();
+    }
+
+    private function publicSearchItems(array $items, array $parents = []): array
+    {
+        $results = [];
+
+        foreach ($items as $item) {
+            $title = trim((string) ($item['label'] ?? ''));
+            $description = trim((string) ($item['description'] ?? ''));
+            $key = trim((string) ($item['key'] ?? ''));
+            $href = $item['publicHref'] ?? $item['href'] ?? '';
+
+            if ($title !== '' && $href !== '' && ! str_starts_with($href, '/admin')) {
+                $terms = array_filter([$title, $key, Str::afterLast($href, '/')]);
+                $results[] = [
+                    'type' => empty($parents) ? ($this->currentLocale() === 'en' ? 'Menu' : 'Menu') : implode(' / ', $parents),
+                    'title' => $title,
+                    'description' => $description,
+                    'href' => $href,
+                    'search_text' => $this->normalizeSearchTerm(implode(' ', array_merge($terms, [$description]))),
+                    'exact_terms' => array_map(fn ($term) => $this->normalizeSearchTerm((string) $term), $terms),
+                ];
+            }
+
+            if (! empty($item['children'])) {
+                $results = array_merge($results, $this->publicSearchItems($item['children'], array_filter(array_merge($parents, [$title]))));
+            }
+        }
+
+        return $results;
+    }
+
+    private function staticPageSearchItems(): array
+    {
+        $sections = ['profil', 'regio', 'siar', 'aksi', 'koneksi', 'kolektif'];
+        $items = [];
+
+        foreach (config('cea.page_contents', []) as $sectionKey => $pages) {
+            if (! in_array($sectionKey, $sections, true) || ! is_array($pages)) {
+                continue;
+            }
+
+            foreach ($pages as $pageKey => $content) {
+                if (! is_array($content)) {
+                    continue;
+                }
+
+                $href = $pageKey === '_section'
+                    ? route('public.section', $sectionKey)
+                    : route('public.item', [$sectionKey, $pageKey]);
+                $title = trim((string) ($content['title'] ?? $pageKey));
+                $description = trim((string) ($content['subtitle'] ?? $content['body'] ?? ''));
+                $exactTerms = array_filter([
+                    $title,
+                    $pageKey === '_section' ? $sectionKey : $pageKey,
+                ]);
+                $searchTerms = array_filter(array_merge($exactTerms, $content['cards'] ?? []));
+
+                $items[] = [
+                    'type' => $pageKey === '_section' ? 'Halaman' : Str::title($sectionKey),
+                    'title' => $title,
+                    'description' => Str::limit(strip_tags($description), 170),
+                    'href' => $href,
+                    'search_text' => $this->normalizeSearchTerm(implode(' ', array_merge($searchTerms, [$description]))),
+                    'exact_terms' => array_map(fn ($term) => $this->normalizeSearchTerm((string) $term), $exactTerms),
+                ];
+            }
+        }
+
+        return $items;
+    }
+
+    private function normalizeSearchTerm(string $value): string
+    {
+        return Str::of($value)
+            ->lower()
+            ->replaceMatches('/[^a-z0-9]+/i', ' ')
+            ->squish()
+            ->toString();
     }
 
     private function latestPublicUpdates(int $limit = 4)

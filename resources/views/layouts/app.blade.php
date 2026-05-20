@@ -247,8 +247,8 @@
                 <div class="row align-items-center">
                     <div class="col-lg-4 col-md-6 col-sm-6 order-2 order-lg-0">
                         <div class="header__top-search">
-                            <form action="{{ route('blog.index') }}">
-                                <input type="text" name="q" placeholder="{{ $ui['search_placeholder'] ?? 'Cari kabar, rilis, dan referensi...' }}">
+                            <form action="{{ route('blog.index') }}" method="GET">
+                                <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ $ui['search_placeholder'] ?? 'Cari kabar, rilis, dan referensi...' }}">
                             </form>
                         </div>
                     </div>
@@ -309,8 +309,8 @@
                                         <li class="header-search">
                                             <a href="#"><i class="far fa-search"></i></a>
                                             <div class="header-search-form">
-                                                <form action="{{ route('blog.index') }}">
-                                                    <input type="text" name="q" placeholder="{{ $ui['search_content_placeholder'] ?? 'Cari konten Pooling Fund - KSO...' }}">
+                                                <form action="{{ route('blog.index') }}" method="GET">
+                                                    <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ $ui['search_content_placeholder'] ?? 'Cari konten Pooling Fund - KSO...' }}">
                                                 </form>
                                             </div>
                                         </li>
