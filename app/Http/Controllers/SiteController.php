@@ -742,7 +742,7 @@ class SiteController extends Controller
                 'menu' => 'Menu',
                 'public_channels' => 'Kanal Publik',
                 'contact' => 'Kontak',
-                'donate_qris' => 'Donasi via QRIS',
+                'donate_qris' => 'Donasi',
                 'donation_title' => 'Donasi Pooling Fund - KSO',
                 'donation_body' => 'Dukungan Anda membantu memperkuat respon kemanusiaan berbasis komunitas dan kepemimpinan lokal.',
                 'qris_placeholder' => 'QRIS Donasi<br>segera tersedia',
