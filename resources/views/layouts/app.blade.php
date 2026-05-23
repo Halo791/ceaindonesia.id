@@ -136,13 +136,24 @@
         .cea-donation-link:hover { background: #fff; color: #063d2a; }
         .cea-donation-modal { align-items: center; background: rgba(0,0,0,.58); display: none; inset: 0; justify-content: center; padding: 22px; position: fixed; z-index: 9999; }
         .cea-donation-modal.is-open { display: flex; }
-        .cea-donation-modal__dialog { background: #fff; border-radius: 8px; box-shadow: 0 30px 80px rgba(0,0,0,.32); color: #063d2a; max-width: 430px; padding: 24px; position: relative; width: min(100%, 430px); }
+        .cea-donation-modal__dialog { background: #fff; border-radius: 8px; box-shadow: 0 30px 80px rgba(0,0,0,.32); color: #063d2a; max-height: calc(100svh - 44px); max-width: 430px; overflow-y: auto; padding: 24px; position: relative; width: min(100%, 430px); }
         .cea-donation-modal__close { align-items: center; background: #f6f9e8; border: 0; border-radius: 999px; color: #063d2a; cursor: pointer; display: inline-flex; font-size: 24px; height: 38px; justify-content: center; line-height: 1; position: absolute; right: 14px; top: 14px; width: 38px; }
         .cea-donation-modal__dialog h2 { color: #063d2a; font-size: 25px; line-height: 1.2; margin: 0 42px 10px 0; }
         .cea-donation-modal__dialog p { color: #4f6759; margin-bottom: 16px; }
         .cea-donation-modal__recipient { background: #f6f9e8; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; margin: 0 0 14px; padding: 11px 12px; }
         .cea-donation-modal__recipient span { color: #617468; display: block; font-size: 12px; font-weight: 800; margin-bottom: 2px; text-transform: uppercase; }
         .cea-donation-modal__recipient strong { color: #063d2a; display: block; font-size: 16px; line-height: 1.35; }
+        .cea-donation-methods { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); margin: 0 0 14px; }
+        .cea-donation-method { background: #f6f9e8; border: 1px solid rgba(31,122,67,.18); border-radius: 8px; color: #405d4a; cursor: pointer; font-size: 13px; font-weight: 900; min-height: 40px; padding: 9px 10px; }
+        .cea-donation-method.is-active { background: #1f7a43; border-color: #1f7a43; color: #fff; }
+        .cea-donation-panel { display: none; }
+        .cea-donation-panel.is-active { display: block; }
+        .cea-donation-list { display: grid; gap: 10px; }
+        .cea-donation-card { background: #f6f9e8; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; padding: 12px; }
+        .cea-donation-card strong { color: #063d2a; display: block; font-size: 16px; margin-bottom: 8px; }
+        .cea-donation-card span { color: #617468; display: block; font-size: 12px; font-weight: 800; margin-top: 8px; text-transform: uppercase; }
+        .cea-donation-card b { color: #063d2a; display: block; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+        .cea-donation-card p { color: #405d4a; font-size: 13px; line-height: 1.55; margin: 8px 0 0; }
         .cea-qris-image-wrap { background: #f6f9e8; border: 1px solid rgba(31,122,67,.16); border-radius: 8px; margin-bottom: 14px; padding: 12px; }
         .cea-qris-image { aspect-ratio: 1 / 1; background: #fff; border-radius: 6px; display: block; object-fit: contain; width: 100%; }
         .cea-qris-placeholder { align-items: center; aspect-ratio: 1 / 1; background: repeating-linear-gradient(45deg, #f6f9e8 0 12px, #fff 12px 24px); border: 1px dashed #9ebc91; border-radius: 8px; color: #1f7a43; display: flex; font-weight: 900; justify-content: center; margin-bottom: 14px; text-align: center; }
@@ -487,6 +498,8 @@
             var donationModal = document.querySelector('[data-donation-modal]');
             var donationOpenButtons = document.querySelectorAll('[data-donation-open]');
             var donationClose = document.querySelector('[data-donation-close]');
+            var donationMethodButtons = document.querySelectorAll('[data-donation-method]');
+            var donationPanels = document.querySelectorAll('[data-donation-panel]');
 
             function closeDonationModal() {
                 if (!donationModal) return;
@@ -512,6 +525,24 @@
 
             if (donationClose) {
                 donationClose.addEventListener('click', closeDonationModal);
+            }
+
+            if (donationMethodButtons.length && donationPanels.length) {
+                donationMethodButtons.forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var method = button.getAttribute('data-donation-method');
+
+                        donationMethodButtons.forEach(function (item) {
+                            var isCurrent = item === button;
+                            item.classList.toggle('is-active', isCurrent);
+                            item.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+                        });
+
+                        donationPanels.forEach(function (panel) {
+                            panel.classList.toggle('is-active', panel.getAttribute('data-donation-panel') === method);
+                        });
+                    });
+                });
             }
 
             document.addEventListener('keydown', function (event) {
