@@ -8,6 +8,21 @@
     $metaValue = function (string $key, string $fallback = '') use ($homeMeta) {
         return old("meta.{$key}", $homeMeta[$key] ?? $fallback);
     };
+    $imagePreviewSrc = function (string $path): string {
+        $path = trim($path);
+
+        if ($path === '') {
+            return '';
+        }
+
+        if (stripos($path, 'drive.google.com') !== false) {
+            if (preg_match('~/file/d/([^/?#]+)~', $path, $matches) || preg_match('~[?&]id=([^&#]+)~', $path, $matches)) {
+                return 'https://drive.google.com/thumbnail?id='.rawurlencode($matches[1]).'&sz=w800';
+            }
+        }
+
+        return preg_match('/^https?:\/\//', $path) ? $path : asset(ltrim($path, '/'));
+    };
 @endphp
 
 @section('content')
@@ -233,6 +248,54 @@
                         <label>Deskripsi panel angka EN</label>
                         <input name="meta[panel_description_en]" value="{{ $metaValue('panel_description_en') }}">
                     </div>
+                    <fieldset style="border:1px solid rgba(31,122,67,.16);border-radius:8px;margin:24px 0 16px;padding:18px;">
+                        <legend style="font-size:22px;font-weight:900;padding:0 8px;">Cerita Lapangan</legend>
+                        <p style="color:#68796f;margin-bottom:18px;">Ubah gambar dan teks kartu foto pada bagian bawah halaman beranda.</p>
+                        @foreach (range(1, 5) as $storyNumber)
+                            @php
+                                $storyImagePath = (string) $metaValue("field_story_{$storyNumber}_image");
+                                $storyPreviewSrc = $imagePreviewSrc($storyImagePath);
+                            @endphp
+                            <fieldset style="background:#fbfaf0;border:1px solid rgba(31,122,67,.12);border-radius:8px;margin-bottom:16px;padding:18px;">
+                                <legend style="font-size:18px;font-weight:900;padding:0 8px;">Kartu {{ $storyNumber }}</legend>
+                                <div class="admin-grid" style="margin-bottom:16px;">
+                                    <div class="admin-field">
+                                        <label>Judul</label>
+                                        <input name="meta[field_story_{{ $storyNumber }}_title]" value="{{ $metaValue("field_story_{$storyNumber}_title") }}">
+                                    </div>
+                                    <div class="admin-field">
+                                        <label>Judul EN</label>
+                                        <input name="meta[field_story_{{ $storyNumber }}_title_en]" value="{{ $metaValue("field_story_{$storyNumber}_title_en") }}">
+                                    </div>
+                                    <div class="admin-field">
+                                        <label>Label simpul</label>
+                                        <input name="meta[field_story_{{ $storyNumber }}_label]" value="{{ $metaValue("field_story_{$storyNumber}_label") }}">
+                                    </div>
+                                    <div class="admin-field">
+                                        <label>Label simpul EN</label>
+                                        <input name="meta[field_story_{{ $storyNumber }}_label_en]" value="{{ $metaValue("field_story_{$storyNumber}_label_en") }}">
+                                    </div>
+                                </div>
+                                <div class="admin-field">
+                                    <label>URL / path gambar</label>
+                                    <input name="meta[field_story_{{ $storyNumber }}_image]" value="{{ $storyImagePath }}" placeholder="/assets/img/lapangan/foto.jpeg atau https://...">
+                                    @if ($storyPreviewSrc)
+                                        <img src="{{ $storyPreviewSrc }}" alt="Preview kartu {{ $storyNumber }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
+                                    @endif
+                                </div>
+                                <div class="admin-grid" style="margin-bottom:0;">
+                                    <div class="admin-field">
+                                        <label>Deskripsi</label>
+                                        <textarea name="meta[field_story_{{ $storyNumber }}_description]">{{ $metaValue("field_story_{$storyNumber}_description") }}</textarea>
+                                    </div>
+                                    <div class="admin-field">
+                                        <label>Deskripsi EN</label>
+                                        <textarea name="meta[field_story_{{ $storyNumber }}_description_en]">{{ $metaValue("field_story_{$storyNumber}_description_en") }}</textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        @endforeach
+                    </fieldset>
                 @else
                     <div class="admin-field">
                         <label>URL sumber</label>

@@ -1151,6 +1151,8 @@ class SiteController extends Controller
 
     private function homepageDefaults(): array
     {
+        $fieldStories = $this->homepageFieldStoryDefaults();
+
         return [
             'title' => 'Menguatkan lokal, memperluas dampak.',
             'subtitle' => 'Menguatkan Lokal, Memperluas Dampak',
@@ -1189,8 +1191,74 @@ class SiteController extends Controller
                 'panel_value' => '7',
                 'panel_description' => 'Simpul regional otonom yang terhubung dalam satu mandat kolektif.',
                 'panel_description_en' => 'Autonomous regional hubs connected through one collective mandate.',
+            ] + $this->homepageFieldStoryMetaDefaults($fieldStories),
+        ];
+    }
+
+    private function homepageFieldStoryDefaults(): array
+    {
+        return [
+            [
+                'title' => 'Ruang Aman Pemulihan Anak Penyintas',
+                'title_en' => 'A Safe Recovery Space for Child Survivors',
+                'label' => 'PKBI Aceh',
+                'label_en' => 'PKBI Aceh',
+                'image' => '/assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg',
+                'description' => 'Di tengah situasi pascabencana yang masih menyisakan trauma, anak-anak penyintas di Aceh perlahan belajar kembali untuk tersenyum, bermain, dan merasa aman melalui layanan dukungan psikososial.',
+                'description_en' => 'In a post-disaster situation that still carries trauma, child survivors in Aceh slowly learn to smile, play, and feel safe again through psychosocial support services.',
+            ],
+            [
+                'title' => 'Harapan yang Tumbuh dari Gambar Anak-Anak',
+                'title_en' => 'Hope Growing from Children\'s Drawings',
+                'label' => 'PKBI Aceh',
+                'label_en' => 'PKBI Aceh',
+                'image' => '/assets/img/lapangan/pkbi-aceh-karya-anak.jpeg',
+                'description' => 'Melalui aktivitas menggambar, bermain, dan belajar bersama, anak-anak diajak mengekspresikan perasaan setelah melewati situasi penuh ketakutan dan kehilangan.',
+                'description_en' => 'Through drawing, play, and shared learning activities, children are invited to express their feelings after passing through fear and loss.',
+            ],
+            [
+                'title' => 'Akses Air Bersih untuk Warga Terdampak',
+                'title_en' => 'Clean Water Access for Affected Communities',
+                'label' => 'WALHI Sumut',
+                'label_en' => 'WALHI Sumut',
+                'image' => '/assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg',
+                'description' => 'Pemasangan tandon air menjadi bagian dari respon cepat untuk memastikan kebutuhan dasar warga tetap terpenuhi di wilayah yang terdampak krisis dan gangguan akses layanan.',
+                'description_en' => 'Installing water tanks is part of a rapid response to ensure basic needs remain met in areas affected by crisis and disrupted services.',
+            ],
+            [
+                'title' => 'Gotong Royong Menyiapkan Sarana Air',
+                'title_en' => 'Working Together to Prepare Water Facilities',
+                'label' => 'WALHI Sumut',
+                'label_en' => 'WALHI Sumut',
+                'image' => '/assets/img/lapangan/walhi-sumut-tandon-air-2.jpeg',
+                'description' => 'Warga dan relawan bekerja bersama menyiapkan sarana air bersih. Respon kemanusiaan menjadi lebih kuat ketika komunitas terlibat langsung dalam proses pemulihan.',
+                'description_en' => 'Residents and volunteers work together to prepare clean water facilities. Humanitarian response is stronger when communities are directly involved in recovery.',
+            ],
+            [
+                'title' => 'Distribusi Logistik bagi Penyintas Bencana',
+                'title_en' => 'Logistics Distribution for Disaster Survivors',
+                'label' => 'WALHI Sumbar',
+                'label_en' => 'WALHI Sumbar',
+                'image' => '/assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg',
+                'description' => 'Bantuan logistik disalurkan melalui kerja kolektif relawan dan simpul lokal agar kebutuhan mendesak penyintas dapat dijawab secara cepat, transparan, dan tepat sasaran.',
+                'description_en' => 'Logistics support is distributed through collective work with volunteers and local hubs so urgent survivor needs can be addressed quickly, transparently, and accurately.',
             ],
         ];
+    }
+
+    private function homepageFieldStoryMetaDefaults(array $fieldStories): array
+    {
+        $meta = [];
+
+        foreach ($fieldStories as $index => $story) {
+            $number = $index + 1;
+
+            foreach (['title', 'title_en', 'label', 'label_en', 'image', 'description', 'description_en'] as $field) {
+                $meta["field_story_{$number}_{$field}"] = $story[$field] ?? '';
+            }
+        }
+
+        return $meta;
     }
 
     private function homepageAdminContent(): array
@@ -1241,7 +1309,29 @@ class SiteController extends Controller
             'panel_label' => $this->localizedMetaLabel($meta, 'panel_label'),
             'panel_value' => $meta['panel_value'] ?? '',
             'panel_description' => $this->localizedMetaLabel($meta, 'panel_description'),
+            'field_stories' => $this->homepageFieldStories($meta),
         ];
+    }
+
+    private function homepageFieldStories(array $meta): array
+    {
+        return collect(range(1, 5))
+            ->map(function (int $number) use ($meta) {
+                $title = $this->localizedMetaLabel($meta, "field_story_{$number}_title");
+                $label = $this->localizedMetaLabel($meta, "field_story_{$number}_label");
+                $description = $this->localizedMetaLabel($meta, "field_story_{$number}_description");
+                $imagePath = trim((string) ($meta["field_story_{$number}_image"] ?? ''));
+
+                return [
+                    'title' => $title,
+                    'label' => $label,
+                    'image' => $this->donationImageSrc($imagePath),
+                    'description' => $description,
+                ];
+            })
+            ->filter(fn (array $story) => filled($story['title']) && filled($story['image']))
+            ->values()
+            ->all();
     }
 
     private function homepageSocialLinks(): array

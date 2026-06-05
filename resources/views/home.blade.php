@@ -153,6 +153,8 @@
         $principles = ['One CSO one vote', 'Based on community needs', 'Speed as a core value', 'Transparency as a strategic asset', 'Collective accountability', 'Local leadership & local first'];
     }
 
+    $fieldStories = $homeContent['field_stories'] ?? $fieldStories;
+
     $locationCoordinates = [
         'sumbagsel-tangguh' => [3.35, 98.67],
         'yayasan-peduli-kemandirian-masyarakat-yapemmas-medan' => [3.58, 98.67],
