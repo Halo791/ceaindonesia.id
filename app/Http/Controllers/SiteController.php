@@ -1256,6 +1256,8 @@ class SiteController extends Controller
             foreach (['title', 'title_en', 'label', 'label_en', 'image', 'description', 'description_en'] as $field) {
                 $meta["field_story_{$number}_{$field}"] = $story[$field] ?? '';
             }
+
+            $meta["field_story_{$number}_gdrive"] = $story['gdrive'] ?? '';
         }
 
         return $meta;
@@ -1321,11 +1323,13 @@ class SiteController extends Controller
                 $label = $this->localizedMetaLabel($meta, "field_story_{$number}_label");
                 $description = $this->localizedMetaLabel($meta, "field_story_{$number}_description");
                 $imagePath = trim((string) ($meta["field_story_{$number}_image"] ?? ''));
+                $googleDrivePath = trim((string) ($meta["field_story_{$number}_gdrive"] ?? ''));
+                $resolvedImagePath = filled($googleDrivePath) ? $googleDrivePath : $imagePath;
 
                 return [
                     'title' => $title,
                     'label' => $label,
-                    'image' => $this->donationImageSrc($imagePath),
+                    'image' => $this->donationImageSrc($resolvedImagePath),
                     'description' => $description,
                 ];
             })

@@ -254,7 +254,8 @@
                         @foreach (range(1, 5) as $storyNumber)
                             @php
                                 $storyImagePath = (string) $metaValue("field_story_{$storyNumber}_image");
-                                $storyPreviewSrc = $imagePreviewSrc($storyImagePath);
+                                $storyGdrivePath = (string) $metaValue("field_story_{$storyNumber}_gdrive");
+                                $storyPreviewSrc = $imagePreviewSrc($storyGdrivePath ?: $storyImagePath);
                             @endphp
                             <fieldset style="background:#fbfaf0;border:1px solid rgba(31,122,67,.12);border-radius:8px;margin-bottom:16px;padding:18px;">
                                 <legend style="font-size:18px;font-weight:900;padding:0 8px;">Kartu {{ $storyNumber }}</legend>
@@ -279,6 +280,10 @@
                                 <div class="admin-field">
                                     <label>URL / path gambar</label>
                                     <input name="meta[field_story_{{ $storyNumber }}_image]" value="{{ $storyImagePath }}" placeholder="/assets/img/lapangan/foto.jpeg atau https://...">
+                                </div>
+                                <div class="admin-field">
+                                    <label>Link Google Drive gambar</label>
+                                    <input name="meta[field_story_{{ $storyNumber }}_gdrive]" value="{{ $storyGdrivePath }}" placeholder="https://drive.google.com/file/d/FILE_ID/view">
                                     @if ($storyPreviewSrc)
                                         <img src="{{ $storyPreviewSrc }}" alt="Preview kartu {{ $storyNumber }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
                                     @endif
