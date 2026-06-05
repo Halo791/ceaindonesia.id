@@ -742,12 +742,17 @@ class SiteController extends Controller
                 'menu' => 'Menu',
                 'public_channels' => 'Kanal Publik',
                 'contact' => 'Kontak',
-                'donate_qris' => 'Donasi via QRIS',
+                'donate_qris' => 'Donasi',
                 'donation_title' => 'Donasi Pooling Fund - KSO',
                 'donation_body' => 'Dukungan Anda membantu memperkuat respon kemanusiaan berbasis komunitas dan kepemimpinan lokal.',
                 'qris_placeholder' => 'QRIS Donasi<br>segera tersedia',
                 'donation_note' => 'Tempatkan gambar QRIS resmi di area ini saat sudah tersedia. Pastikan nama penerima dan nominal dicek sebelum transaksi.',
                 'donation_recipient' => 'Penerima donasi',
+                'donation_method_qris' => 'QRIS',
+                'donation_method_bank' => 'Transfer Bank',
+                'donation_method_other' => 'Metode Lain',
+                'donation_bank_account' => 'Nomor rekening',
+                'donation_account_name' => 'Atas nama',
                 'close_donation' => 'Tutup modal donasi',
                 'summary' => 'Ringkasan',
                 'summary_prefix' => 'Ringkasan',
@@ -789,12 +794,17 @@ class SiteController extends Controller
                 'menu' => 'Menu',
                 'public_channels' => 'Public Channels',
                 'contact' => 'Contact',
-                'donate_qris' => 'Donate via QRIS',
+                'donate_qris' => 'Donate',
                 'donation_title' => 'Donate to Pooling Fund - KSO',
                 'donation_body' => 'Your support helps strengthen community-based humanitarian response and local leadership.',
                 'qris_placeholder' => 'Donation QRIS<br>coming soon',
                 'donation_note' => 'Place the official QRIS image here when it is available. Please verify the recipient name and amount before completing a transaction.',
                 'donation_recipient' => 'Donation recipient',
+                'donation_method_qris' => 'QRIS',
+                'donation_method_bank' => 'Bank Transfer',
+                'donation_method_other' => 'Other Methods',
+                'donation_bank_account' => 'Account number',
+                'donation_account_name' => 'Account name',
                 'close_donation' => 'Close donation modal',
                 'summary' => 'Overview',
                 'summary_prefix' => 'Overview of',
@@ -1162,6 +1172,8 @@ class SiteController extends Controller
                 'qris_body' => '',
                 'qris_note' => '',
                 'qris_image_alt' => '',
+                'donation_bank_accounts' => '',
+                'donation_other_methods' => '',
                 'contact_address' => 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.',
                 'contact_address_en' => 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.',
                 'contact_email' => 'sekretariat@simpulpfb.id',
@@ -1309,14 +1321,93 @@ class SiteController extends Controller
 
     private function donationSettingsFromMeta(array $meta): array
     {
+        $qrisImagePath = trim((string) ($meta['qris_image_path'] ?? ''));
+
         return [
-            'qris_image_path' => trim((string) ($meta['qris_image_path'] ?? '')),
+            'qris_image_path' => $qrisImagePath,
+            'qris_image_src' => $this->donationImageSrc($qrisImagePath),
             'qris_recipient' => trim((string) ($meta['qris_recipient'] ?? '')),
             'qris_title' => trim((string) ($this->localizedMetaLabel($meta, 'qris_title') ?: '')),
             'qris_body' => trim((string) ($this->localizedMetaLabel($meta, 'qris_body') ?: '')),
             'qris_note' => trim((string) ($this->localizedMetaLabel($meta, 'qris_note') ?: '')),
             'qris_image_alt' => trim((string) ($this->localizedMetaLabel($meta, 'qris_image_alt') ?: '')),
+            'bank_accounts' => $this->donationBankAccountsFromMeta($meta),
+            'other_methods' => $this->donationOtherMethodsFromMeta($meta),
         ];
+    }
+
+    private function donationImageSrc(string $path): string
+    {
+        if ($path === '') {
+            return '';
+        }
+
+        $googleDriveId = $this->googleDriveFileId($path);
+
+        if ($googleDriveId) {
+            return 'https://drive.google.com/thumbnail?id='.rawurlencode($googleDriveId).'&sz=w1000';
+        }
+
+        return preg_match('/^https?:\/\//', $path) ? $path : asset(ltrim($path, '/'));
+    }
+
+    private function googleDriveFileId(string $url): string
+    {
+        if (! Str::contains($url, 'drive.google.com')) {
+            return '';
+        }
+
+        if (preg_match('~/file/d/([^/?#]+)~', $url, $matches)) {
+            return $matches[1];
+        }
+
+        if (preg_match('~[?&]id=([^&#]+)~', $url, $matches)) {
+            return $matches[1];
+        }
+
+        return '';
+    }
+
+    private function donationBankAccountsFromMeta(array $meta): array
+    {
+        $lines = preg_split('/\r\n|\r|\n/', trim((string) ($meta['donation_bank_accounts'] ?? ''))) ?: [];
+
+        return collect($lines)
+            ->map(fn ($line) => trim($line))
+            ->filter()
+            ->map(function (string $line) {
+                [$bank, $number, $name, $note] = array_pad(array_map('trim', explode('|', $line, 4)), 4, '');
+
+                return [
+                    'bank' => $bank,
+                    'number' => $number,
+                    'name' => $name,
+                    'note' => $note,
+                ];
+            })
+            ->filter(fn ($account) => $account['bank'] || $account['number'] || $account['name'] || $account['note'])
+            ->values()
+            ->all();
+    }
+
+    private function donationOtherMethodsFromMeta(array $meta): array
+    {
+        $lines = preg_split('/\r\n|\r|\n/', trim((string) ($meta['donation_other_methods'] ?? ''))) ?: [];
+
+        return collect($lines)
+            ->map(fn ($line) => trim($line))
+            ->filter()
+            ->map(function (string $line) {
+                [$label, $detail] = array_pad(array_map('trim', explode('|', $line, 2)), 2, '');
+
+                return [
+                    'label' => $label,
+                    'detail' => $detail,
+                ];
+            })
+            ->filter(fn ($method) => $method['label'] || $method['detail'])
+            ->values()
+            ->all();
     }
 
     private function contactSettingsFromMeta(array $meta): array

@@ -91,8 +91,8 @@
                 </div>
                 <div class="admin-grid" style="margin-bottom:16px;">
                     <div class="admin-field">
-                        <label>Gambar QRIS donasi</label>
-                        <input name="meta[qris_image_path]" value="{{ $metaValue('qris_image_path') }}" placeholder="/assets/img/qris/nama-simpul.png atau https://...">
+                        <label>Link gambar QRIS donasi</label>
+                        <input name="meta[qris_image_path]" value="{{ $metaValue('qris_image_path') }}" placeholder="https://drive.google.com/file/d/.../view atau https://...">
                     </div>
                     <div class="admin-field">
                         <label>Nama penerima QRIS</label>
@@ -128,6 +128,16 @@
                 <div class="admin-field">
                     <label>Alt text gambar QRIS</label>
                     <input name="meta[qris_image_alt]" value="{{ $metaValue('qris_image_alt') }}" placeholder="QRIS donasi nama simpul">
+                </div>
+                <div class="admin-grid" style="margin-bottom:16px;">
+                    <div class="admin-field">
+                        <label>Opsi transfer bank</label>
+                        <textarea name="meta[donation_bank_accounts]" placeholder="BCA | 1234567890 | Nama Rekening | Catatan opsional&#10;Mandiri | 9876543210 | Nama Rekening">{{ $metaValue('donation_bank_accounts') }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Opsi donasi lainnya</label>
+                        <textarea name="meta[donation_other_methods]" placeholder="PayPal | paypal.me/nama&#10;Konfirmasi WhatsApp | +62...">{{ $metaValue('donation_other_methods') }}</textarea>
+                    </div>
                 </div>
                 <div class="admin-grid" style="margin-bottom:16px;">
                     <div class="admin-field">

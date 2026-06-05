@@ -8,12 +8,21 @@
     ];
     $donation = $donationSettings ?? [];
     $qrisImagePath = trim((string) ($donation['qris_image_path'] ?? ''));
-    $qrisImageSrc = $qrisImagePath && preg_match('/^https?:\/\//', $qrisImagePath) ? $qrisImagePath : ($qrisImagePath ? asset(ltrim($qrisImagePath, '/')) : '');
+    $qrisImageSrc = trim((string) ($donation['qris_image_src'] ?? ''));
+    $qrisImageSrc = $qrisImageSrc ?: ($qrisImagePath && preg_match('/^https?:\/\//', $qrisImagePath) ? $qrisImagePath : ($qrisImagePath ? asset(ltrim($qrisImagePath, '/')) : ''));
     $donationTitle = $donation['qris_title'] ?? '';
     $donationBody = $donation['qris_body'] ?? '';
     $donationNote = $donation['qris_note'] ?? '';
     $donationRecipient = $donation['qris_recipient'] ?? '';
     $qrisImageAlt = ($donation['qris_image_alt'] ?? '') ?: ($donationRecipient ? 'QRIS '.$donationRecipient : ($ui['donate_qris'] ?? 'Donasi via QRIS'));
+    $bankAccounts = $donation['bank_accounts'] ?? [];
+    $otherMethods = $donation['other_methods'] ?? [];
+    $donationMethods = [
+        ['key' => 'qris', 'label' => $ui['donation_method_qris'] ?? 'QRIS', 'enabled' => true],
+        ['key' => 'bank', 'label' => $ui['donation_method_bank'] ?? 'Transfer Bank', 'enabled' => count($bankAccounts) > 0],
+        ['key' => 'other', 'label' => $ui['donation_method_other'] ?? 'Metode Lain', 'enabled' => count($otherMethods) > 0],
+    ];
+    $donationMethods = array_values(array_filter($donationMethods, fn ($method) => $method['enabled']));
     $contact = $contactSettings ?? [];
     $contactAddress = trim((string) ($contact['address'] ?? 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.'));
     $contactEmail = trim((string) ($contact['email'] ?? 'sekretariat@simpulpfb.id'));
@@ -77,13 +86,60 @@
                 <strong>{{ $donationRecipient }}</strong>
             </div>
         @endif
-        @if ($qrisImageSrc)
-            <div class="cea-qris-image-wrap">
-                <img class="cea-qris-image" src="{{ $qrisImageSrc }}" alt="{{ $qrisImageAlt }}">
+        <div class="cea-donation-methods" role="tablist" aria-label="Metode donasi">
+            @foreach ($donationMethods as $index => $method)
+                <button class="cea-donation-method {{ $index === 0 ? 'is-active' : '' }}" type="button" data-donation-method="{{ $method['key'] }}" role="tab" aria-selected="{{ $index === 0 ? 'true' : 'false' }}">{{ $method['label'] }}</button>
+            @endforeach
+        </div>
+        <div class="cea-donation-panel is-active" data-donation-panel="qris">
+            @if ($qrisImageSrc)
+                <div class="cea-qris-image-wrap">
+                    <img class="cea-qris-image" src="{{ $qrisImageSrc }}" alt="{{ $qrisImageAlt }}">
+                </div>
+            @else
+                <div class="cea-qris-placeholder">{!! $ui['qris_placeholder'] ?? 'QRIS Donasi<br>segera tersedia' !!}</div>
+            @endif
+            <div class="cea-donation-modal__note">{{ $donationNote ?: ($ui['donation_note'] ?? 'Tempatkan gambar QRIS resmi di area ini saat sudah tersedia. Pastikan nama penerima dan nominal dicek sebelum transaksi.') }}</div>
+        </div>
+        @if ($bankAccounts)
+            <div class="cea-donation-panel" data-donation-panel="bank">
+                <div class="cea-donation-list">
+                    @foreach ($bankAccounts as $account)
+                        <div class="cea-donation-card">
+                            @if ($account['bank'])
+                                <strong>{{ $account['bank'] }}</strong>
+                            @endif
+                            @if ($account['number'])
+                                <span>{{ $ui['donation_bank_account'] ?? 'Nomor rekening' }}</span>
+                                <b>{{ $account['number'] }}</b>
+                            @endif
+                            @if ($account['name'])
+                                <span>{{ $ui['donation_account_name'] ?? 'Atas nama' }}</span>
+                                <b>{{ $account['name'] }}</b>
+                            @endif
+                            @if ($account['note'])
+                                <p>{{ $account['note'] }}</p>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        @else
-            <div class="cea-qris-placeholder">{!! $ui['qris_placeholder'] ?? 'QRIS Donasi<br>segera tersedia' !!}</div>
         @endif
-        <div class="cea-donation-modal__note">{{ $donationNote ?: ($ui['donation_note'] ?? 'Tempatkan gambar QRIS resmi di area ini saat sudah tersedia. Pastikan nama penerima dan nominal dicek sebelum transaksi.') }}</div>
+        @if ($otherMethods)
+            <div class="cea-donation-panel" data-donation-panel="other">
+                <div class="cea-donation-list">
+                    @foreach ($otherMethods as $method)
+                        <div class="cea-donation-card">
+                            @if ($method['label'])
+                                <strong>{{ $method['label'] }}</strong>
+                            @endif
+                            @if ($method['detail'])
+                                <p>{{ $method['detail'] }}</p>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 </div>
