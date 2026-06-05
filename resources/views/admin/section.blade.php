@@ -148,14 +148,27 @@
                     </div>
                 </div>
                 <div class="admin-field">
-                    <label>{{ $isHomepage ? 'Path video background' : 'URL / path gambar' }}</label>
+                    <label>{{ $isHomepage ? 'Link Google Drive / path video background' : 'URL / path gambar' }}</label>
                     @php
                         $previewImagePath = (string) old('image_path', $content['image_path']);
                         $previewFallbackImage = asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg');
                         $previewImageSrc = ($previewImagePath && strpos($previewImagePath, 'assets/img/cea/') !== false) ? $previewFallbackImage : $previewImagePath;
-                        $previewVideoSrc = ($previewImagePath && preg_match('/^https?:\/\//', $previewImagePath)) ? $previewImagePath : asset(ltrim($previewImagePath, '/'));
+                        $previewVideoPath = $previewImagePath;
+                        if (stripos($previewVideoPath, "drive.google.com") !== false) {
+                            $previewDriveId = null;
+                            if (preg_match("~/file/d/([^/]+)~", $previewVideoPath, $previewDriveMatches)) {
+                                $previewDriveId = $previewDriveMatches[1];
+                            } else {
+                                parse_str((string) parse_url($previewVideoPath, PHP_URL_QUERY), $previewDriveParams);
+                                $previewDriveId = $previewDriveParams["id"] ?? null;
+                            }
+                            if (filled($previewDriveId)) {
+                                $previewVideoPath = "https://drive.google.com/uc?export=download&id=".rawurlencode($previewDriveId);
+                            }
+                        }
+                        $previewVideoSrc = ($previewVideoPath && preg_match("/^https?:\/\//", $previewVideoPath)) ? $previewVideoPath : asset(ltrim($previewVideoPath, "/"));
                     @endphp
-                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="{{ $isHomepage ? '/assets/img/cea/video.mp4' : 'Kosongkan untuk foto lapangan otomatis atau gunakan https://...' }}">
+                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="{{ $isHomepage ? 'https://drive.google.com/file/d/FILE_ID/view atau /assets/img/cea/video.mp4' : 'Kosongkan untuk foto lapangan otomatis atau gunakan https://...' }}">
                     @if ($isHomepage && ! empty($previewImagePath))
                         <video src="{{ $previewVideoSrc }}" autoplay muted loop playsinline style="border-radius:8px;margin-top:12px;max-height:190px;object-fit:cover;width:100%;"></video>
                     @elseif (! empty($previewImageSrc))

@@ -35,6 +35,18 @@
         ]);
     }
     $heroVideoPath = (string) ($homeContent['video_path'] ?? '/assets/img/cea/video.mp4');
+    if (stripos($heroVideoPath, "drive.google.com") !== false) {
+        $heroDriveId = null;
+        if (preg_match("~/file/d/([^/]+)~", $heroVideoPath, $heroDriveMatches)) {
+            $heroDriveId = $heroDriveMatches[1];
+        } else {
+            parse_str((string) parse_url($heroVideoPath, PHP_URL_QUERY), $heroDriveParams);
+            $heroDriveId = $heroDriveParams["id"] ?? null;
+        }
+        if (filled($heroDriveId)) {
+            $heroVideoPath = "https://drive.google.com/uc?export=download&id=".rawurlencode($heroDriveId);
+        }
+    }
     $heroVideoSrc = preg_match('/^https?:\/\//', $heroVideoPath) ? $heroVideoPath : asset(ltrim($heroVideoPath, '/'));
     $disasterImages = [
         'psychosocial' => asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
