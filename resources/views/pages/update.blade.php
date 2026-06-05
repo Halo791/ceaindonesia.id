@@ -4,9 +4,6 @@
 
 @push('styles')
 <style>
-    .kso-cube-field {
-        display: none !important;
-    }
     .article-detail-hero .cea-video-hero__content {
         max-width: 920px;
     }

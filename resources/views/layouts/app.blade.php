@@ -22,12 +22,9 @@
         body { background: #fff; color: var(--cea-ink); }
         header, main, footer { position: relative; z-index: 2; }
         header { z-index: 120; }
-        @unless (request()->is('admin*'))
-            .kso-cube-field { color: rgba(242, 201, 76, .74); inset: 0; opacity: .18; pointer-events: none; position: fixed; z-index: 3; }
-            .kso-cube-field canvas { display: block; height: 100%; width: 100%; }
-        @else
+        @if (request()->is('admin*'))
             header, main, footer { position: static; z-index: auto; }
-        @endunless
+        @endif
         @unless (request()->is('admin*'))
             header { left: 0; position: absolute; right: 0; top: 0; }
             #header-fixed-height { display: none !important; }
@@ -248,10 +245,6 @@
     @stack('styles')
 </head>
 <body>
-    @unless (request()->is('admin*'))
-        <div class="kso-cube-field" aria-hidden="true"></div>
-    @endunless
-
     <header>
         <div class="header__top">
             <div class="container">
@@ -347,73 +340,6 @@
 
     @include('layouts.footer')
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
-    @unless (request()->is('admin*'))
-        <script type="module">
-            import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
-            import { engine, createTimeline, utils } from 'https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm';
-
-            const [$container] = utils.$('.kso-cube-field');
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-            if ($container && !reduceMotion) {
-                engine.useDefaultMainLoop = false;
-
-                const color = utils.get($container, 'color') || '#f2c94c';
-                let { width, height } = $container.getBoundingClientRect();
-                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 20);
-                const geometry = new THREE.BoxGeometry(1, 1, 1);
-                const material = new THREE.MeshBasicMaterial({ color, wireframe: true });
-
-                renderer.setSize(width, height);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-                $container.appendChild(renderer.domElement);
-                camera.position.z = 5;
-
-                function createAnimatedCube() {
-                    const cube = new THREE.Mesh(geometry, material);
-                    const x = utils.random(-10, 10, 2);
-                    const y = utils.random(-5, 5, 2);
-                    const z = [-10, 7];
-                    const r = () => utils.random(-Math.PI * 2, Math.PI * 2, 3);
-                    const duration = 4000;
-
-                    createTimeline({
-                        delay: utils.random(0, duration),
-                        defaults: { loop: true, duration, ease: 'inSine' },
-                    })
-                        .add(cube.position, { x, y, z }, 0)
-                        .add(cube.rotation, { x: r, y: r, z: r }, 0)
-                        .init();
-
-                    scene.add(cube);
-                }
-
-                for (let i = 0; i < 40; i++) {
-                    createAnimatedCube();
-                }
-
-                function resizeRenderer() {
-                    const bounds = $container.getBoundingClientRect();
-                    width = Math.max(bounds.width, 1);
-                    height = Math.max(bounds.height, 1);
-                    camera.aspect = width / height;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(width, height);
-                }
-
-                window.addEventListener('resize', resizeRenderer);
-
-                function render() {
-                    engine.update();
-                    renderer.render(scene, camera);
-                }
-
-                renderer.setAnimationLoop(render);
-            }
-        </script>
-    @endunless
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var desktopMenu = document.querySelector('.tgmenu__navbar-wrap .navigation');
