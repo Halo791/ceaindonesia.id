@@ -95,7 +95,7 @@
         .mobile-language-switch { align-items: center; display: none; gap: 6px; margin-left: auto; }
         .mobile-language-switch a { align-items: center; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #fff; display: inline-flex; font-size: 12px; font-weight: 900; gap: 4px; min-height: 34px; padding: 6px 9px; }
         .mobile-language-switch a.active { background: #f2c94c; color: #063d2a; }
-        .cea-video-hero { align-items: center; background: #063d2a; box-sizing: border-box; color: #fff; display: flex; min-height: 100vh; overflow: hidden; padding: clamp(170px, 19vh, 230px) 0 86px; position: relative; }
+        .cea-video-hero { align-items: flex-start; background: #063d2a; box-sizing: border-box; color: #fff; display: flex; min-height: max(100vh, 760px); overflow: hidden; padding: clamp(300px, 38vh, 360px) 0 86px; position: relative; }
         .cea-video-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
         .cea-video-hero__video { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
         .cea-video-hero__content { max-width: 780px; position: relative; z-index: 2; }
@@ -225,7 +225,7 @@
         @endif
         @media (max-width: 767px) {
             .home-hero__grid { grid-template-columns: 1fr; }
-            .cea-video-hero { align-items: end; min-height: 100svh; padding: 150px 0 54px; }
+            .cea-video-hero { align-items: flex-start; min-height: max(100svh, 680px); padding: 250px 0 54px; }
             .cea-video-hero__content { max-width: 100%; }
             .cea-video-hero__eyebrow { display: none; }
             .cea-video-hero h1 { font-size: clamp(30px, 11vw, 46px); line-height: 1.08; margin-bottom: 16px; }
