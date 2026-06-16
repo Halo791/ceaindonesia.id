@@ -243,7 +243,8 @@
 @push('styles')
 <style>
     @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
-    .cea-landing-hero__grid { align-items: end; display: grid; gap: 48px; grid-template-columns: minmax(0, .86fr) minmax(250px, .5fr); min-height: 390px; position: relative; z-index: 2; }
+    .cea-landing-hero.cea-video-hero { align-items: flex-start !important; min-height: max(100vh, 760px) !important; padding: 320px 0 86px !important; }
+    .cea-landing-hero__grid { align-items: start; display: grid; gap: 48px; grid-template-columns: minmax(0, .86fr) minmax(250px, .5fr); min-height: 0; position: relative; z-index: 2; }
     .cea-landing-hero__content { max-width: 760px; }
     .cea-landing-hero__eyebrow, .cea-section__head span, .cea-governance-card__body span { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
     .cea-landing-hero h1 { color: #fff; font-family: var(--tg-heading-font-family); font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 760px; text-shadow: 0 16px 34px rgba(0,0,0,.36); text-transform: none; text-wrap: balance; }
@@ -340,12 +341,13 @@
         .cea-story-card { min-height: 320px; }
         .cea-focus-card { aspect-ratio: 1; margin: 0 auto; max-width: 360px; width: 100%; }
         .cea-governance-card, .cea-menu-card { aspect-ratio: 4 / 3; min-height: 320px; }
-        .cea-landing-hero { min-height: 100svh; }
+        .cea-landing-hero.cea-video-hero { min-height: max(100svh, 700px) !important; padding: 260px 0 60px !important; }
         .cea-map-toolbar { display: block; }
         .cea-map-search { margin-bottom: 14px; width: 100%; }
     }
     @media (max-width: 767px) {
-        .cea-landing-hero__grid { align-items: end; gap: 0; min-height: 0; }
+        .cea-landing-hero.cea-video-hero { padding-top: 230px !important; }
+        .cea-landing-hero__grid { align-items: start; gap: 0; min-height: 0; }
         .cea-landing-hero__content { max-width: 100%; }
         .cea-landing-hero__eyebrow { display: none; }
         .cea-landing-hero h1 { font-size: clamp(31px, 11vw, 46px); margin-bottom: 16px; }
