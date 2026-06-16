@@ -107,7 +107,7 @@
         .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
         .kso-wordmark .kso-wordmark__image { display: block; height: 100%; max-height: 100%; object-fit: contain; width: 100%; }
         .kso-wordmark--header { height: 72px; width: 226px; }
-        .kso-wordmark--header.kso-wordmark--compact { aspect-ratio: 1 / 1; border-radius: 999px; height: 92px; padding: 4px; width: 92px; }
+        .kso-wordmark--header.kso-wordmark--compact { background: transparent; border: 0; border-radius: 0; box-shadow: none; height: 276px; overflow: visible; padding: 0; width: 276px; }
         .kso-wordmark--header.kso-wordmark--compact .kso-wordmark__image { height: auto; max-height: 100%; max-width: 100%; object-fit: contain; width: auto; }
         .cea-logo-image-link .kso-wordmark__image { max-height: none; }
         .header__top-logo .cea-logo-image-link img,
@@ -237,7 +237,7 @@
         @media (max-width: 991px) {
             .tgmenu__action { margin-left: auto; }
             .header__top-logo { display: none !important; }
-            .kso-wordmark--header.kso-wordmark--compact { height: 76px; padding: 4px; width: 76px; }
+            .kso-wordmark--header.kso-wordmark--compact { height: 228px; padding: 0; width: 228px; }
             .mobile-language-switch { display: inline-flex; }
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
