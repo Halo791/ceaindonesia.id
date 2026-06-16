@@ -114,7 +114,7 @@
         .header__top-logo .cea-logo-image-link img,
         .cea-logo-image-link--mobile img { max-height: none; width: 100%; }
         .header__top-logo .kso-wordmark--header.kso-wordmark--compact .kso-wordmark__image,
-        .cea-logo-image-link--mobile .kso-wordmark--header.kso-wordmark--compact .kso-wordmark__image { height: 100%; max-height: 100%; max-width: 100%; object-fit: contain; transform: scale(3); transform-origin: center; width: 100%; }
+        .cea-logo-image-link--mobile .kso-wordmark--header.kso-wordmark--compact .kso-wordmark__image { height: 100%; max-height: 100%; max-width: 100%; object-fit: contain; transform: scale(1.8); transform-origin: center; width: 100%; }
         .kso-wordmark--compact { height: 48px; width: 158px; }
         .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
         .kso-wordmark--footer, .kso-wordmark--login { height: 86px; width: 190px; }
