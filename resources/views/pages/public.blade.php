@@ -6,8 +6,8 @@
 <style>
     .public-hero.cea-video-hero {
         align-items: flex-start !important;
-        min-height: max(100vh, 720px) !important;
-        padding: 260px 0 86px !important;
+        min-height: 100vh !important;
+        padding: 220px 0 86px !important;
     }
     .public-hero__grid {
         align-items: center;
@@ -386,14 +386,14 @@
         background: #dfe9c9;
     }
     @media (max-width: 991px) {
-        .public-hero.cea-video-hero { min-height: max(100svh, 680px) !important; padding-top: 220px !important; }
+        .public-hero.cea-video-hero { min-height: 100svh !important; padding-top: 190px !important; }
         .public-hero__grid,
         .public-layout { grid-template-columns: 1fr; }
         .public-sidebar { position: static; }
         .member-network__overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 575px) {
-        .public-hero.cea-video-hero { padding-top: 190px !important; }
+        .public-hero.cea-video-hero { padding-top: 170px !important; }
         .public-hero__eyebrow { display: none; }
         .public-hero h1 { font-size: clamp(30px, 11vw, 46px); line-height: 1.08; margin-bottom: 16px; }
         .public-hero p { font-size: 14px; line-height: 1.65; margin-bottom: 20px; }
