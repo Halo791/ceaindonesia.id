@@ -125,13 +125,17 @@ class SiteController extends Controller
         ]));
     }
 
-    public function dynamicPage(string $slug): View
+    public function dynamicPage(string $slug): View|RedirectResponse
     {
         $page = AdminPage::query()
             ->with(['parent', 'children' => fn ($query) => $query->where('status', 'active')->where('show_in_navigation', true)])
             ->where('slug', $slug)
             ->where('status', 'active')
             ->firstOrFail();
+
+        if ($this->pageExternalUrl($page)) {
+            return redirect()->away($this->pageExternalUrl($page));
+        }
 
         $parentLabel = $page->parent ? $this->localizedPageLabel($page->parent) : ($this->currentLocale() === 'en' ? 'Page' : 'Halaman');
         $pageLabel = $this->localizedPageLabel($page);
@@ -143,7 +147,7 @@ class SiteController extends Controller
             'key' => 'halaman',
             'label' => $parentLabel,
             'description' => $this->currentLocale() === 'en' ? 'Website page' : 'Halaman website',
-            'publicHref' => $page->parent ? route('dynamic.page', $page->parent->slug) : route('dynamic.page', $page->slug),
+            'publicHref' => $page->parent ? $this->pagePublicHref($page->parent) : $this->pagePublicHref($page),
         ];
         $siblings = $page->parent
             ? $page->parent->children()->where('status', 'active')->where('show_in_navigation', true)->get()
@@ -162,7 +166,7 @@ class SiteController extends Controller
                 'subtitle' => $pageSubtitle ?: '',
                 'body' => $pageBody ?: '',
                 'image_path' => $page->image_path ?: '',
-                'source_href' => '',
+                'source_href' => $this->pageExternalUrl($page) ?: '',
                 'status' => $page->status,
                 'cards' => [],
             ],
@@ -502,7 +506,7 @@ class SiteController extends Controller
         if (! $this->adminPagesReady()) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, dan database/sql/add_external_url_to_admin_pages.sql terlebih dulu.']);
         }
 
         $validated = $this->validateAdminPage($request);
@@ -512,7 +516,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, dan database/sql/add_external_url_to_admin_pages.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.pages.index')->with('status', 'Halaman baru berhasil dibuat.');
@@ -542,7 +546,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql dan database/sql/add_bilingual_fields.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, dan database/sql/add_external_url_to_admin_pages.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.pages.index')->with('status', 'Halaman berhasil diperbarui.');
@@ -2045,11 +2049,28 @@ class SiteController extends Controller
         return [
             'key' => 'page-'.$page->slug,
             'label' => $label,
-            'href' => route('dynamic.page', $page->slug),
-            'publicHref' => route('dynamic.page', $page->slug),
+            'href' => $this->pagePublicHref($page),
+            'publicHref' => $this->pagePublicHref($page),
+            'isExternal' => $this->pageExternalUrl($page) !== '',
             'description' => $description,
             'children' => $children->map(fn (AdminPage $child) => $this->adminPageNavigationItem($child))->values()->all(),
         ];
+    }
+
+    private function pagePublicHref(AdminPage $page): string
+    {
+        return $this->pageExternalUrl($page) ?: route('dynamic.page', $page->slug);
+    }
+
+    private function pageExternalUrl(AdminPage $page): string
+    {
+        $url = trim((string) ($page->external_url ?? ''));
+
+        if ($url === '' || ! preg_match('/^https?:\/\//i', $url)) {
+            return '';
+        }
+
+        return $url;
     }
 
     private function localizedPageLabel(AdminPage $page): string
@@ -2090,6 +2111,7 @@ class SiteController extends Controller
             'body' => ['nullable', 'string'],
             'body_en' => ['nullable', 'string'],
             'image_path' => ['nullable', 'string', 'max:255'],
+            'external_url' => ['nullable', 'url', 'max:255'],
             'status' => ['required', 'in:draft,active,archived'],
             'show_in_navigation' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
@@ -2100,9 +2122,14 @@ class SiteController extends Controller
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $validated['parent_id'] = $validated['parent_id'] ?: null;
         $validated['navigation_parent_key'] = $validated['navigation_parent_key'] ?? null;
+        $validated['external_url'] = $validated['external_url'] ?? null;
 
         if ($page && $validated['parent_id'] === $page->id) {
             $validated['parent_id'] = null;
+        }
+
+        if (! Schema::hasColumn('admin_pages', 'external_url')) {
+            unset($validated['external_url']);
         }
 
         if (! Schema::hasColumn('admin_pages', 'navigation_parent_key')) {
@@ -2445,7 +2472,7 @@ class SiteController extends Controller
     private function adminPagesReady(): bool
     {
         try {
-            foreach (['navigation_parent_key', 'title_en', 'menu_label_en', 'subtitle_en', 'body_en'] as $column) {
+            foreach (['navigation_parent_key', 'title_en', 'menu_label_en', 'subtitle_en', 'body_en', 'external_url'] as $column) {
                 if (! Schema::hasColumn('admin_pages', $column)) {
                     return false;
                 }

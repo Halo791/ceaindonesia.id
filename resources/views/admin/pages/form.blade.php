@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual/link eksternal. Jalankan migration atau import <code>database/sql/admin_pages.sql</code>, <code>database/sql/add_bilingual_fields.sql</code>, dan <code>database/sql/add_external_url_to_admin_pages.sql</code> di phpMyAdmin.</div>
             @endif
             @if ($errors->any())
                 <div class="alert alert-danger">{{ $errors->first() }}</div>
@@ -101,6 +101,12 @@
                     <div class="admin-field">
                         <label>URL / path gambar</label>
                         <input name="image_path" value="{{ old('image_path', $page->image_path) }}" placeholder="Kosongkan untuk foto lapangan otomatis atau gunakan https://...">
+                    </div>
+
+                    <div class="admin-field">
+                        <label>Link website lain</label>
+                        <input name="external_url" type="url" value="{{ old('external_url', $page->external_url) }}" placeholder="https://contoh-website.org/halaman">
+                        <small>Opsional. Jika diisi, halaman/menu ini akan membuka link tersebut, bukan halaman konten internal.</small>
                     </div>
 
                     <div class="admin-field">

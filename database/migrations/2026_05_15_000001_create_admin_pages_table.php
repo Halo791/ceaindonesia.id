@@ -23,6 +23,7 @@ return new class extends Migration
                 $table->longText('body')->nullable();
                 $table->longText('body_en')->nullable();
                 $table->string('image_path')->nullable();
+                $table->string('external_url')->nullable();
                 $table->string('status', 30)->default('draft');
                 $table->boolean('show_in_navigation')->default(false);
                 $table->unsignedInteger('sort_order')->default(0);

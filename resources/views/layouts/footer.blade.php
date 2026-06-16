@@ -43,7 +43,11 @@
                 <h3>{{ $ui['menu'] ?? 'Menu' }}</h3>
                 <ul>
                     @foreach ($navigation as $item)
-                        <li><a href="{{ $item['publicHref'] ?? $item['href'] }}">{{ $item['label'] }}</a></li>
+                        @php
+                            $href = $item['publicHref'] ?? $item['href'];
+                            $isExternal = $item['isExternal'] ?? preg_match('/^https?:\/\//i', $href);
+                        @endphp
+                        <li><a href="{{ $href }}" @if ($isExternal) target="_blank" rel="noopener noreferrer" @endif>{{ $item['label'] }}</a></li>
                     @endforeach
                 </ul>
             </div>

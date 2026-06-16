@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual. Jalankan migration atau import <code>database/sql/admin_pages.sql</code> dan <code>database/sql/add_bilingual_fields.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual/link eksternal. Jalankan migration atau import <code>database/sql/admin_pages.sql</code>, <code>database/sql/add_bilingual_fields.sql</code>, dan <code>database/sql/add_external_url_to_admin_pages.sql</code> di phpMyAdmin.</div>
             @endif
             @if (session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>
@@ -44,7 +44,14 @@
                             @forelse ($pages as $page)
                                 <tr>
                                     <td><strong>{{ $page->title }}</strong><br><small>{{ $page->menu_label ?: 'Label mengikuti judul' }}</small></td>
-                                    <td><a href="{{ route('dynamic.page', $page->slug) }}" target="_blank" rel="noreferrer">/halaman/{{ $page->slug }}</a></td>
+                                    <td>
+                                        @if ($page->external_url)
+                                            <a href="{{ $page->external_url }}" target="_blank" rel="noreferrer">{{ $page->external_url }}</a><br>
+                                            <small>Link eksternal</small>
+                                        @else
+                                            <a href="{{ route('dynamic.page', $page->slug) }}" target="_blank" rel="noreferrer">/halaman/{{ $page->slug }}</a>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($page->navigation_parent_key)
                                             Submenu: {{ $navigationParentLabels[$page->navigation_parent_key] ?? $page->navigation_parent_key }}
