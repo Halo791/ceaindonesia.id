@@ -106,9 +106,12 @@
         .cea-video-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
         .kso-wordmark { align-items: center; background: #fff; border: 1px solid rgba(31,122,67,.14); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; padding: 6px; width: max-content; }
         .kso-wordmark .kso-wordmark__image { display: block; height: 100%; max-height: 100%; object-fit: contain; width: 100%; }
-        .kso-wordmark--header { height: 54px; width: 178px; }
-        .kso-wordmark--header.kso-wordmark--compact { aspect-ratio: 1 / 1; border-radius: 999px; height: 68px; padding: 7px; width: 68px; }
+        .kso-wordmark--header { height: 72px; width: 226px; }
+        .kso-wordmark--header.kso-wordmark--compact { aspect-ratio: 1 / 1; border-radius: 999px; height: 92px; padding: 8px; width: 92px; }
         .kso-wordmark--header.kso-wordmark--compact .kso-wordmark__image { height: 100%; width: 100%; }
+        .cea-logo-image-link .kso-wordmark__image { max-height: none; }
+        .header__top-logo .cea-logo-image-link img,
+        .cea-logo-image-link--mobile img { max-height: none; width: 100%; }
         .kso-wordmark--compact { height: 48px; width: 158px; }
         .kso-wordmark--footer, .kso-wordmark--login { margin-bottom: 18px; }
         .kso-wordmark--footer, .kso-wordmark--login { height: 86px; width: 190px; }
@@ -232,6 +235,7 @@
         @media (max-width: 991px) {
             .tgmenu__action { margin-left: auto; }
             .header__top-logo { display: none !important; }
+            .kso-wordmark--header.kso-wordmark--compact { height: 76px; width: 76px; }
             .mobile-language-switch { display: inline-flex; }
             .cea-footer-grid { grid-template-columns: 1fr; }
         }
