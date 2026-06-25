@@ -1,6 +1,7 @@
 /.env
 /node_modules
 /vendor
+/composer.phar
 /storage/*.key
 /storage/framework/cache/data/*
 /storage/framework/sessions/*
