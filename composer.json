@@ -8,6 +8,9 @@
         "laravel/tinker": "^2.9"
     },
     "autoload": {
+        "files": [
+            "app/Support/MbstringFallback.php"
+        ],
         "psr-4": {
             "App\\": "app/"
         }
