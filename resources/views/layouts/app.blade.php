@@ -266,7 +266,7 @@
                     <div class="col-lg-4 order-0 order-lg-2 d-none d-lg-block">
                         <div class="header__top-logo logo text-lg-center">
                             <a href="{{ route('home') }}" class="cea-logo-image-link">
-                                @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true])
+                                @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true, 'src' => $headerLogoSrc ?? null])
                             </a>
                         </div>
                     </div>
@@ -300,7 +300,7 @@
                             <nav class="tgmenu__nav">
                                 <div class="logo d-block d-lg-none">
                                     <a href="{{ route('home') }}" class="cea-logo-image-link cea-logo-image-link--mobile">
-                                        @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true])
+                                        @include('layouts.kso-wordmark', ['variant' => 'header', 'compact' => true, 'src' => $headerLogoSrc ?? null])
                                     </a>
                                 </div>
                                 <div class="offcanvas-toggle d-none d-lg-block">

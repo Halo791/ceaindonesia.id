@@ -27,12 +27,16 @@
                 <h2>Daftar Update</h2>
                 <div class="table-responsive">
                     <table class="admin-table">
-                        <thead><tr><th>Judul</th><th>Kategori</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>Judul</th><th>Kategori</th><th>Tampil di</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
                         <tbody>
                             @forelse ($updates as $update)
+                                @php
+                                    $targetKey = $update->owner_section_key.'|'.$update->owner_item_key;
+                                @endphp
                                 <tr>
                                     <td><strong>{{ $update->title }}</strong><br><small>{{ $update->excerpt }}</small></td>
                                     <td>{{ $update->category }}</td>
+                                    <td>{{ $targetLabels[$targetKey] ?? $targetKey }}</td>
                                     <td><span class="admin-status">{{ ucfirst($update->status) }}</span></td>
                                     <td>{{ optional($update->published_at)->format('d M Y') ?: '-' }}</td>
                                     <td>
@@ -48,7 +52,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5">Belum ada update.</td></tr>
+                                <tr><td colspan="6">Belum ada update.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

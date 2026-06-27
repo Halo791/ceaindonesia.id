@@ -200,6 +200,20 @@
                         <img src="{{ $previewImageSrc }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
                     @endif
                 </div>
+                @unless ($isHomepage)
+                    <div class="admin-grid" style="margin-bottom:16px;">
+                        <div class="admin-field">
+                            <label>Video background halaman</label>
+                            <input name="meta[hero_video_path]" value="{{ $metaValue('hero_video_path') }}" placeholder="https://drive.google.com/file/d/.../view atau /assets/img/cea/video.mp4">
+                            <small>Opsional. Jika diisi, video ini menjadi background hero menu ini. Jika kosong, halaman memakai gambar di atas.</small>
+                        </div>
+                        <div class="admin-field">
+                            <label>Logo header halaman</label>
+                            <input name="meta[header_logo_path]" value="{{ $metaValue('header_logo_path') }}" placeholder="https://.../logo.png atau /assets/img/...">
+                            <small>Opsional. Logo ini tampil di header hanya pada menu ini.</small>
+                        </div>
+                    </div>
+                @endunless
                 @if ($isHomepage)
                     <input type="hidden" name="source_href" value="{{ old('source_href', $content['source_href']) }}">
                     <div class="admin-grid" style="margin-bottom:16px;">

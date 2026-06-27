@@ -156,6 +156,18 @@
         asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg'),
         asset('assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg'),
     ];
+    $mediaSrc = function (string $path): string {
+        $path = trim($path);
+        if ($path === '') return '';
+
+        if (stripos($path, 'drive.google.com') !== false) {
+            if (preg_match('~/file/d/([^/?#]+)~', $path, $matches) || preg_match('~[?&]id=([^&#]+)~', $path, $matches)) {
+                return 'https://drive.google.com/thumbnail?id='.rawurlencode($matches[1]).'&sz=w1000';
+            }
+        }
+
+        return preg_match('/^https?:\/\//', $path) ? $path : asset(ltrim($path, '/'));
+    };
 @endphp
 
 <section class="cea-news-columns">
@@ -182,7 +194,7 @@
                             $articleBody = $locale === 'en' && filled($article->body_en) ? $article->body_en : $article->body;
                             $articleCategory = $locale === 'en' && filled($article->category_en) ? $article->category_en : $article->category;
                             $articleImagePath = $article->image_path ?: $newsFallbackImages[abs(crc32($articleTitle)) % count($newsFallbackImages)];
-                            $articleImage = preg_match('/^https?:\/\//', $articleImagePath) ? $articleImagePath : asset(ltrim($articleImagePath, '/'));
+                            $articleImage = $mediaSrc($articleImagePath);
                         @endphp
                         <a class="cea-news-item" href="{{ route('public.update', $article->slug) }}">
                             <img src="{{ $articleImage }}" alt="{{ $articleTitle }}">

@@ -171,9 +171,21 @@
         asset('assets/img/lapangan/walhi-sumut-tandon-air-2.jpeg'),
         asset('assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg'),
     ];
+    $mediaSrc = function (string $path): string {
+        $path = trim($path);
+        if ($path === '') return '';
+
+        if (stripos($path, 'drive.google.com') !== false) {
+            if (preg_match('~/file/d/([^/?#]+)~', $path, $matches) || preg_match('~[?&]id=([^&#]+)~', $path, $matches)) {
+                return 'https://drive.google.com/thumbnail?id='.rawurlencode($matches[1]).'&sz=w1400';
+            }
+        }
+
+        return preg_match('/^https?:\/\//', $path) ? $path : asset(ltrim($path, '/'));
+    };
     $fallbackIndex = abs(crc32($content['title'] ?? config('app.name'))) % count($fallbackImages);
     $imagePath = $content['image_path'] ?: $fallbackImages[$fallbackIndex];
-    $imageSrc = preg_match('/^https?:\/\//', $imagePath) ? $imagePath : asset(ltrim($imagePath, '/'));
+    $imageSrc = $mediaSrc($imagePath);
     $publishedLabel = optional($content['published_at'] ?? null)->format('l, j F Y');
     $relatedTitle = $locale === 'en' ? 'Related Articles' : 'Artikel Terkait';
 @endphp
@@ -221,7 +233,7 @@
                     @php
                         $articleTitle = $locale === 'en' && filled($article->title_en) ? $article->title_en : $article->title;
                         $articleImagePath = $article->image_path ?: $fallbackImages[abs(crc32($articleTitle)) % count($fallbackImages)];
-                        $articleImage = preg_match('/^https?:\/\//', $articleImagePath) ? $articleImagePath : asset(ltrim($articleImagePath, '/'));
+                        $articleImage = $mediaSrc($articleImagePath);
                     @endphp
                     <a class="article-related__item" href="{{ route('public.update', $article->slug) }}">
                         <img src="{{ $articleImage }}" alt="{{ $articleTitle }}">

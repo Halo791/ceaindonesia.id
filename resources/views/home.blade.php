@@ -154,10 +154,22 @@
     }
 
     $fieldStories = $homeContent['field_stories'] ?? $fieldStories;
+    $mediaSrc = function (string $path): string {
+        $path = trim($path);
+        if ($path === '') return '';
+
+        if (stripos($path, 'drive.google.com') !== false) {
+            if (preg_match('~/file/d/([^/?#]+)~', $path, $matches) || preg_match('~[?&]id=([^&#]+)~', $path, $matches)) {
+                return 'https://drive.google.com/thumbnail?id='.rawurlencode($matches[1]).'&sz=w1000';
+            }
+        }
+
+        return preg_match('/^https?:\/\//', $path) ? $path : asset(ltrim($path, '/'));
+    };
     $fieldStoryUpdates = collect($fieldStoryUpdates ?? []);
     if ($fieldStoryUpdates->isNotEmpty()) {
         $fieldStories = $fieldStoryUpdates
-            ->map(function ($article) use ($locale, $disasterImages) {
+            ->map(function ($article) use ($locale, $disasterImages, $mediaSrc) {
                 $title = $locale === 'en' && filled($article->title_en) ? $article->title_en : $article->title;
                 $excerpt = $locale === 'en' && filled($article->excerpt_en) ? $article->excerpt_en : $article->excerpt;
                 $body = $locale === 'en' && filled($article->body_en) ? $article->body_en : $article->body;
@@ -168,7 +180,7 @@
                 return [
                     'title' => $title,
                     'label' => $category,
-                    'image' => preg_match('/^https?:\/\//', $imagePath) ? $imagePath : asset(ltrim($imagePath, '/')),
+                    'image' => $mediaSrc($imagePath),
                     'description' => $excerpt ?: str($body)->limit(138),
                     'href' => route('public.update', $article->slug),
                 ];

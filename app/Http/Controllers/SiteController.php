@@ -215,6 +215,7 @@ class SiteController extends Controller
             'updates' => collect(),
             'donationSettings' => $this->donationSettingsForOwner($update->owner_section_key, $update->owner_item_key),
             'contactSettings' => $this->contactSettingsForOwner($update->owner_section_key, $update->owner_item_key),
+            'headerLogoSrc' => $this->headerLogoForOwner($update->owner_section_key, $update->owner_item_key),
         ]));
     }
 
@@ -412,6 +413,7 @@ class SiteController extends Controller
 
         return view('admin.updates.index', $this->shared([
             'updates' => $this->adminUpdatesReady() ? $query->get() : collect(),
+            'targetLabels' => $this->updateTargetLabels(),
             'dbReady' => $this->adminUpdatesReady(),
         ]));
     }
@@ -912,7 +914,8 @@ class SiteController extends Controller
             'socialLinks' => $this->contentSocialLinks($content),
             'donationSettings' => $this->contentDonationSettings($content),
             'contactSettings' => $this->contentContactSettings($content),
-            'updates' => $this->publicUpdates($section['key'], $contentKey),
+            'headerLogoSrc' => $this->contentHeaderLogoSrc($content),
+            'updates' => $this->publicUpdates($section['key'], $contentKey, $content),
         ]));
     }
 
@@ -1380,6 +1383,32 @@ class SiteController extends Controller
     private function contentContactSettings(array $content): array
     {
         return $this->contactSettingsFromMeta((array) ($content['meta'] ?? []));
+    }
+
+    private function contentHeaderLogoSrc(array $content): string
+    {
+        $meta = (array) ($content['meta'] ?? []);
+        $logoPath = trim((string) ($meta['header_logo_path'] ?? $meta['logo_path'] ?? ''));
+
+        return $logoPath ? $this->donationImageSrc($logoPath) : '';
+    }
+
+    private function headerLogoForOwner(?string $sectionKey, ?string $itemKey): string
+    {
+        try {
+            $content = AdminContent::query()
+                ->where('section_key', $sectionKey ?? '')
+                ->where('item_key', $itemKey ?? '')
+                ->first();
+
+            if ($content) {
+                return $this->contentHeaderLogoSrc(['meta' => (array) $content->meta]);
+            }
+        } catch (\Throwable) {
+            //
+        }
+
+        return '';
     }
 
     private function donationSettingsForOwner(?string $sectionKey, ?string $itemKey): array
@@ -2244,13 +2273,30 @@ class SiteController extends Controller
             ->all();
     }
 
-    private function publicUpdates(string $sectionKey, string $itemKey)
+    private function updateTargetLabels(): array
+    {
+        return collect($this->updateTargetOptions())
+            ->pluck('label', 'value')
+            ->all();
+    }
+
+    private function publicUpdates(string $sectionKey, string $itemKey, array $content = [])
     {
         try {
+            $category = $this->siarCategoryForPage($sectionKey, $itemKey, $content);
+
             return AdminUpdate::query()
-                ->where('owner_section_key', $sectionKey)
-                ->where('owner_item_key', $itemKey)
                 ->where('status', 'active')
+                ->where(function ($query) use ($sectionKey, $itemKey, $category) {
+                    if ($category) {
+                        $query->where('category', $category);
+
+                        return;
+                    }
+
+                    $query->where('owner_section_key', $sectionKey)
+                        ->where('owner_item_key', $itemKey);
+                })
                 ->latest('published_at')
                 ->latest()
                 ->limit(6)
@@ -2258,6 +2304,28 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return collect();
         }
+    }
+
+    private function siarCategoryForPage(string $sectionKey, string $itemKey, array $content = []): ?string
+    {
+        if ($sectionKey !== 'siar' || $itemKey === '') {
+            return null;
+        }
+
+        $normalized = $this->normalizeSearchTerm(implode(' ', array_filter([
+            $itemKey,
+            $content['title'] ?? '',
+            $content['eyebrow'] ?? '',
+        ])));
+
+        return match (true) {
+            str_contains($normalized, 'berita') || str_contains($normalized, 'kabar') => 'Berita',
+            str_contains($normalized, 'cerita lapangan') || str_contains($normalized, 'lapangan') || str_contains($normalized, 'refleksi') => 'Cerita Lapangan',
+            str_contains($normalized, 'kegiatan') || str_contains($normalized, 'prakarsa') => 'Kegiatan',
+            str_contains($normalized, 'pengumuman') || str_contains($normalized, 'rilis') => 'Pengumuman',
+            str_contains($normalized, 'dokumen') || str_contains($normalized, 'referensi') => 'Dokumen',
+            default => null,
+        };
     }
 
     private function siteSearchResults(string $query)

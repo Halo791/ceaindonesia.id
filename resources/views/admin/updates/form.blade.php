@@ -2,6 +2,21 @@
 
 @section('title', $title)
 
+@php
+    $imagePreviewSrc = function (string $path): string {
+        $path = trim($path);
+        if ($path === '') return '';
+
+        if (stripos($path, 'drive.google.com') !== false) {
+            if (preg_match('~/file/d/([^/?#]+)~', $path, $matches) || preg_match('~[?&]id=([^&#]+)~', $path, $matches)) {
+                return 'https://drive.google.com/thumbnail?id='.rawurlencode($matches[1]).'&sz=w800';
+            }
+        }
+
+        return preg_match('/^https?:\/\//', $path) ? $path : asset(ltrim($path, '/'));
+    };
+@endphp
+
 @section('content')
 <section class="cea-admin-panel">
     <div class="admin-shell">
@@ -37,6 +52,7 @@
                                 <option value="{{ $target['value'] }}" @selected(old('target', $update->owner_section_key.'|'.$update->owner_item_key) === $target['value'])>{{ $target['label'] }}</option>
                             @endforeach
                         </select>
+                        <small>Artikel akan tampil pada halaman sidebar yang dipilih di sini. Untuk admin regio/simpul, target mengikuti halaman masing-masing.</small>
                     </div>
 
                     <div class="admin-field">
@@ -62,7 +78,7 @@
                                 <option value="{{ $category }}" @selected(old('category', $update->category) === $category)>{{ $category }}</option>
                             @endforeach
                         </select>
-                        <small>Kategori menentukan tempat tayang. Contoh: Berita tampil di daftar berita/New Article, Cerita Lapangan tampil di section Cerita Lapangan.</small>
+                        <small>Kategori membantu pengelompokan kanal Siar. Contoh: kategori Berita tampil di halaman Berita, kategori Cerita Lapangan tampil di halaman Cerita Lapangan.</small>
                     </div>
 
                     <div class="admin-field">
@@ -92,7 +108,15 @@
 
                     <div class="admin-field">
                         <label>URL / path gambar</label>
-                        <input name="image_path" value="{{ old('image_path', $update->image_path) }}">
+                        @php
+                            $previewImagePath = (string) old('image_path', $update->image_path);
+                            $previewImageSrc = $imagePreviewSrc($previewImagePath);
+                        @endphp
+                        <input name="image_path" value="{{ $previewImagePath }}" placeholder="https://drive.google.com/file/d/FILE_ID/view atau /assets/img/...">
+                        <small>Bisa memakai link Google Drive agar tidak memakai storage hosting. Pastikan akses file Drive dibuat publik.</small>
+                        @if ($previewImageSrc)
+                            <img src="{{ $previewImageSrc }}" alt="{{ old('title', $update->title) ?: 'Preview gambar' }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
+                        @endif
                     </div>
 
                     <div class="admin-field">

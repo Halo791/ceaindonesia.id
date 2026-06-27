@@ -48,6 +48,14 @@
         margin-bottom: 28px;
         max-width: 660px;
     }
+    .public-hero__image {
+        height: 100%;
+        inset: 0;
+        object-fit: cover;
+        position: absolute;
+        width: 100%;
+        z-index: 0;
+    }
     .public-hero__visual { display: none; }
     .public-section {
         background: #fff;
@@ -408,6 +416,7 @@
 
 @php
     $ui = $ui ?? [];
+    $contentMeta = (array) ($content['meta'] ?? []);
     $contentImagePath = $content['image_path'] ?? '';
     $fallbackImages = [
         asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
@@ -417,9 +426,22 @@
         asset('assets/img/lapangan/walhi-sumbar-distribusi-logistik.jpeg'),
     ];
     $fallbackIndex = abs(crc32($content['title'] ?? config('app.name'))) % count($fallbackImages);
-    $heroImagePath = ($contentImagePath === '' || strpos($contentImagePath, 'assets/img/cea/') !== false)
+    $heroVideoPath = trim((string) ($contentMeta['hero_video_path'] ?? ''));
+    $heroMediaPath = $heroVideoPath ?: $contentImagePath;
+    $shouldUseFallbackImage = $heroMediaPath === '' || ($heroVideoPath === '' && strpos($heroMediaPath, 'assets/img/cea/') !== false);
+    $heroImagePath = $shouldUseFallbackImage
         ? $fallbackImages[$fallbackIndex]
-        : $contentImagePath;
+        : $heroMediaPath;
+    $heroDriveId = '';
+    if (stripos($heroImagePath, 'drive.google.com') !== false) {
+        if (preg_match('~/file/d/([^/?#]+)~', $heroImagePath, $matches) || preg_match('~[?&]id=([^&#]+)~', $heroImagePath, $matches)) {
+            $heroDriveId = $matches[1];
+        }
+    }
+    $heroIsVideo = (bool) preg_match('/\.(mp4|webm|ogg)(\?.*)?$/i', $heroImagePath) || ($heroDriveId && ! empty($contentMeta['hero_video_path']));
+    $heroMediaSrc = $heroDriveId
+        ? ($heroIsVideo ? 'https://drive.google.com/uc?export=download&id='.rawurlencode($heroDriveId) : 'https://drive.google.com/thumbnail?id='.rawurlencode($heroDriveId).'&sz=w1600')
+        : (preg_match('/^https?:\/\//', $heroImagePath) ? $heroImagePath : asset(ltrim($heroImagePath, '/')));
     $showMemberDiagram = ($section['key'] ?? null) === 'regio' && ($item['key'] ?? null) === 'anggota';
     $simpulRegions = collect(config('cea.simpul_regions', []));
     $totalMembers = $simpulRegions->sum(fn ($region) => count($region['members'] ?? []));
@@ -429,9 +451,13 @@
 
 @section('content')
 <section class="public-hero cea-video-hero">
-    <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
-        <source src="{{ asset('assets/img/cea/video.mp4') }}" type="video/mp4">
-    </video>
+    @if ($heroIsVideo)
+        <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
+            <source src="{{ $heroMediaSrc }}" type="video/mp4">
+        </video>
+    @else
+        <img class="public-hero__image" src="{{ $heroMediaSrc }}" alt="">
+    @endif
     <div class="container">
         <div class="public-hero__grid">
             <div class="cea-video-hero__content">
