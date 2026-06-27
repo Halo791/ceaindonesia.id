@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS `admin_pages` (
   `body` longtext,
   `body_en` longtext,
   `image_path` varchar(255) DEFAULT NULL,
+  `hero_video_path` varchar(255) DEFAULT NULL,
+  `header_logo_path` varchar(255) DEFAULT NULL,
   `external_url` varchar(255) DEFAULT NULL,
   `status` varchar(30) NOT NULL DEFAULT 'draft',
   `show_in_navigation` tinyint(1) NOT NULL DEFAULT 0,

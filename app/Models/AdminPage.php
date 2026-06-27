@@ -21,6 +21,8 @@ class AdminPage extends Model
         'body',
         'body_en',
         'image_path',
+        'hero_video_path',
+        'header_logo_path',
         'external_url',
         'status',
         'show_in_navigation',

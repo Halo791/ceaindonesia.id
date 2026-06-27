@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual/link eksternal. Jalankan migration atau import <code>database/sql/admin_pages.sql</code>, <code>database/sql/add_bilingual_fields.sql</code>, dan <code>database/sql/add_external_url_to_admin_pages.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual/link eksternal/media. Jalankan migration atau import <code>database/sql/admin_pages.sql</code>, <code>database/sql/add_bilingual_fields.sql</code>, <code>database/sql/add_external_url_to_admin_pages.sql</code>, dan <code>database/sql/add_dynamic_page_media_fields.sql</code> di phpMyAdmin.</div>
             @endif
             @if ($errors->any())
                 <div class="alert alert-danger">{{ $errors->first() }}</div>
@@ -100,7 +100,20 @@
 
                     <div class="admin-field">
                         <label>URL / path gambar</label>
-                        <input name="image_path" value="{{ old('image_path', $page->image_path) }}" placeholder="Kosongkan untuk foto lapangan otomatis atau gunakan https://...">
+                        <input name="image_path" value="{{ old('image_path', $page->image_path) }}" placeholder="Kosongkan untuk foto lapangan otomatis, link Google Drive, atau https://...">
+                    </div>
+
+                    <div class="admin-grid" style="margin-bottom:16px;">
+                        <div class="admin-field">
+                            <label>Video background halaman</label>
+                            <input name="hero_video_path" value="{{ old('hero_video_path', $page->hero_video_path) }}" placeholder="https://drive.google.com/file/d/.../view atau /assets/img/cea/video.mp4">
+                            <small>Opsional. Jika diisi, video ini menjadi background hero halaman dinamis ini.</small>
+                        </div>
+                        <div class="admin-field">
+                            <label>Logo header halaman</label>
+                            <input name="header_logo_path" value="{{ old('header_logo_path', $page->header_logo_path) }}" placeholder="https://drive.google.com/file/d/.../view atau /assets/img/...">
+                            <small>Opsional. Logo ini tampil di header halaman dinamis ini dan artikel miliknya.</small>
+                        </div>
                     </div>
 
                     <div class="admin-field">

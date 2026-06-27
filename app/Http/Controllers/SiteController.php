@@ -143,6 +143,20 @@ class SiteController extends Controller
         $pageTitle = $this->localizedModelValue($page, 'title');
         $pageSubtitle = $this->localizedModelValue($page, 'subtitle');
         $pageBody = $this->localizedModelValue($page, 'body');
+        $content = [
+            'eyebrow' => $parentLabel,
+            'title' => $pageTitle,
+            'subtitle' => $pageSubtitle ?: '',
+            'body' => $pageBody ?: '',
+            'image_path' => $page->image_path ?: '',
+            'source_href' => $this->pageExternalUrl($page) ?: '',
+            'status' => $page->status,
+            'cards' => [],
+            'meta' => [
+                'hero_video_path' => $page->hero_video_path ?: '',
+                'header_logo_path' => $page->header_logo_path ?: '',
+            ],
+        ];
 
         $section = [
             'key' => 'halaman',
@@ -161,18 +175,13 @@ class SiteController extends Controller
                 'label' => $pageLabel,
                 'description' => $pageSubtitle ?: '',
             ],
-            'content' => [
-                'eyebrow' => $parentLabel,
-                'title' => $pageTitle,
-                'subtitle' => $pageSubtitle ?: '',
-                'body' => $pageBody ?: '',
-                'image_path' => $page->image_path ?: '',
-                'source_href' => $this->pageExternalUrl($page) ?: '',
-                'status' => $page->status,
-                'cards' => [],
-            ],
+            'content' => $content,
             'siblings' => collect($siblings)->map(fn ($item) => $this->adminPageNavigationItem($item))->values(),
-            'updates' => collect(),
+            'socialLinks' => $this->contentSocialLinks($content),
+            'donationSettings' => $this->contentDonationSettings($content),
+            'contactSettings' => $this->contentContactSettings($content),
+            'headerLogoSrc' => $this->contentHeaderLogoSrc($content),
+            'updates' => $this->publicUpdates('halaman', $page->slug, $content),
         ]));
     }
 
@@ -509,7 +518,7 @@ class SiteController extends Controller
         if (! $this->adminPagesReady()) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, dan database/sql/add_external_url_to_admin_pages.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, database/sql/add_external_url_to_admin_pages.sql, dan database/sql/add_dynamic_page_media_fields.sql terlebih dulu.']);
         }
 
         $validated = $this->validateAdminPage($request);
@@ -519,7 +528,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, dan database/sql/add_external_url_to_admin_pages.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, database/sql/add_external_url_to_admin_pages.sql, dan database/sql/add_dynamic_page_media_fields.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.pages.index')->with('status', 'Halaman baru berhasil dibuat.');
@@ -549,7 +558,7 @@ class SiteController extends Controller
         } catch (\Throwable) {
             return back()
                 ->withInput()
-                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, dan database/sql/add_external_url_to_admin_pages.sql terlebih dulu.']);
+                ->withErrors(['database' => 'Tabel admin_pages belum siap. Jalankan migration atau import database/sql/admin_pages.sql, database/sql/add_bilingual_fields.sql, database/sql/add_external_url_to_admin_pages.sql, dan database/sql/add_dynamic_page_media_fields.sql terlebih dulu.']);
         }
 
         return redirect()->route('admin.pages.index')->with('status', 'Halaman berhasil diperbarui.');
@@ -2141,6 +2150,8 @@ class SiteController extends Controller
             'body' => ['nullable', 'string'],
             'body_en' => ['nullable', 'string'],
             'image_path' => ['nullable', 'string', 'max:255'],
+            'hero_video_path' => ['nullable', 'string', 'max:255'],
+            'header_logo_path' => ['nullable', 'string', 'max:255'],
             'external_url' => ['nullable', 'url', 'max:255'],
             'status' => ['required', 'in:draft,active,archived'],
             'show_in_navigation' => ['nullable', 'boolean'],
@@ -2160,6 +2171,12 @@ class SiteController extends Controller
 
         if (! Schema::hasColumn('admin_pages', 'external_url')) {
             unset($validated['external_url']);
+        }
+
+        foreach (['hero_video_path', 'header_logo_path'] as $mediaColumn) {
+            if (! Schema::hasColumn('admin_pages', $mediaColumn)) {
+                unset($validated[$mediaColumn]);
+            }
         }
 
         if (! Schema::hasColumn('admin_pages', 'navigation_parent_key')) {
@@ -2264,13 +2281,35 @@ class SiteController extends Controller
             ]];
         }
 
-        return collect($this->flattenAdminItems($this->navigationWithRegisteredKsos(config('cea.navigation'))))
+        $staticTargets = collect($this->flattenAdminItems($this->navigationWithRegisteredKsos(config('cea.navigation'))))
             ->map(fn ($item) => [
                 'value' => $item['section_key'].'|'.$item['item_key'],
                 'label' => $item['section_label'].' / '.str_repeat('- ', max($item['depth'] - 1, 0)).$item['label'],
             ])
+            ->values();
+
+        return $staticTargets
+            ->concat($this->dynamicPageUpdateTargetOptions())
             ->values()
             ->all();
+    }
+
+    private function dynamicPageUpdateTargetOptions()
+    {
+        try {
+            return AdminPage::query()
+                ->where('status', 'active')
+                ->orderBy('parent_id')
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get()
+                ->map(fn (AdminPage $page) => [
+                    'value' => 'halaman|'.$page->slug,
+                    'label' => 'Halaman Dinamis / '.$this->localizedPageLabel($page),
+                ]);
+        } catch (\Throwable) {
+            return collect();
+        }
     }
 
     private function updateTargetLabels(): array
@@ -2542,7 +2581,7 @@ class SiteController extends Controller
     private function adminPagesReady(): bool
     {
         try {
-            foreach (['navigation_parent_key', 'title_en', 'menu_label_en', 'subtitle_en', 'body_en', 'external_url'] as $column) {
+            foreach (['navigation_parent_key', 'title_en', 'menu_label_en', 'subtitle_en', 'body_en', 'external_url', 'hero_video_path', 'header_logo_path'] as $column) {
                 if (! Schema::hasColumn('admin_pages', $column)) {
                     return false;
                 }

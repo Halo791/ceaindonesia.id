@@ -17,7 +17,7 @@
             </div>
 
             @if (! $dbReady)
-                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual/link eksternal. Jalankan migration atau import <code>database/sql/admin_pages.sql</code>, <code>database/sql/add_bilingual_fields.sql</code>, dan <code>database/sql/add_external_url_to_admin_pages.sql</code> di phpMyAdmin.</div>
+                <div class="alert alert-warning">Tabel <strong>admin_pages</strong> belum tersedia atau belum punya kolom navigasi/bilingual/link eksternal/media. Jalankan migration atau import <code>database/sql/admin_pages.sql</code>, <code>database/sql/add_bilingual_fields.sql</code>, <code>database/sql/add_external_url_to_admin_pages.sql</code>, dan <code>database/sql/add_dynamic_page_media_fields.sql</code> di phpMyAdmin.</div>
             @endif
             @if (session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>
