@@ -62,6 +62,7 @@
                                 <option value="{{ $category }}" @selected(old('category', $update->category) === $category)>{{ $category }}</option>
                             @endforeach
                         </select>
+                        <small>Kategori menentukan tempat tayang. Contoh: Berita tampil di daftar berita/New Article, Cerita Lapangan tampil di section Cerita Lapangan.</small>
                     </div>
 
                     <div class="admin-field">

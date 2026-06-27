@@ -154,6 +154,28 @@
     }
 
     $fieldStories = $homeContent['field_stories'] ?? $fieldStories;
+    $fieldStoryUpdates = collect($fieldStoryUpdates ?? []);
+    if ($fieldStoryUpdates->isNotEmpty()) {
+        $fieldStories = $fieldStoryUpdates
+            ->map(function ($article) use ($locale, $disasterImages) {
+                $title = $locale === 'en' && filled($article->title_en) ? $article->title_en : $article->title;
+                $excerpt = $locale === 'en' && filled($article->excerpt_en) ? $article->excerpt_en : $article->excerpt;
+                $body = $locale === 'en' && filled($article->body_en) ? $article->body_en : $article->body;
+                $category = $locale === 'en' && filled($article->category_en) ? $article->category_en : $article->category;
+                $fallbackImages = array_values($disasterImages);
+                $imagePath = $article->image_path ?: $fallbackImages[abs(crc32($title)) % count($fallbackImages)];
+
+                return [
+                    'title' => $title,
+                    'label' => $category,
+                    'image' => preg_match('/^https?:\/\//', $imagePath) ? $imagePath : asset(ltrim($imagePath, '/')),
+                    'description' => $excerpt ?: str($body)->limit(138),
+                    'href' => route('public.update', $article->slug),
+                ];
+            })
+            ->values()
+            ->all();
+    }
 
     $locationCoordinates = [
         'sumbagsel-tangguh' => [3.35, 98.67],
@@ -294,6 +316,8 @@
     .cea-story-card__body { background: linear-gradient(180deg, rgba(6,61,42,.06) 0%, rgba(6,61,42,.94) 100%); bottom: 0; color: #fff; left: 0; padding: 80px 24px 24px; position: absolute; right: 0; z-index: 1; }
     .cea-story-card__label { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
     .cea-story-card h3 { color: #fff; font-size: 23px; font-weight: 900; line-height: 1.16; margin-bottom: 12px; text-shadow: 0 8px 20px rgba(0,0,0,.28); }
+    .cea-story-card h3 a { color: inherit; text-decoration: none; }
+    .cea-story-card h3 a:hover { color: #f2c94c; }
     .cea-story-card p { color: rgba(255,255,255,.84); display: -webkit-box; font-size: 14px; line-height: 1.65; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
     .cea-stats { background: #063d2a; padding: 40px 0; }
     .cea-stats__grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -499,7 +523,13 @@
                     </div>
                     <div class="cea-story-card__body">
                         <span class="cea-story-card__label">{{ $story['label'] }}</span>
-                        <h3>{{ $story['title'] }}</h3>
+                        <h3>
+                            @if (! empty($story['href']))
+                                <a href="{{ $story['href'] }}">{{ $story['title'] }}</a>
+                            @else
+                                {{ $story['title'] }}
+                            @endif
+                        </h3>
                         <p>{{ $story['description'] }}</p>
                     </div>
                 </article>

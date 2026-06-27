@@ -22,7 +22,8 @@ class SiteController extends Controller
             'socialLinks' => $this->homepageSocialLinks(),
             'donationSettings' => $this->homepageDonationSettings(),
             'contactSettings' => $this->homepageContactSettings(),
-            'latestUpdates' => $this->latestPublicUpdates(),
+            'latestUpdates' => $this->latestPublicUpdates(4, ['Berita']),
+            'fieldStoryUpdates' => $this->latestPublicUpdates(5, ['Cerita Lapangan']),
         ]));
     }
 
@@ -2387,11 +2388,12 @@ class SiteController extends Controller
             ->toString();
     }
 
-    private function latestPublicUpdates(int $limit = 4)
+    private function latestPublicUpdates(int $limit = 4, array $categories = [])
     {
         try {
             return AdminUpdate::query()
                 ->where('status', 'active')
+                ->when(! empty($categories), fn ($query) => $query->whereIn('category', $categories))
                 ->latest('published_at')
                 ->latest()
                 ->limit($limit)
