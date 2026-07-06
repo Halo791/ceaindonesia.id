@@ -106,8 +106,8 @@
                     <div class="admin-grid" style="margin-bottom:16px;">
                         <div class="admin-field">
                             <label>Video background halaman</label>
-                            <input name="hero_video_path" value="{{ old('hero_video_path', $page->hero_video_path) }}" placeholder="https://drive.google.com/file/d/.../view atau /assets/img/cea/video.mp4">
-                            <small>Opsional. Jika diisi, video ini menjadi background hero halaman dinamis ini.</small>
+                            <input name="hero_video_path" value="{{ old('hero_video_path', $page->hero_video_path) }}" placeholder="https://drive.google.com/file/d/.../view, https://youtu.be/VIDEO_ID, atau /assets/img/cea/video.mp4">
+                            <small>Opsional. Isi dengan link Google Drive, YouTube, atau path video lokal untuk background hero halaman dinamis ini.</small>
                         </div>
                         <div class="admin-field">
                             <label>Logo header halaman</label>

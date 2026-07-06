@@ -98,6 +98,7 @@
         .cea-video-hero { align-items: flex-start; background: #063d2a; box-sizing: border-box; color: #fff; display: flex; min-height: 100vh; overflow: hidden; padding: clamp(190px, 24vh, 250px) 0 86px; position: relative; }
         .cea-video-hero::after { background: linear-gradient(90deg, rgba(6,61,42,.88) 0%, rgba(6,61,42,.62) 48%, rgba(6,61,42,.18) 100%); content: ""; inset: 0; position: absolute; z-index: 1; }
         .cea-video-hero__video { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; z-index: 0; }
+        .cea-video-hero__video--youtube { border: 0; height: 56.25vw; inset: auto; left: 50%; min-height: 100%; min-width: 100%; pointer-events: none; top: 50%; transform: translate(-50%, -50%); width: 177.7778vh; }
         .cea-video-hero__content { max-width: 780px; position: relative; z-index: 2; }
         .cea-video-hero__eyebrow { color: #f2c94c; display: block; font-size: 12px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
         .cea-video-hero h1 { color: #fff; font-size: clamp(38px, 5.2vw, 76px); font-weight: 900; letter-spacing: 0; line-height: 1.02; margin-bottom: 20px; max-width: 780px; text-shadow: 0 16px 34px rgba(0,0,0,.36); text-wrap: balance; }

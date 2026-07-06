@@ -34,20 +34,7 @@
             'member_type' => 'Member',
         ]);
     }
-    $heroVideoPath = (string) ($homeContent['video_path'] ?? '/assets/img/cea/video.mp4');
-    if (stripos($heroVideoPath, "drive.google.com") !== false) {
-        $heroDriveId = null;
-        if (preg_match("~/file/d/([^/]+)~", $heroVideoPath, $heroDriveMatches)) {
-            $heroDriveId = $heroDriveMatches[1];
-        } else {
-            parse_str((string) parse_url($heroVideoPath, PHP_URL_QUERY), $heroDriveParams);
-            $heroDriveId = $heroDriveParams["id"] ?? null;
-        }
-        if (filled($heroDriveId)) {
-            $heroVideoPath = "https://drive.google.com/uc?export=download&id=".rawurlencode($heroDriveId);
-        }
-    }
-    $heroVideoSrc = preg_match('/^https?:\/\//', $heroVideoPath) ? $heroVideoPath : asset(ltrim($heroVideoPath, '/'));
+    $heroVideo = \App\Support\MediaUrl::backgroundVideo($homeContent['video_path'] ?? '/assets/img/cea/video.mp4');
     $disasterImages = [
         'psychosocial' => asset('assets/img/lapangan/pkbi-aceh-dukungan-psikososial.jpeg'),
         'children' => asset('assets/img/lapangan/pkbi-aceh-karya-anak.jpeg'),
@@ -398,9 +385,13 @@
 
 @section('content')
 <section class="cea-video-hero cea-landing-hero">
-    <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
-        <source src="{{ $heroVideoSrc }}" type="video/mp4">
-    </video>
+    @if ($heroVideo['type'] === 'youtube')
+        <iframe class="cea-video-hero__video cea-video-hero__video--youtube" src="{{ $heroVideo['src'] }}" title="Video background" allow="autoplay; encrypted-media; picture-in-picture" tabindex="-1" aria-hidden="true"></iframe>
+    @else
+        <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
+            <source src="{{ $heroVideo['src'] }}" type="video/mp4">
+        </video>
+    @endif
     <div class="container">
         <div class="cea-landing-hero__grid">
             <div class="cea-landing-hero__content">

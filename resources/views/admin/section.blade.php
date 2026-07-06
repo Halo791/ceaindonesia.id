@@ -173,29 +173,20 @@
                     </div>
                 </div>
                 <div class="admin-field">
-                    <label>{{ $isHomepage ? 'Link Google Drive / path video background' : 'URL / path gambar' }}</label>
+                    <label>{{ $isHomepage ? 'Link Google Drive / YouTube / path video background' : 'URL / path gambar' }}</label>
                     @php
                         $previewImagePath = (string) old('image_path', $content['image_path']);
                         $previewFallbackImage = asset('assets/img/lapangan/walhi-sumut-tandon-air-1.jpeg');
                         $previewImageSrc = ($previewImagePath && strpos($previewImagePath, 'assets/img/cea/') !== false) ? $previewFallbackImage : $previewImagePath;
-                        $previewVideoPath = $previewImagePath;
-                        if (stripos($previewVideoPath, "drive.google.com") !== false) {
-                            $previewDriveId = null;
-                            if (preg_match("~/file/d/([^/]+)~", $previewVideoPath, $previewDriveMatches)) {
-                                $previewDriveId = $previewDriveMatches[1];
-                            } else {
-                                parse_str((string) parse_url($previewVideoPath, PHP_URL_QUERY), $previewDriveParams);
-                                $previewDriveId = $previewDriveParams["id"] ?? null;
-                            }
-                            if (filled($previewDriveId)) {
-                                $previewVideoPath = "https://drive.google.com/uc?export=download&id=".rawurlencode($previewDriveId);
-                            }
-                        }
-                        $previewVideoSrc = ($previewVideoPath && preg_match("/^https?:\/\//", $previewVideoPath)) ? $previewVideoPath : asset(ltrim($previewVideoPath, "/"));
+                        $previewVideo = $previewImagePath !== '' ? \App\Support\MediaUrl::backgroundVideo($previewImagePath) : null;
                     @endphp
-                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="{{ $isHomepage ? 'https://drive.google.com/file/d/FILE_ID/view atau /assets/img/cea/video.mp4' : 'Kosongkan untuk foto lapangan otomatis atau gunakan https://...' }}">
-                    @if ($isHomepage && ! empty($previewImagePath))
-                        <video src="{{ $previewVideoSrc }}" autoplay muted loop playsinline style="border-radius:8px;margin-top:12px;max-height:190px;object-fit:cover;width:100%;"></video>
+                    <input name="image_path" value="{{ $previewImagePath }}" placeholder="{{ $isHomepage ? 'https://drive.google.com/file/d/FILE_ID/view, https://youtu.be/VIDEO_ID, atau /assets/img/cea/video.mp4' : 'Kosongkan untuk foto lapangan otomatis atau gunakan https://...' }}">
+                    @if ($isHomepage && $previewVideo)
+                        @if ($previewVideo['type'] === 'youtube')
+                            <iframe src="{{ $previewVideo['src'] }}" title="Preview video background" allow="autoplay; encrypted-media; picture-in-picture" style="border:0;border-radius:8px;margin-top:12px;max-height:190px;aspect-ratio:16/9;width:100%;"></iframe>
+                        @else
+                            <video src="{{ $previewVideo['src'] }}" autoplay muted loop playsinline style="border-radius:8px;margin-top:12px;max-height:190px;object-fit:cover;width:100%;"></video>
+                        @endif
                     @elseif (! empty($previewImageSrc))
                         <img src="{{ $previewImageSrc }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
                     @endif
@@ -204,8 +195,8 @@
                     <div class="admin-grid" style="margin-bottom:16px;">
                         <div class="admin-field">
                             <label>Video background halaman</label>
-                            <input name="meta[hero_video_path]" value="{{ $metaValue('hero_video_path') }}" placeholder="https://drive.google.com/file/d/.../view atau /assets/img/cea/video.mp4">
-                            <small>Opsional. Jika diisi, video ini menjadi background hero menu ini. Jika kosong, halaman memakai gambar di atas.</small>
+                            <input name="meta[hero_video_path]" value="{{ $metaValue('hero_video_path') }}" placeholder="https://drive.google.com/file/d/.../view, https://youtu.be/VIDEO_ID, atau /assets/img/cea/video.mp4">
+                            <small>Opsional. Isi dengan link Google Drive, YouTube, atau path video lokal. Jika kosong, halaman memakai gambar di atas.</small>
                         </div>
                         <div class="admin-field">
                             <label>Logo header halaman</label>

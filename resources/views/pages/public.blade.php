@@ -432,16 +432,9 @@
     $heroImagePath = $shouldUseFallbackImage
         ? $fallbackImages[$fallbackIndex]
         : $heroMediaPath;
-    $heroDriveId = '';
-    if (stripos($heroImagePath, 'drive.google.com') !== false) {
-        if (preg_match('~/file/d/([^/?#]+)~', $heroImagePath, $matches) || preg_match('~[?&]id=([^&#]+)~', $heroImagePath, $matches)) {
-            $heroDriveId = $matches[1];
-        }
-    }
-    $heroIsVideo = (bool) preg_match('/\.(mp4|webm|ogg)(\?.*)?$/i', $heroImagePath) || ($heroDriveId && ! empty($contentMeta['hero_video_path']));
-    $heroMediaSrc = $heroDriveId
-        ? ($heroIsVideo ? 'https://drive.google.com/uc?export=download&id='.rawurlencode($heroDriveId) : 'https://drive.google.com/thumbnail?id='.rawurlencode($heroDriveId).'&sz=w1600')
-        : (preg_match('/^https?:\/\//', $heroImagePath) ? $heroImagePath : asset(ltrim($heroImagePath, '/')));
+    $heroMedia = \App\Support\MediaUrl::heroMedia($heroImagePath, $heroVideoPath !== '');
+    $heroMediaType = $heroMedia['type'];
+    $heroMediaSrc = $heroMedia['src'];
     $showMemberDiagram = ($section['key'] ?? null) === 'regio' && ($item['key'] ?? null) === 'anggota';
     $simpulRegions = collect(config('cea.simpul_regions', []));
     $totalMembers = $simpulRegions->sum(fn ($region) => count($region['members'] ?? []));
@@ -451,7 +444,9 @@
 
 @section('content')
 <section class="public-hero cea-video-hero">
-    @if ($heroIsVideo)
+    @if ($heroMediaType === 'youtube')
+        <iframe class="cea-video-hero__video cea-video-hero__video--youtube" src="{{ $heroMediaSrc }}" title="Video background" allow="autoplay; encrypted-media; picture-in-picture" tabindex="-1" aria-hidden="true"></iframe>
+    @elseif ($heroMediaType === 'video')
         <video class="cea-video-hero__video" autoplay muted loop playsinline preload="metadata">
             <source src="{{ $heroMediaSrc }}" type="video/mp4">
         </video>
