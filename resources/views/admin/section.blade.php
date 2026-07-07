@@ -191,6 +191,20 @@
                         <img src="{{ $previewImageSrc }}" alt="{{ $content['title'] }}" style="border-radius:8px;margin-top:12px;max-height:180px;object-fit:cover;width:100%;">
                     @endif
                 </div>
+                @if ($isHomepage)
+                    @php
+                        $homepageLogoPath = (string) $metaValue('header_logo_path');
+                        $homepageLogoPreview = $imagePreviewSrc($homepageLogoPath);
+                    @endphp
+                    <div class="admin-field">
+                        <label>Logo header halaman utama</label>
+                        <input name="meta[header_logo_path]" value="{{ $homepageLogoPath }}" placeholder="https://drive.google.com/file/d/.../view atau /assets/img/...">
+                        <small>Opsional. Logo ini tampil di header halaman utama. Bisa memakai link Google Drive publik.</small>
+                        @if ($homepageLogoPreview)
+                            <img src="{{ $homepageLogoPreview }}" alt="Preview logo header" style="background:#f6f9e8;border-radius:8px;margin-top:12px;max-height:140px;object-fit:contain;padding:12px;width:100%;">
+                        @endif
+                    </div>
+                @endif
                 @unless ($isHomepage)
                     <div class="admin-grid" style="margin-bottom:16px;">
                         <div class="admin-field">
@@ -255,7 +269,7 @@
                     </div>
                     <fieldset style="border:1px solid rgba(31,122,67,.16);border-radius:8px;margin:24px 0 16px;padding:18px;">
                         <legend style="font-size:22px;font-weight:900;padding:0 8px;">Cerita Lapangan</legend>
-                        <p style="color:#68796f;margin-bottom:18px;">Ubah gambar dan teks kartu foto pada bagian bawah halaman beranda.</p>
+                        <p style="color:#68796f;margin-bottom:18px;">Beranda akan memakai artikel aktif kategori Cerita Lapangan. Isian kartu di bawah ini menjadi fallback jika belum ada artikel aktif.</p>
                         @foreach (range(1, 5) as $storyNumber)
                             @php
                                 $storyImagePath = (string) $metaValue("field_story_{$storyNumber}_image");

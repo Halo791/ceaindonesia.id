@@ -73,12 +73,13 @@
 
                     <div class="admin-field">
                         <label>Kategori</label>
-                        <select name="category">
-                            @foreach (['Berita', 'Kegiatan', 'Cerita Lapangan', 'Dokumen', 'Pengumuman'] as $category)
-                                <option value="{{ $category }}" @selected(old('category', $update->category) === $category)>{{ $category }}</option>
+                        <input name="category" value="{{ old('category', $update->category) }}" list="update-category-options" required placeholder="Berita, Kegiatan, Cerita Lapangan...">
+                        <datalist id="update-category-options">
+                            @foreach ($updateCategories ?? ['Berita', 'Kegiatan', 'Cerita Lapangan', 'Dokumen', 'Pengumuman'] as $category)
+                                <option value="{{ $category }}">
                             @endforeach
-                        </select>
-                        <small>Kategori membantu pengelompokan kanal Siar. Contoh: kategori Berita tampil di halaman Berita, kategori Cerita Lapangan tampil di halaman Cerita Lapangan.</small>
+                        </datalist>
+                        <small>Kategori membantu pengelompokan kanal Siar. Kategori baru akan otomatis menjadi submenu publik di SIAR.</small>
                     </div>
 
                     <div class="admin-field">

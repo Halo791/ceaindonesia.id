@@ -185,6 +185,21 @@ return [
                 ['key' => 'anggota', 'label' => 'Anggota', 'href' => '/admin/regio/anggota', 'publicHref' => '/regio/anggota', 'sourceHref' => $baseUrl.'/', 'description' => 'Direktori organisasi anggota, profil lembaga, dan relasi simpul.'],
             ],
         ],
+        [
+            'key' => 'siar',
+            'label' => 'SIAR',
+            'href' => '/admin/siar',
+            'publicHref' => '/siar',
+            'sourceHref' => $baseUrl.'/',
+            'description' => 'Kelola kanal berita, kegiatan, cerita lapangan, dokumen, dan pengumuman.',
+            'children' => [
+                ['key' => 'berita', 'label' => 'Berita', 'href' => '/admin/siar/berita', 'publicHref' => '/siar/berita', 'sourceHref' => $baseUrl.'/', 'description' => 'Artikel kategori Berita dari ekosistem Pooling Fund - KSO.'],
+                ['key' => 'kegiatan', 'label' => 'Kegiatan', 'href' => '/admin/siar/kegiatan', 'publicHref' => '/siar/kegiatan', 'sourceHref' => $baseUrl.'/', 'description' => 'Artikel kategori Kegiatan dari simpul dan anggota.'],
+                ['key' => 'cerita-lapangan', 'label' => 'Cerita Lapangan', 'href' => '/admin/siar/cerita-lapangan', 'publicHref' => '/siar/cerita-lapangan', 'sourceHref' => $baseUrl.'/', 'description' => 'Cerita Lapangan dari anggota dan simpul.'],
+                ['key' => 'dokumen', 'label' => 'Dokumen', 'href' => '/admin/siar/dokumen', 'publicHref' => '/siar/dokumen', 'sourceHref' => $baseUrl.'/', 'description' => 'Dokumen, referensi, dan bahan rujukan.'],
+                ['key' => 'pengumuman', 'label' => 'Pengumuman', 'href' => '/admin/siar/pengumuman', 'publicHref' => '/siar/pengumuman', 'sourceHref' => $baseUrl.'/', 'description' => 'Pengumuman dan rilis resmi.'],
+            ],
+        ],
     ],
     'blog' => [
         ['id' => 1, 'title' => 'Scientists speculate that ours might not be held', 'img' => 'blog01.jpg', 'group' => 'blog', 'category' => 'Gaming', 'author' => 'miranda h.', 'date' => '25 April 2026'],

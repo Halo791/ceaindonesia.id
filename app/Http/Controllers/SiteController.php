@@ -22,6 +22,7 @@ class SiteController extends Controller
             'socialLinks' => $this->homepageSocialLinks(),
             'donationSettings' => $this->homepageDonationSettings(),
             'contactSettings' => $this->homepageContactSettings(),
+            'headerLogoSrc' => $this->homepageHeaderLogoSrc(),
             'latestUpdates' => $this->latestPublicUpdates(4, ['Berita']),
             'fieldStoryUpdates' => $this->latestPublicUpdates(5, ['Cerita Lapangan']),
         ]));
@@ -432,6 +433,7 @@ class SiteController extends Controller
         return view('admin.updates.form', $this->shared([
             'update' => new AdminUpdate(['status' => 'draft', 'category' => 'Berita', 'published_at' => now()]),
             'targets' => $this->updateTargetOptions(),
+            'updateCategories' => $this->updateCategoryOptions(),
             'formAction' => route('admin.updates.store'),
             'method' => 'POST',
             'title' => 'Tambah Update',
@@ -467,6 +469,7 @@ class SiteController extends Controller
         return view('admin.updates.form', $this->shared([
             'update' => $update,
             'targets' => $this->updateTargetOptions(),
+            'updateCategories' => $this->updateCategoryOptions(),
             'formAction' => route('admin.updates.update', $update),
             'method' => 'PUT',
             'title' => 'Edit Update',
@@ -891,7 +894,9 @@ class SiteController extends Controller
 
     private function findSection(string $key): ?array
     {
-        return collect($this->navigationWithMenuOverrides($this->navigationWithRegisteredKsos(config('cea.navigation'))))->firstWhere('key', $key);
+        $navigation = $this->navigationWithUpdateCategories($this->navigationWithMenuOverrides($this->navigationWithRegisteredKsos(config('cea.navigation'))));
+
+        return collect($navigation)->firstWhere('key', $key);
     }
 
     private function renderPublicPage(array $section, ?array $item = null, mixed $siblings = null, ?string $contentKey = null): View
@@ -1197,6 +1202,7 @@ class SiteController extends Controller
                 'contact_address_en' => 'Jl. Patih Singoranu No. 155, Tamanan, Banguntapan, Bantul, DI Yogyakarta.',
                 'contact_email' => 'sekretariat@simpulpfb.id',
                 'contact_phone' => '',
+                'header_logo_path' => '',
                 'primary_label' => 'Baca Mandat',
                 'primary_label_en' => 'Read Mandate',
                 'primary_href' => '/profil/mandat-visi-nilai',
@@ -1377,6 +1383,14 @@ class SiteController extends Controller
         $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
 
         return $this->contactSettingsFromMeta($meta);
+    }
+
+    private function homepageHeaderLogoSrc(): string
+    {
+        $content = $this->homepageAdminContent();
+        $meta = array_merge($this->homepageDefaults()['meta'], (array) ($content['meta'] ?? []));
+
+        return $this->contentHeaderLogoSrc(['meta' => $meta]);
     }
 
     private function contentSocialLinks(array $content): array
@@ -1757,6 +1771,7 @@ class SiteController extends Controller
     private function publicNavigation(): array
     {
         $navigation = $this->navigationWithMenuOverrides($this->navigationWithRegisteredKsos(config('cea.navigation')));
+        $navigation = $this->navigationWithUpdateCategories($navigation);
 
         try {
             $hasNavigationParentKey = Schema::hasColumn('admin_pages', 'navigation_parent_key');
@@ -1885,6 +1900,57 @@ class SiteController extends Controller
         }
 
         return $this->applyMenuLabelOverrides($navigation, $overrides);
+    }
+
+    private function navigationWithUpdateCategories(array $navigation): array
+    {
+        return collect($navigation)
+            ->map(function (array $section) {
+                if (($section['key'] ?? '') !== 'siar') {
+                    return $section;
+                }
+
+                $children = collect($section['children'] ?? []);
+                $existingCategories = $children
+                    ->map(fn (array $child) => $this->normalizeSearchTerm($this->siarCategoryForPage('siar', $child['key'] ?? '', $child) ?: ($child['label'] ?? '')))
+                    ->filter()
+                    ->values()
+                    ->all();
+
+                $dynamicCategories = collect($this->updateCategoryOptions(true))
+                    ->reject(fn (string $category) => in_array($this->normalizeSearchTerm($category), $existingCategories, true))
+                    ->map(fn (string $category) => $this->updateCategoryNavigationItem($category));
+
+                $section['children'] = $children
+                    ->concat($dynamicCategories)
+                    ->values()
+                    ->all();
+                $section['cards'] = collect($section['children'])->pluck('label')->values()->all();
+
+                return $section;
+            })
+            ->values()
+            ->all();
+    }
+
+    private function updateCategoryNavigationItem(string $category): array
+    {
+        $slug = Str::slug($category) ?: 'kategori';
+
+        return [
+            'key' => $slug,
+            'label' => $category,
+            'href' => "/admin/siar/{$slug}",
+            'publicHref' => "/siar/{$slug}",
+            'sourceHref' => url("/siar/{$slug}"),
+            'description' => "Artikel kategori {$category}.",
+            'eyebrow' => 'Siar',
+            'title' => $category,
+            'subtitle' => "Artikel dan update kategori {$category}.",
+            'body' => "Halaman ini menampilkan artikel dan update kategori {$category}.",
+            'image_path' => '/assets/img/cea/pomelli_bdna_image_0510%20%285%29.png',
+            'cards' => [$category],
+        ];
     }
 
     private function applyMenuLabelOverrides(array $items, $overrides, ?string $sectionKey = null, array $path = []): array
@@ -2324,6 +2390,18 @@ class SiteController extends Controller
         try {
             $category = $this->siarCategoryForPage($sectionKey, $itemKey, $content);
 
+            if ($this->isMemberContentKey($sectionKey, $itemKey)) {
+                return AdminUpdate::query()
+                    ->where('status', 'active')
+                    ->where('owner_section_key', $sectionKey)
+                    ->where('owner_item_key', $itemKey)
+                    ->where('category', 'Cerita Lapangan')
+                    ->latest('published_at')
+                    ->latest()
+                    ->limit(6)
+                    ->get();
+            }
+
             return AdminUpdate::query()
                 ->where('status', 'active')
                 ->where(function ($query) use ($sectionKey, $itemKey, $category) {
@@ -2355,7 +2433,14 @@ class SiteController extends Controller
             $itemKey,
             $content['title'] ?? '',
             $content['eyebrow'] ?? '',
+            $content['label'] ?? '',
         ])));
+
+        foreach ($this->updateCategoryOptions() as $category) {
+            if ($normalized === $this->normalizeSearchTerm($category) || $itemKey === Str::slug($category)) {
+                return $category;
+            }
+        }
 
         return match (true) {
             str_contains($normalized, 'berita') || str_contains($normalized, 'kabar') => 'Berita',
@@ -2365,6 +2450,11 @@ class SiteController extends Controller
             str_contains($normalized, 'dokumen') || str_contains($normalized, 'referensi') => 'Dokumen',
             default => null,
         };
+    }
+
+    private function isMemberContentKey(string $sectionKey, string $itemKey): bool
+    {
+        return $sectionKey === 'regio' && (bool) preg_match('~^simpul/[^/]+/[^/]+$~', $itemKey);
     }
 
     private function siteSearchResults(string $query)
@@ -2507,6 +2597,32 @@ class SiteController extends Controller
                 ->get();
         } catch (\Throwable) {
             return collect();
+        }
+    }
+
+    private function updateCategoryOptions(bool $onlyActive = false): array
+    {
+        $defaults = ['Berita', 'Kegiatan', 'Cerita Lapangan', 'Dokumen', 'Pengumuman'];
+
+        try {
+            $categories = AdminUpdate::query()
+                ->when($onlyActive, fn ($query) => $query->where('status', 'active'))
+                ->whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->orderBy('category')
+                ->pluck('category')
+                ->all();
+
+            return collect($defaults)
+                ->concat($categories)
+                ->map(fn ($category) => trim((string) $category))
+                ->filter()
+                ->unique(fn ($category) => $this->normalizeSearchTerm($category))
+                ->values()
+                ->all();
+        } catch (\Throwable) {
+            return $defaults;
         }
     }
 
